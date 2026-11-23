@@ -148,6 +148,19 @@ details.settings summary::-webkit-details-marker{display:none}
 .chat-input textarea{min-height:56px;max-height:200px}
 .chat-input .btn.primary{width:auto}
 .starters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.prog{border:2px solid var(--line)}
+.prog-row{padding:12px 0;border-top:1px solid var(--line)}
+.prog-row:first-of-type{border-top:none}
+.prog-head{display:flex;justify-content:space-between;gap:10px}
+.prog-st{font-size:14px;color:var(--muted);margin-top:4px}
+.prog-bar{height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:8px}
+.prog-bar span{display:block;height:100%;width:3%;background:var(--rec);border-radius:999px;transition:width .4s ease}
+.prog-row.ok .prog-bar span{background:var(--ok)}
+.prog-think{font-size:13px;color:var(--muted);font-style:italic;margin-top:6px;min-height:0}
+.prog-prev{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:4px}
+.prog-prev li{font-size:14px;background:var(--surface-2);border-radius:8px;padding:5px 10px;animation:fadein .3s ease}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.prog-bar span{transition:none}.prog-prev li{animation:none}}
 .viewing{background:var(--short-soft);border:1px solid var(--short);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
@@ -179,6 +192,11 @@ details.settings summary::-webkit-details-marker{display:none}
       <button class="btn" id="loadModels" type="button">Pobierz listę</button>
     </div>
     <p class="note">Jeśli model przestanie działać, kliknij „Pobierz listę” i wybierz inny z nazwą „flash”.</p>
+    <label for="speed">Tryb generowania</label>
+    <select id="speed">
+      <option value="fast">Szybki (zalecany)</option>
+      <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
+    </select>
     <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
     <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
     <div class="inline" style="margin-top:10px"><button class="btn" id="saveFooter" type="button">Zapisz stopkę</button></div>
@@ -467,7 +485,9 @@ function ensureOption(name){ const sel = $("model"); if(![...sel.options].some(o
 function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia: klucz API zapisany" : "Ustawienia: dodaj klucz API Gemini"; }
 refreshKey(); if(!$("apiKey").value) $("settings").open = true;
 $("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); refreshKey(); toast("Klucz zapisany"); };
-$("model").onchange = () => store.set("vg_model", $("model").value);
+$("model").onchange = () => { store.set("vg_model", $("model").value); try{ localStorage.removeItem("vg_think_compat"); }catch(e){} };
+$("speed").value = store.get("vg_speed", "fast");
+$("speed").onchange = () => store.set("vg_speed", $("speed").value);
 $("saveFooter").onclick = () => { store.set("vg_footer", $("footer").value); toast("Stopka zapisana"); };
 $("saveStyle").onclick = () => { store.set("vg_style", $("styleGuide").value); toast("Styl zapisany"); };
 $("resetStyle").onclick = () => { if(confirm("Przywrócić domyślny przewodnik? Twoje zmiany zostaną nadpisane.")){ $("styleGuide").value = DEFAULT_STYLE; store.set("vg_style", DEFAULT_STYLE); toast("Przywrócono"); } };
@@ -639,30 +659,162 @@ Zwróć WYŁĄCZNIE JSON:
   return s;
 }
 
-async function geminiRequest(body){
+function apiError(status, j){
+  const msg = j?.error?.message || ("Błąd " + status);
+  let e;
+  if(status === 429) e = new Error("Wyczerpany darmowy limit zapytań. Odczekaj minutę albo wybierz model „flash-lite” w ustawieniach.");
+  else if(status === 400 && /API key/i.test(msg)) e = new Error("Klucz API jest nieprawidłowy. Sprawdź go w ustawieniach.");
+  else if(status === 404) e = new Error("Ten model nie jest już dostępny. Kliknij „Pobierz listę” w ustawieniach i wybierz inny.");
+  else if(status === 503) e = new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
+  else e = new Error(msg);
+  if(status === 400 && /think/i.test(msg)) e.thinkingIssue = true;
+  return e;
+}
+function apiKeyOrThrow(){
   const key = $("apiKey").value.trim();
   if(!key){ $("settings").open = true; throw new Error("Dodaj klucz API Gemini w ustawieniach (u góry)."); }
-  const r = await fetch(`${API}/models/${encodeURIComponent($("model").value)}:generateContent`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) });
-  let j; try{ j = await r.json(); }catch(e){ j = {}; }
-  if(!r.ok){
-    const msg = j.error?.message || ("Błąd " + r.status);
-    if(r.status === 429) throw new Error("Wyczerpany darmowy limit zapytań. Odczekaj minutę albo wybierz model „flash-lite” w ustawieniach.");
-    if(r.status === 400 && /API key/i.test(msg)) throw new Error("Klucz API jest nieprawidłowy. Sprawdź go w ustawieniach.");
-    if(r.status === 404) throw new Error("Ten model nie jest już dostępny. Kliknij „Pobierz listę” w ustawieniach i wybierz inny.");
-    if(r.status === 503) throw new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
-    throw new Error(msg);
+  return key;
+}
+const activeReqs = new Set();
+function makeReq(firstMs){
+  let t, rejectFn;
+  const stop = new Promise((_, rej) => { rejectFn = rej; }); stop.catch(() => {});
+  const ctl = { why: null, reader: null, abort(why){
+    if(ctl.why) return; ctl.why = why;
+    try{ ctl.reader && ctl.reader.cancel(); }catch(e){}
+    rejectFn(new Error(why === "cancel" ? "Anulowano." : "Gemini nie odpowiada od dłuższego czasu. Spróbuj ponownie, a jeśli to się powtarza, w ustawieniach wybierz model „flash-lite” albo tryb „Szybki”."));
+  } };
+  const arm = ms => { clearTimeout(t); t = setTimeout(() => ctl.abort("timeout"), ms); };
+  arm(firstMs); activeReqs.add(ctl);
+  return { race: x => Promise.race([x, stop]), arm, ctl, done(){ clearTimeout(t); activeReqs.delete(ctl); } };
+}
+function cancelAll(){ activeReqs.forEach(c => c.abort("cancel")); }
+async function geminiCall(body){
+  const key = apiKeyOrThrow();
+  const q = makeReq(150000);
+  let r, j;
+  try{
+    r = await q.race(fetch(`${API}/models/${encodeURIComponent($("model").value)}:generateContent`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
+    try{ j = await q.race(r.json()); }catch(e){ if(q.ctl.why) throw e; j = {}; }
   }
-  const text = (j.candidates?.[0]?.content?.parts||[]).map(p => p.text||"").join("");
+  finally{ q.done(); }
+  if(!r.ok) throw apiError(r.status, j);
+  const text = (j.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||"").join("");
   if(!text) throw new Error("Model nie zwrócił odpowiedzi. Spróbuj jeszcze raz.");
   return text;
 }
-async function callGemini(parts, json, temp){
+async function geminiStream(body, onUpdate){
+  const key = apiKeyOrThrow();
+  const q = makeReq(150000);
+  try{
+  const r = await q.race(fetch(`${API}/models/${encodeURIComponent($("model").value)}:streamGenerateContent?alt=sse`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
+  if(!r.ok){ let j; try{ j = await r.json(); }catch(e){ j = {}; } throw apiError(r.status, j); }
+  if(!r.body || !r.body.getReader){
+    const raw = await q.race(r.text()); let out = "";
+    raw.split("\n").forEach(l => { l = l.trim(); if(!l.startsWith("data:")) return; try{ const j = JSON.parse(l.slice(5)); (j.candidates?.[0]?.content?.parts||[]).forEach(p => { if(!p.thought && p.text) out += p.text; }); }catch(e){} });
+    if(!out) throw new Error("Model nie zwrócił odpowiedzi. Spróbuj jeszcze raz.");
+    return out;
+  }
+  const reader = r.body.getReader(), dec = new TextDecoder(); q.ctl.reader = reader;
+  let buf = "", text = "", thought = "";
+  for(;;){
+    const { done, value } = await q.race(reader.read()); if(done) break;
+    q.arm(60000);
+    buf += dec.decode(value, { stream:true });
+    let idx;
+    while((idx = buf.indexOf("\n")) >= 0){
+      const line = buf.slice(0, idx).trim(); buf = buf.slice(idx + 1);
+      if(!line.startsWith("data:")) continue;
+      let j; try{ j = JSON.parse(line.slice(5).trim()); }catch(e){ continue; }
+      if(j.error) throw new Error(j.error.message || "Błąd podczas generowania.");
+      for(const part of (j.candidates?.[0]?.content?.parts || [])){
+        if(part.thought) thought = part.text || thought; else if(part.text) text += part.text;
+      }
+      try{ onUpdate && onUpdate({ text, thought }); }catch(e){}
+    }
+  }
+  if(!text) throw new Error("Model nie zwrócił odpowiedzi. Spróbuj jeszcze raz.");
+  return text;
+  }
+  finally{ q.done(); }
+}
+const THINK_COMPAT = ["level","budget","none"];
+function thinkCfg(compat){
+  if(compat === "none") return null;
+  if(store.get("vg_speed","fast") === "fast") return compat === "level" ? { thinkingLevel:"low" } : { thinkingBudget:512 };
+  return { includeThoughts:true };
+}
+async function withThinking(body, run){
+  let compat = localStorage.getItem("vg_think_compat") || "level";
+  for(;;){
+    const b = JSON.parse(JSON.stringify(body)); const cfg = thinkCfg(compat);
+    if(cfg) b.generationConfig = { ...(b.generationConfig||{}), thinkingConfig: cfg };
+    try{ return await run(b); }
+    catch(e){
+      if(e.thinkingIssue && compat !== "none"){ compat = THINK_COMPAT[THINK_COMPAT.indexOf(compat) + 1]; try{ localStorage.setItem("vg_think_compat", compat); }catch(x){} continue; }
+      throw e;
+    }
+  }
+}
+const geminiRequest = body => withThinking(body, geminiCall);
+const geminiStreamReq = (body, onUpdate) => withThinking(body, b => geminiStream(b, onUpdate));
+async function callGemini(parts, json, temp, onUpdate){
   const body = { contents:[{ role:"user", parts }], generationConfig:{ temperature: temp ?? 0.9 } };
   if(json) body.generationConfig.responseMimeType = "application/json";
-  const text = await geminiRequest(body);
+  const text = onUpdate ? await geminiStreamReq(body, onUpdate) : await geminiRequest(body);
   if(!json) return text;
   try{ return JSON.parse(text.replace(/```json|```/g,"").trim()); }
   catch(e){ throw new Error("Odpowiedź miała zły format. Spróbuj jeszcze raz."); }
+}
+
+// ---------- progress ----------
+function thoughtTitle(t){ const m = (t||"").match(/\*\*(.+?)\*\*/); return (m ? m[1] : (t||"").split("\n")[0]).slice(0, 120); }
+function lastKey(b, keys){ let best = null, pos = -1; keys.forEach(([k, label]) => { const i = b.lastIndexOf('"' + k + '"'); if(i > pos){ pos = i; best = label; } }); return best; }
+function stageText(kind, b){
+  if(kind === "playlist") return lastKey(b, [["titles","Wymyślam nazwy playlisty…"],["descriptions","Piszę opisy…"]]) || "Zaczynam pisać…";
+  if(kind === "film") return lastKey(b, [["titles","Wymyślam tytuły…"],["description","Piszę opis…"],["tags","Dobieram tagi…"],["thumbnails","Wymyślam miniaturki…"]]) || "Zaczynam pisać…";
+  const n = (b.match(/"titles"/g)||[]).length || 1;
+  const sc = b.slice(b.lastIndexOf('"titles"')); const scenes = (sc.match(/"scene"/g)||[]).length;
+  const st = lastKey(sc, [["titles","wymyślam tytuły…"],["description","piszę opis…"],["hashtags","dobieram hashtagi…"],["scenes","piszę napisy do scen" + (scenes ? " (" + scenes + ")" : "") + "…"]]) || "zaczynam…";
+  return "Short " + n + ": " + st;
+}
+function previewTitles(b){
+  const part = b.split('"description"')[0];
+  return [...part.matchAll(/"text"\s*:\s*"((?:[^"\\]|\\.)*)"/g)].map(m => { try{ return JSON.parse('"' + m[1] + '"'); }catch(e){ return m[1]; } });
+}
+function showProgress(target, rowsDef, hint){
+  const start = Date.now(), timer = el("span", { class:"count" }, "0 s"), rows = {};
+  const cancel = el("button", { class:"btn small danger", type:"button", onclick: () => cancelAll() }, "Anuluj");
+  const box = el("div", { class:"block prog" }, el("div", { class:"block-head" }, el("h3", null, "Pracuję nad tym…"), el("div", { class:"inline" }, timer, cancel)));
+  rowsDef.forEach(([key, label, expected]) => {
+    const st = el("div", { class:"prog-st" }, "Czytam Wasz styl, wzory i historię…"), bar = el("div", { class:"prog-bar" }, el("span")), think = el("div", { class:"prog-think" }), prev = el("ul", { class:"prog-prev" }), cnt = el("span", { class:"count" });
+    const row = el("div", { class:"prog-row" }, el("div", { class:"prog-head" }, el("strong", null, label), cnt), st, bar, think, prev);
+    rows[key] = { row, st, bar, think, prev, cnt, expected, shown: 0, start: Date.now() };
+    box.append(row);
+  });
+  if(hint) box.append(el("p", { class:"note" }, hint));
+  target.innerHTML = ""; target.append(box);
+  const iv = setInterval(() => {
+    timer.textContent = Math.round((Date.now() - start) / 1000) + " s";
+    Object.values(rows).forEach(r => { if(!r.got && !r.fin){ const w = Math.min(18, 3 + (Date.now() - r.start) / 1500); r.bar.firstChild.style.width = w + "%"; const el2 = Date.now() - r.start; if(el2 > 70000) r.st.textContent = "To trwa dłużej niż zwykle – Gemini może być teraz przeciążony. Możesz poczekać albo kliknąć „Anuluj” i spróbować ponownie."; else if(el2 > 6000 && !r.think.textContent) r.st.textContent = "AI analizuje Wasz styl i planuje odpowiedź…"; } });
+  }, 500);
+  return {
+    update(key, u){
+      const r = rows[key]; if(!r || r.fin) return;
+      if(u.thought && !u.text){ r.think.textContent = "💭 " + thoughtTitle(u.thought); r.st.textContent = "AI zastanawia się nad odpowiedzią…"; }
+      if(u.text){
+        r.got = true; r.think.textContent = "";
+        r.cnt.textContent = u.text.length + " zn.";
+        r.st.textContent = stageText(key, u.text);
+        r.bar.firstChild.style.width = Math.max(20, Math.min(96, 20 + u.text.length / r.expected * 76)) + "%";
+        const t = previewTitles(u.text).slice(0, 5);
+        if(t.length !== r.shown){ r.prev.innerHTML = ""; t.forEach(x => r.prev.append(el("li", null, x))); r.shown = t.length; }
+      }
+    },
+    done(key){ const r = rows[key]; if(!r) return; r.fin = true; r.row.classList.add("ok"); r.st.textContent = "Gotowe ✓"; r.think.textContent = ""; r.bar.firstChild.style.width = "100%"; },
+    fail(key, msg){ const r = rows[key]; if(!r) return; r.fin = true; r.st.textContent = "Nie udało się: " + msg; r.st.style.color = "var(--rec)"; },
+    stop(){ clearInterval(iv); cancel.remove(); }
+  };
 }
 
 // ---------- generate ----------
@@ -685,9 +837,15 @@ $("generate").onclick = async () => {
   const scenes = i.shortScenes.map(t => t.split("\n").map(x => x.trim()).filter(Boolean)).filter(a => a.length);
   const p = { id: Date.now(), at: Date.now(), input: i, gen: null, shorts: [], choice: {} };
   const btn = $("generate"); btn.disabled = true; btn.textContent = "Generuję…";
-  const jobs = [callGemini([{ text: buildPrompt(i, p.id) }], true)];
-  if($("withShorts").checked) jobs.push(callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true));
+  const withSh = $("withShorts").checked;
+  const prog = showProgress($("output"), [["film", "Film: tytuły, opis, tagi i miniaturki", 2400], ...(withSh ? [["shorts", "Shortsy", 1600 * Math.max(1, scenes.length || 2)]] : [])],
+    "Zwykle trwa to 20–60 sekund. Tytuły pojawiają się tutaj na bieżąco, gdy AI je pisze.");
+  if(window.innerWidth < 860) $("output").scrollIntoView({ behavior:"smooth", block:"start" });
+  const track = (key, promise) => promise.then(v => { prog.done(key); return v; }, e => { prog.fail(key, e.message); throw e; });
+  const jobs = [track("film", callGemini([{ text: buildPrompt(i, p.id) }], true, undefined, u => prog.update("film", u)))];
+  if(withSh) jobs.push(track("shorts", callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true, undefined, u => prog.update("shorts", u))));
   const [g, sh] = await Promise.allSettled(jobs);
+  prog.stop();
   btn.disabled = false; btn.textContent = "Generuj";
   const errs = [];
   if(g.status === "fulfilled") p.gen = g.value; else errs.push("Film: " + g.reason.message);
@@ -955,8 +1113,9 @@ $("plGenerate").onclick = async () => {
   const i = { type:$("plType").value, place:$("plPlace").value.trim(), days:$("plDays").value, when:$("plWhen").value.trim(), details:$("plDetails").value.trim(), episodes:$("plEpisodes").value.trim() };
   if(!i.place){ $("plError").textContent = "Wpisz miejsce lub nazwę wyjazdu."; $("plError").hidden = false; return; }
   const btn = $("plGenerate"); btn.disabled = true; btn.textContent = "Generuję…";
-  try{ renderPlaylist(await callGemini([{ text: buildPlaylistPrompt(i) }], true)); }
-  catch(e){ $("plError").textContent = e.message; $("plError").hidden = false; }
+  const prog = showProgress($("plOut"), [["playlist", "Playlista: nazwy i opisy", 1200]]);
+  try{ const d = await callGemini([{ text: buildPlaylistPrompt(i) }], true, undefined, u => prog.update("playlist", u)); prog.stop(); renderPlaylist(d); }
+  catch(e){ prog.stop(); prog.fail("playlist", e.message); $("plError").textContent = e.message; $("plError").hidden = false; }
   finally{ btn.disabled = false; btn.textContent = "Generuj playlistę"; }
 };
 function renderPlaylist(d){
@@ -1010,7 +1169,7 @@ $("reviewBtn").onclick = async () => {
   const ex = getExamples().filter(e => e.thumb).slice(0,5).map(e => "- " + e.thumb).join("\n");
   const prompt = `Oceń miniaturkę YouTube kanału opisanego niżej. Bądź szczery, nie chwal na siłę i nie wymyślaj poprawek, jeśli coś jest dobre. Autorzy nie są ekspertami Photoshopa – podawaj proste, konkretne wskazówki (co przesunąć, zmniejszyć, powiększyć, rozjaśnić).\n\nPRZEWODNIK STYLU:\n${$("styleGuide").value.trim()}\n${ex ? "\nWcześniejsze napisy na miniaturkach (dla spójności serii):\n" + ex : ""}\n${$("thumbCtx").value.trim() ? "\nO filmie: " + $("thumbCtx").value.trim() : ""}\n\nOceń kompozycję, czytelność napisów (także w małym rozmiarze na telefonie), kontrast i kolory, proporcje tekstu do zdjęcia, spójność z serią.\nOdpowiedz po polsku, zwykłym tekstem bez markdownu i bez gwiazdek, w czterech częściach z nagłówkami:\nCO DZIAŁA\nCO NIE DZIAŁA\nCO POPRAWIĆ\nCO ZOSTAWIĆ W SPOKOJU\nNa koniec jedno zdanie: ogólna ocena od 1 do 10.`;
   try{
-    const txt = await callGemini([{ inline_data:{ mime_type: thumbData.mime, data: thumbData.b64 } }, { text: prompt }], false);
+    const txt = await callGemini([{ inline_data:{ mime_type: thumbData.mime, data: thumbData.b64 } }, { text: prompt }], false, undefined, u => { btn.textContent = u.text ? "Piszę ocenę… " + u.text.length + " zn." : "Oglądam miniaturkę…"; });
     $("thumbOut").innerHTML = "";
     $("thumbOut").append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Ocena miniaturki"), copyBtn(() => txt)), el("div", { class:"review" }, txt.replace(/\*\*/g,"").replace(/^#+\s*/gm,""))));
   }catch(e){ $("thumbError").textContent = e.message; $("thumbError").hidden = false; }
@@ -1105,7 +1264,13 @@ async function sendChat(text){
   chatBusy = true; $("chatSend").disabled = true; drawMessages(true);
   try{
     const contents = activeChat.messages.slice(-30).map(m => ({ role: m.role === "user" ? "user" : "model", parts:[{ text: m.text }] }));
-    const reply = await geminiRequest({ system_instruction:{ parts:[{ text: chatContext() }] }, contents, generationConfig:{ temperature: 0.8 } });
+    const pend = $("chatMsgs").querySelector(".pending");
+    const reply = await geminiStreamReq({ system_instruction:{ parts:[{ text: chatContext() }] }, contents, generationConfig:{ temperature: 0.8 } }, u => {
+      if(!pend) return;
+      if(u.text){ pend.classList.remove("pending"); pend.innerHTML = md(u.text); }
+      else if(u.thought){ pend.textContent = "💭 " + thoughtTitle(u.thought); }
+      const box = $("chatMsgs"); box.scrollTop = box.scrollHeight;
+    });
     activeChat.messages.push({ role:"model", text: reply }); activeChat.updatedAt = Date.now(); persistChat(); drawMessages();
   }catch(e){ drawMessages(false, e.message); }
   finally{ chatBusy = false; $("chatSend").disabled = false; }
