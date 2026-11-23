@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asystent kanału</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#DD2E28">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Asystent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#F6F8FA; --ink:#18202E; --muted:#5A6476;
+  --line:#D5DBE3; --rec:#DD2E28; --rec-soft:#FBE4E3; --ok:#1E7A4F; --ok-soft:#E2F3EA; --warn:#B4600B;
+  --short:#6C3BD1; --short-soft:#EEE7FB; --focus:#2F6FDB; color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#11151C; --surface:#1A1F29; --surface-2:#212734; --ink:#E7EBF1; --muted:#9AA4B5;
+    --line:#2E3646; --rec:#FF4A42; --rec-soft:#3A1E1F; --ok:#4CC08A; --ok-soft:#183026; --warn:#F0A24A;
+    --short:#A98BFF; --short-soft:#2A2340; --focus:#7AA8FF; color-scheme: dark;
+  }
+}
+*{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;margin:0;line-height:1.15}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px}
+header.top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.rec{display:inline-flex;align-items:center;gap:8px;background:var(--rec);color:#fff;font-weight:700;font-family:"Bricolage Grotesque",sans-serif;padding:6px 12px 6px 10px;border-radius:999px;font-size:14px;flex:none}
+.rec::before{content:"";width:10px;height:10px;border-radius:50%;background:#fff;animation:blink 1.6s steps(2) infinite}
+@media (prefers-reduced-motion:reduce){.rec::before{animation:none}}
+@keyframes blink{50%{opacity:.25}}
+h1{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-.02em}
+.sub{color:var(--muted);margin-top:4px;font-size:15px}
+.btn{border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:14px}
+.btn:hover{background:var(--surface-2)}
+.btn:disabled{opacity:.6;cursor:progress}
+.btn.primary{background:var(--rec);border-color:var(--rec);color:#fff;font-size:16px;padding:13px 18px;width:100%}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.small{padding:5px 10px;font-size:13px;border-radius:8px}
+.btn.picked{background:var(--ok);border-color:var(--ok);color:#fff}
+.btn.danger{color:var(--rec)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.panel h2{font-size:20px;font-weight:700;margin-bottom:14px}
+label{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+.hint{color:var(--muted);font-weight:400;font-size:13px}
+input[type=text],input[type=password],input[type=number],input[type=search],select,textarea{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical;min-height:90px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.note{font-size:13px;color:var(--muted);margin:8px 0 0}
+.note a{color:var(--focus)}
+details.settings{margin-bottom:18px}
+details.settings summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:10px}
+details.settings summary::-webkit-details-marker{display:none}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--warn);flex:none}
+.dot.ok{background:var(--ok)}
+.inline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inline > input,.inline > select{flex:1;min-width:180px}
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:20px;overflow-x:auto}
+.tab{background:none;border:none;padding:10px 16px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--ink);border-bottom-color:var(--rec)}
+.tab .n{font-size:12px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:0 7px;margin-left:4px}
+.view[hidden]{display:none}
+.grid{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:24px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.empty{border:2px dashed var(--line);border-radius:16px;padding:40px 24px;text-align:center;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);font-size:18px;margin-bottom:6px;font-family:"Bricolage Grotesque",sans-serif}
+.result{display:grid;gap:18px}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.block-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.block-head h3{font-size:18px;font-weight:700}
+.titles{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.titles li{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:start;padding:10px 12px;background:var(--surface-2);border-radius:10px;border:1px solid transparent}
+.titles li.chosen{border-color:var(--ok);background:var(--ok-soft)}
+.titles .t{font-weight:600}
+.titles .why{color:var(--muted);font-size:13px;margin-top:2px}
+.side{display:grid;gap:6px;justify-items:end}
+.count{font-size:12px;color:var(--muted);white-space:nowrap}
+.count.over{color:var(--rec);font-weight:600}
+.desc{width:100%;min-height:280px;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--surface-2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:14px;cursor:pointer}
+.chip.off{text-decoration:line-through;opacity:.5}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.thumb{border-radius:12px;padding:14px;background:var(--surface-2);border-left:4px solid var(--rec);display:grid;gap:8px;align-content:start}
+.thumb.chosen{background:var(--ok-soft);border-left-color:var(--ok)}
+.thumb .big{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;line-height:1.1}
+.thumb p{margin:0;font-size:14px;color:var(--muted)}
+.save-block{border:2px solid var(--ok);background:var(--ok-soft)}
+.error{background:var(--rec-soft);border:1px solid var(--rec);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:5}
+.toast.show{opacity:1}
+.list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.ex{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.ex .t{font-weight:600}
+.ex .meta{font-size:13px;color:var(--muted);margin-top:4px;white-space:pre-line}
+.ex-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.review{white-space:pre-wrap;line-height:1.6}
+.preview{max-width:100%;border-radius:12px;border:1px solid var(--line);margin-top:12px;display:block}
+.stack{display:grid;gap:18px}
+.section-title{display:flex;align-items:center;gap:10px;margin:10px 0 0}
+.section-title h2{font-size:24px;font-weight:800}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+.pill.short{background:var(--short-soft);border-color:var(--short);color:var(--short)}
+.short-card{border-left:5px solid var(--short)}
+.short-in{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.short-in .inline{justify-content:space-between}
+.scenes{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.scene{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.scene .num{width:28px;height:28px;border-radius:50%;background:var(--short);color:#fff;font-weight:700;font-size:13px;display:grid;place-items:center}
+.scene .what{font-size:13px;color:var(--muted);margin-bottom:4px}
+.alts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.alt{background:var(--short-soft);border:1px solid var(--short);border-radius:999px;padding:4px 10px;font-size:14px;cursor:pointer}
+.hist-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.hist-item .t{font-weight:600}
+.hist-item time{font-size:12px;color:var(--muted)}
+.hist-item .pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chat-layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:860px){.chat-layout{grid-template-columns:1fr}}
+.chat-side .list{margin-top:14px;gap:6px;max-height:60vh;overflow:auto}
+.chat-item{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer}
+.chat-item.active{border-color:var(--rec)}
+.chat-item .t{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-item time{font-size:12px;color:var(--muted)}
+.chat-item button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+.chat-item button:hover{color:var(--rec)}
+.chat-main{display:grid;gap:12px}
+.chat-msgs{min-height:320px;max-height:62vh;overflow-y:auto;display:grid;gap:12px;align-content:start;padding-right:4px}
+.msg{max-width:88%;padding:10px 14px;border-radius:14px;line-height:1.55}
+.msg.user{justify-self:end;background:var(--rec);color:#fff;border-bottom-right-radius:4px;white-space:pre-wrap}
+.msg.model{justify-self:start;background:var(--surface-2);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg.model p{margin:0 0 8px}.msg.model p:last-child{margin:0}
+.msg.model ul,.msg.model ol{margin:4px 0 8px;padding-left:22px}
+.msg .tools{margin-top:6px}
+.msg.pending{color:var(--muted);font-style:italic}
+.chat-input{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.chat-input textarea{min-height:56px;max-height:200px}
+.chat-input .btn.primary{width:auto}
+.starters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+.viewing{background:var(--short-soft);border:1px solid var(--short);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="rec">REC</span>
+    <div>
+      <h1>Asystent kanału</h1>
+      <div class="sub">Tytuły, opisy, tagi, miniaturki i shortsy w Waszym stylu</div>
+      <div class="sub" id="syncBadge" hidden style="font-size:13px"></div>
+    </div>
+  </header>
+
+  <details class="settings panel" id="settings">
+    <summary><span class="dot" id="keyDot"></span><span id="keyStatus">Ustawienia: dodaj klucz API Gemini</span></summary>
+    <label for="apiKey">Klucz API Gemini <span class="hint">(darmowy, z Google AI Studio)</span></label>
+    <div class="inline">
+      <input type="password" id="apiKey" placeholder="Wklej klucz…" autocomplete="off">
+      <button class="btn" id="saveKey" type="button">Zapisz klucz</button>
+    </div>
+    <p class="note">Klucz utworzysz na <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Zostaje tylko w tej przeglądarce.</p>
+    <label for="model">Model</label>
+    <div class="inline">
+      <select id="model">
+        <option value="gemini-flash-latest">gemini-flash-latest (zalecany)</option>
+        <option value="gemini-flash-lite-latest">gemini-flash-lite-latest (szybszy, większy limit)</option>
+      </select>
+      <button class="btn" id="loadModels" type="button">Pobierz listę</button>
+    </div>
+    <p class="note">Jeśli model przestanie działać, kliknij „Pobierz listę” i wybierz inny z nazwą „flash”.</p>
+    <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
+    <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
+    <div class="inline" style="margin-top:10px"><button class="btn" id="saveFooter" type="button">Zapisz stopkę</button></div>
+    <label>Kopia zapasowa <span class="hint">(style, wzory, historia, wybory, stopka – bez klucza)</span></label>
+    <div class="inline">
+      <button class="btn" id="exportAll" type="button">Pobierz kopię</button>
+      <button class="btn" id="importBtn" type="button">Wczytaj kopię</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+    <p class="note">Rób kopię co kilka filmów, jeśli nie używasz synchronizacji.</p>
+    <label for="syncToken">Synchronizacja między urządzeniami <span class="hint">(opcjonalnie, przez darmowe konto GitHub)</span></label>
+    <div class="inline">
+      <input type="password" id="syncToken" placeholder="Token GitHub z uprawnieniem do gistów" autocomplete="off">
+      <button class="btn" id="syncConnect" type="button">Połącz</button>
+    </div>
+    <div class="inline" style="margin-top:8px">
+      <span class="note" id="syncStatus" style="margin:0">Synchronizacja wyłączona.</span>
+      <button class="btn small" id="syncNowBtn" type="button" hidden>Synchronizuj teraz</button>
+      <button class="btn small danger" id="syncOff" type="button" hidden>Rozłącz</button>
+    </div>
+    <p class="note">Synchronizowane są style, wzory, historia, czaty i stopka. Klucz Gemini wpisujesz osobno na każdym urządzeniu.</p>
+  </details>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-view="gen" aria-selected="true">Nowy film</button>
+    <button class="tab" role="tab" data-view="history" aria-selected="false">Historia <span class="n" id="histCount">0</span></button>
+    <button class="tab" role="tab" data-view="chat" aria-selected="false">Czat AI</button>
+    <button class="tab" role="tab" data-view="playlist" aria-selected="false">Playlisty</button>
+    <button class="tab" role="tab" data-view="examples" aria-selected="false">Wzory <span class="n" id="exCount">0</span></button>
+    <button class="tab" role="tab" data-view="style" aria-selected="false">Styl kanału</button>
+    <button class="tab" role="tab" data-view="thumb" aria-selected="false">Oceń miniaturkę</button>
+  </nav>
+
+  <!-- NEW VIDEO -->
+  <div class="view" id="view-gen">
+    <div class="grid">
+      <section class="panel">
+        <h2>O czym jest film?</h2>
+        <label for="format">Format</label>
+        <select id="format">
+          <option value="weekend">Weekendowy wypad („… | Weekend w …”)</option>
+          <option value="series">Odcinek serii (kilka dni)</option>
+          <option value="other">Inny</option>
+        </select>
+        <div class="row">
+          <div>
+            <label for="place" id="placeLabel">Miejsce</label>
+            <input type="text" id="place">
+          </div>
+          <div id="epWrap" hidden>
+            <label for="episode">Dzień / odcinek</label>
+            <input type="number" id="episode" min="1" value="1">
+          </div>
+        </div>
+        <label for="details">Co się dzieje w filmie <span class="hint">(po kolei: miejsca, jedzenie, nocleg, ciekawostki)</span></label>
+        <textarea id="details" placeholder="Start w Brennej, wejście na Błatnią, burgery w Ustroniu…"></textarea>
+        <label for="chapters">Rozdziały <span class="hint">(opcjonalnie, np. 0:00 Start)</span></label>
+        <textarea id="chapters" style="min-height:70px" placeholder="0:00 Start&#10;1:20 Błatnia"></textarea>
+        <label for="keywords">Słowa kluczowe <span class="hint">(opcjonalnie)</span></label>
+        <input type="text" id="keywords" placeholder="Beskidy, Błatnia, Ustroń">
+
+        <div class="section-title" style="margin-top:22px"><span class="pill short">Shorts</span><h3 style="font-size:17px">Shortsy z tego filmu</h3></div>
+        <p class="note">Dla każdego shorta wpisz kolejność ujęć, każde w nowej linii. Zostaw puste, a AI samo zaproponuje 2 shortsy z najciekawszych momentów.</p>
+        <div id="shortInputs"></div>
+        <div class="inline" style="margin-top:10px">
+          <button class="btn small" id="addShort" type="button">+ Dodaj shorta</button>
+          <label style="margin:0;font-weight:400;font-size:14px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="withShorts" checked> Generuj shortsy</label>
+        </div>
+
+        <div style="margin-top:18px"><button class="btn primary" id="generate" type="button">Generuj</button></div>
+        <div id="error" class="error" hidden></div>
+      </section>
+      <section id="output" aria-live="polite">
+        <div class="empty"><strong>Tu pojawią się propozycje</strong>Opisz film po lewej i kliknij „Generuj”. Wszystko, co wybierzesz i poprawisz, zapisuje się w zakładce Historia.</div>
+      </section>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="view" id="view-chat" hidden>
+    <div class="chat-layout">
+      <aside class="panel chat-side">
+        <button class="btn primary" id="newChat" type="button">Nowy czat</button>
+        <ul class="list" id="chatList"></ul>
+      </aside>
+      <section class="panel chat-main">
+        <div class="chat-msgs" id="chatMsgs" aria-live="polite"></div>
+        <div class="chat-input">
+          <textarea id="chatInput" placeholder="Zapytaj o cokolwiek związanego z kanałem…" aria-label="Wiadomość"></textarea>
+          <button class="btn primary" id="chatSend" type="button">Wyślij</button>
+        </div>
+        <p class="note" style="margin:0">Enter wysyła, Shift+Enter to nowa linia. Czat zna Wasz styl, wzory, playlisty i ostatnie projekty z aplikacji.</p>
+      </section>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="view" id="view-history" hidden>
+    <section class="panel">
+      <h2>Historia filmów</h2>
+      <input type="search" id="histSearch" placeholder="Szukaj po miejscu lub tytule…" aria-label="Szukaj w historii">
+      <ul class="list" id="histList" style="margin-top:14px"></ul>
+      <div class="empty" id="histEmpty" style="padding:24px;margin-top:14px">Nie ma jeszcze historii. Każde generowanie trafi tutaj razem z Twoimi wyborami.</div>
+    </section>
+  </div>
+
+  <!-- PLAYLIST -->
+  <div class="view" id="view-playlist" hidden>
+    <div class="grid">
+      <section class="panel">
+        <h2>Nowa playlista</h2>
+        <label for="plType">Rodzaj</label>
+        <select id="plType">
+          <option value="series">Seria z jednego wyjazdu (kilka odcinków)</option>
+          <option value="weekend">Zbiór weekendowych wypadów („Weekend w…”)</option>
+        </select>
+        <label for="plPlace">Miejsce / wyjazd</label>
+        <input type="text" id="plPlace" placeholder="np. Berlin">
+        <div class="row">
+          <div><label for="plDays">Dni / odcinki</label><input type="number" id="plDays" min="1" value="3"></div>
+          <div><label for="plWhen">Kiedy <span class="hint">(opcjonalnie)</span></label><input type="text" id="plWhen" placeholder="np. majówka"></div>
+        </div>
+        <label for="plDetails">Co łączy cały wyjazd</label>
+        <textarea id="plDetails" placeholder="Zwiedzanie miasta, street food, pałace…"></textarea>
+        <label for="plEpisodes">Tytuły odcinków <span class="hint">(opcjonalnie)</span></label>
+        <textarea id="plEpisodes" style="min-height:70px"></textarea>
+        <div style="margin-top:18px"><button class="btn primary" id="plGenerate" type="button">Generuj playlistę</button></div>
+        <div id="plError" class="error" hidden></div>
+      </section>
+      <div class="stack">
+        <section id="plOut" aria-live="polite">
+          <div class="empty"><strong>Tu pojawią się propozycje</strong>Nazwy playlisty i krótkie opisy całego wyjazdu.</div>
+        </section>
+        <section class="panel">
+          <h2>Wasze playlisty</h2>
+          <p class="note" style="margin-top:0">AI wzoruje się na 6 najnowszych.</p>
+          <label for="plExName">Nazwa</label>
+          <input type="text" id="plExName">
+          <label for="plExDesc">Opis</label>
+          <textarea id="plExDesc" style="min-height:80px"></textarea>
+          <div style="margin-top:12px"><button class="btn" id="plExSave" type="button">Dodaj playlistę</button></div>
+          <ul class="list" id="plList" style="margin-top:16px"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div class="view" id="view-examples" hidden>
+    <div class="grid">
+      <div class="stack">
+        <section class="panel">
+          <h2 id="exFormTitle">Dodaj wzór filmu</h2>
+          <label for="exTitle">Tytuł</label><input type="text" id="exTitle">
+          <label for="exThumb">Tekst na miniaturce</label><input type="text" id="exThumb" placeholder="np. Kraków / TEGO SIĘ NIE SPODZIEWALIŚMY / Dzień 1">
+          <label for="exDesc">Opis</label><textarea id="exDesc" style="min-height:180px"></textarea>
+          <label for="exTags">Tagi <span class="hint">(po przecinku)</span></label><textarea id="exTags" style="min-height:70px"></textarea>
+          <div class="inline" style="margin-top:14px">
+            <button class="btn" id="saveExample" type="button">Zapisz wzór</button>
+            <button class="btn" id="cancelEdit" type="button" hidden>Anuluj edycję</button>
+          </div>
+        </section>
+        <section class="panel">
+          <h2 id="shFormTitle">Dodaj wzór shorta</h2>
+          <label for="shExTitle">Tytuł</label><input type="text" id="shExTitle">
+          <label for="shExDesc">Opis z hashtagami</label><textarea id="shExDesc" style="min-height:110px"></textarea>
+          <label for="shExTexts">Napisy do scen <span class="hint">(każdy w nowej linii)</span></label><textarea id="shExTexts" style="min-height:110px"></textarea>
+          <div class="inline" style="margin-top:12px"><button class="btn" id="shExSave" type="button">Zapisz wzór shorta</button><button class="btn" id="shCancel" type="button" hidden>Anuluj edycję</button></div>
+        </section>
+      </div>
+      <div class="stack">
+        <section class="panel">
+          <h2>Wzory filmów</h2>
+          <p class="note" style="margin-top:0">Do AI trafia 5 najnowszych.</p>
+          <ul class="list" id="exList" style="margin-top:12px"></ul>
+          <div id="prefsInfo" class="note"></div>
+          <button class="btn small danger" id="clearPrefs" type="button" style="margin-top:8px" hidden>Wyczyść zapamiętane wybory</button>
+        </section>
+        <section class="panel">
+          <h2>Wzory shortsów</h2>
+          <p class="note" style="margin-top:0">Do AI trafiają 4 najnowsze.</p>
+          <ul class="list" id="shList" style="margin-top:12px"></ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- STYLE -->
+  <div class="view" id="view-style" hidden>
+    <div class="stack">
+      <section class="panel">
+        <h2>Przewodnik stylu: filmy, opisy, tagi, playlisty</h2>
+        <p class="note" style="margin-top:0">Trafia do AI przy każdym generowaniu. Pisz zasady krótko i konkretnie.</p>
+        <textarea id="styleGuide" style="min-height:480px;margin-top:12px"></textarea>
+        <div class="inline" style="margin-top:10px">
+          <button class="btn" id="saveStyle" type="button">Zapisz styl</button>
+          <button class="btn" id="resetStyle" type="button">Przywróć domyślny</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Przewodnik stylu: shortsy</h2>
+        <textarea id="shortsGuide" style="min-height:420px"></textarea>
+        <div class="inline" style="margin-top:10px">
+          <button class="btn" id="saveShortsStyle" type="button">Zapisz styl shortsów</button>
+          <button class="btn" id="resetShortsStyle" type="button">Przywróć domyślny</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- THUMB REVIEW -->
+  <div class="view" id="view-thumb" hidden>
+    <div class="grid">
+      <section class="panel">
+        <h2>Oceń miniaturkę</h2>
+        <label for="thumbFile">Plik miniaturki <span class="hint">(JPG lub PNG)</span></label>
+        <input type="file" id="thumbFile" accept="image/png,image/jpeg,image/webp">
+        <img id="thumbPreview" class="preview" alt="Podgląd miniaturki" hidden>
+        <label for="thumbCtx">O czym jest film i jaki to odcinek <span class="hint">(opcjonalnie)</span></label>
+        <textarea id="thumbCtx" style="min-height:70px"></textarea>
+        <div style="margin-top:16px"><button class="btn primary" id="reviewBtn" type="button">Oceń</button></div>
+        <div id="thumbError" class="error" hidden></div>
+      </section>
+      <section id="thumbOut" aria-live="polite">
+        <div class="empty"><strong>Tu pojawi się ocena</strong>Co działa, co nie działa, co poprawić i co zostawić w spokoju.</div>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const DEFAULT_STYLE = "KANAŁ: [Opisz tutaj swój kanał: kto go prowadzi, jakie filmy nagrywasz, jaki ma klimat.]\n\nJĘZYK I TON:\n- Luźno i naturalnie. Ma zachęcać i budzić ciekawość, ale bez cringe'u i bez nachalności.\n- Unikaj zwrotów marketingowych i pompatycznych („niezapomniana przygoda czeka na Was”, „magiczne miejsce”, „nie uwierzycie, co…”).\n- Konkret zamiast przymiotników: nazwa miejsca, co tam robicie, co z tego wynika.\n\nTYTUŁY: haczyk na początku, 2–3 konkretne elementy filmu, bez taniego clickbaitu, najważniejsze słowa w pierwszych ok. 50 znakach.\n\nOPIS: krótki wstęp z głównym miejscem w pierwszym zdaniu, najważniejsze punkty po kolei bez streszczania każdej minuty, jedno zakończenie, CTA z pytaniem wynikającym z filmu, 3 konkretne hashtagi na końcu. 3–4 emotki w całym opisie.\n\nTAGI: łącznie 200–300 znaków: nazwa kanału, główne miejsce, frazy wyszukiwane przez widzów, atrakcje z filmu, nazwa angielska, 1–2 szersze hasła.\n\nMINIATURKI: krótkie hasło 2–4 słowa + nazwa miejsca, czytelne na telefonie, spójne w serii.\n\nPLAYLISTY: krótka nazwa z miejscem i klimatem wyjazdu, opis przedstawia cały wyjazd, nie streszcza odcinków.\n\nWSPÓŁPRACA: szczerość ponad przytakiwanie. Nie poprawiaj niczego na siłę.";
+const DEFAULT_SHORTS = "CEL SHORTSÓW: zatrzymać widza podczas przewijania, zaciekawić konkretnym miejscem lub ciekawostką i zachęcić do obejrzenia pełnego vloga. Nie opisujemy, co robimy – piszemy tak, żeby widz chciał zobaczyć, co będzie za chwilę.\n\nTYTUŁ: krótki, chwytliwy, konkretny, zgodny z treścią, inny niż poprzednie. Mocniejszy baiting z głową, 1–2 emotki.\n\nOPIS: 2–3 zdania: ciekawy wstęp, co dzieje się w shorcie, zaproszenie na pełny vlog. Na końcu dokładnie 5 hashtagów małymi literami.\n\nNAPISY DO SCEN: jeden krótki napis na ujęcie (3–8 słów), buduje ciekawość, nie opisuje obrazu dosłownie, każda scena w innym rytmie. Pierwszy napis to mocny hook, ostatni zaprasza na pełny vlog.\n\nUNIKAJ: „skradło nasze serca”, „niezapomniana przygoda”, „zapiera dech w piersiach”, „efekt WOW”.";
+const SEED_EX = [];
+const SEED_PL = [];
+const SEED_SH = [];
+const DAY1_FIXED = "";
+(function(){
+const $ = id => document.getElementById(id);
+const API = "https://generativelanguage.googleapis.com/v1beta";
+const SYNC_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats","vg_deleted"];
+const MERGE_KEYS = ["vg_projects","vg_chats","vg_examples","vg_playlists","vg_shorts"];
+var applyingRemote = false;
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } },
+  set(k,v){
+    try{ localStorage.setItem(k,v); }catch(e){ toast("Brak miejsca w pamięci przeglądarki – usuń stare projekty z historii"); }
+    if(!applyingRemote && SYNC_KEYS.includes(k)) onLocalChange();
+  },
+  getJ(k,d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+  setJ(k,v){
+    if(!applyingRemote && MERGE_KEYS.includes(k) && Array.isArray(v)){
+      const now = new Set(v.map(x => x.id));
+      const gone = store.getJ(k, []).filter(x => !now.has(x.id)).map(x => k + ":" + x.id);
+      if(gone.length){ const d = store.getJ("vg_deleted", []); try{ localStorage.setItem("vg_deleted", JSON.stringify([...new Set([...d, ...gone])].slice(-3000))); }catch(e){} }
+    }
+    store.set(k, JSON.stringify(v));
+  }
+};
+
+// ---------- upgrades & seeds ----------
+if(store.get("vg_style_ver","1") !== "3"){ store.set("vg_style", DEFAULT_STYLE); store.set("vg_style_ver","3"); }
+if(store.get("vg_shorts_style", null) === null) store.set("vg_shorts_style", DEFAULT_SHORTS);
+if(store.get("vg_seeded","") !== "3"){
+  const ex = store.getJ("vg_examples", []), pl = store.getJ("vg_playlists", []), sh = store.getJ("vg_shorts", []);
+  const exT = new Set(ex.map(e => e.title)), plT = new Set(pl.map(e => e.name));
+  if(SEED_EX[2]) ex.forEach(e => { if(e.title === SEED_EX[2].title) e.desc = DAY1_FIXED; });
+  store.setJ("vg_examples", [...ex, ...SEED_EX.filter(e => !exT.has(e.title))]);
+  store.setJ("vg_playlists", [...pl, ...SEED_PL.filter(e => !plT.has(e.name))]);
+  if(!sh.length) store.setJ("vg_shorts", SEED_SH);
+  store.set("vg_seeded","3");
+}
+if(store.get("vg_projects", null) === null){
+  const old = store.getJ("vg_history", []);
+  store.setJ("vg_projects", old.map((h,i) => ({ id: h.at || Date.now()-i, at: h.at || Date.now(), input:{ place:h.topic, format:"other", details:"" }, gen:h.data, shorts:[], choice:{} })));
+}
+
+// ---------- settings ----------
+$("apiKey").value = store.get("vg_key","");
+$("footer").value = store.get("vg_footer","");
+$("styleGuide").value = store.get("vg_style", DEFAULT_STYLE);
+$("shortsGuide").value = store.get("vg_shorts_style", DEFAULT_SHORTS);
+const savedModel = store.get("vg_model","gemini-flash-latest"); ensureOption(savedModel); $("model").value = savedModel;
+
+function ensureOption(name){ const sel = $("model"); if(![...sel.options].some(o => o.value === name)){ const o = document.createElement("option"); o.value = o.textContent = name; sel.appendChild(o); } }
+function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia: klucz API zapisany" : "Ustawienia: dodaj klucz API Gemini"; }
+refreshKey(); if(!$("apiKey").value) $("settings").open = true;
+$("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); refreshKey(); toast("Klucz zapisany"); };
+$("model").onchange = () => store.set("vg_model", $("model").value);
+$("saveFooter").onclick = () => { store.set("vg_footer", $("footer").value); toast("Stopka zapisana"); };
+$("saveStyle").onclick = () => { store.set("vg_style", $("styleGuide").value); toast("Styl zapisany"); };
+$("resetStyle").onclick = () => { if(confirm("Przywrócić domyślny przewodnik? Twoje zmiany zostaną nadpisane.")){ $("styleGuide").value = DEFAULT_STYLE; store.set("vg_style", DEFAULT_STYLE); toast("Przywrócono"); } };
+$("saveShortsStyle").onclick = () => { store.set("vg_shorts_style", $("shortsGuide").value); toast("Styl shortsów zapisany"); };
+$("resetShortsStyle").onclick = () => { if(confirm("Przywrócić domyślny styl shortsów?")){ $("shortsGuide").value = DEFAULT_SHORTS; store.set("vg_shorts_style", DEFAULT_SHORTS); toast("Przywrócono"); } };
+
+$("loadModels").onclick = async () => {
+  const key = $("apiKey").value.trim(); if(!key){ alert("Najpierw wklej klucz API."); return; }
+  $("loadModels").disabled = true;
+  try{
+    const r = await fetch(API + "/models?pageSize=200", { headers:{ "x-goog-api-key": key } });
+    const j = await r.json(); if(!r.ok) throw new Error(j.error?.message || r.status);
+    const names = (j.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes("generateContent") && /gemini/i.test(m.name)).map(m => m.name.replace(/^models\//,""));
+    names.forEach(ensureOption); toast("Dodano " + names.length + " modeli");
+  }catch(e){ alert("Nie udało się pobrać listy: " + e.message); }
+  $("loadModels").disabled = false;
+};
+
+const BACKUP_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats"];
+$("exportAll").onclick = () => {
+  const data = { version:3 }; BACKUP_KEYS.forEach(k => data[k] = store.get(k, null));
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type:"application/json" }));
+  a.download = "asystent-kanalu-kopia-" + new Date().toISOString().slice(0,10) + ".json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$("importBtn").onclick = () => $("importFile").click();
+$("importFile").onchange = async e => {
+  const f = e.target.files[0]; if(!f) return;
+  try{
+    const d = JSON.parse(await f.text());
+    if(d.version >= 3){ BACKUP_KEYS.forEach(k => { if(d[k] !== null && d[k] !== undefined) store.set(k, d[k]); }); }
+    else {
+      if(d.style) store.set("vg_style", d.style);
+      if(d.footer !== undefined) store.set("vg_footer", d.footer);
+      if(Array.isArray(d.examples)) store.setJ("vg_examples", d.examples);
+      if(Array.isArray(d.playlists)) store.setJ("vg_playlists", d.playlists);
+      if(d.prefs) store.setJ("vg_prefs", d.prefs);
+    }
+    location.reload();
+  }catch(err){ alert("To nie jest poprawny plik kopii."); }
+};
+
+// ---------- tabs ----------
+function showTab(name){
+  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x.dataset.view === name));
+  document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + name);
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => showTab(t.dataset.view));
+
+function syncFormat(){
+  const f = $("format").value; $("epWrap").hidden = f !== "series";
+  $("placeLabel").textContent = f === "weekend" ? "Weekend w…" : f === "series" ? "Miasto (jak w tytule)" : "Miejsce lub temat";
+  $("place").placeholder = f === "weekend" ? "np. Beskidach" : f === "series" ? "np. Berlin" : "np. Zakopane";
+}
+$("format").onchange = syncFormat; syncFormat();
+
+// shorts inputs
+function addShortInput(val){
+  const n = $("shortInputs").children.length + 1;
+  const ta = document.createElement("textarea"); ta.style.minHeight = "90px"; ta.value = val || "";
+  ta.placeholder = "Kościół\nŚcieżka w śniegu\nBurgerownia\nMała Syrenka\nZakończenie";
+  ta.setAttribute("aria-label", "Ujęcia shorta " + n);
+  const del = el("button", { class:"btn small danger", type:"button", onclick: () => { box.remove(); renumber(); } }, "Usuń");
+  const box = el("div", { class:"short-in" }, el("div", { class:"inline" }, el("strong", { class:"lbl" }, "Short " + n), del), ta);
+  $("shortInputs").append(box);
+}
+function renumber(){ [...$("shortInputs").children].forEach((b,i) => b.querySelector(".lbl").textContent = "Short " + (i+1)); }
+$("addShort").onclick = () => addShortInput("");
+addShortInput("");
+
+// ---------- data ----------
+const getExamples = () => store.getJ("vg_examples", []);
+const getPrefs = () => store.getJ("vg_prefs", {});
+const getPlaylists = () => store.getJ("vg_playlists", []);
+const getShortPatterns = () => store.getJ("vg_shorts", []);
+const getProjects = () => store.getJ("vg_projects", []);
+function recordChoice(kind, chosen, others){
+  const p = getPrefs();
+  p[kind] = [{ chosen, rejected: others.filter(o => o && o !== chosen) }, ...(p[kind]||[]).filter(x => x.chosen !== chosen)].slice(0,12);
+  store.setJ("vg_prefs", p); drawPrefsInfo();
+}
+let saveTimer;
+function saveProject(p, now){
+  p.updatedAt = Date.now();
+  const write = () => {
+    syncPatterns(p);
+    const all = getProjects().filter(x => x.id !== p.id); all.unshift(JSON.parse(JSON.stringify(p, (k, v) => typeof v === "function" ? undefined : v)));
+    all.sort((a,b) => b.at - a.at);
+    store.setJ("vg_projects", all.slice(0,80)); drawHistory();
+  };
+  clearTimeout(saveTimer); if(now) write(); else saveTimer = setTimeout(write, 400);
+}
+function projectTags(p){ return ((p.gen?.tags)||[]).map(t => String(t).replace(/^#/,"").trim()).filter(t => !(p.tagsOff||[]).includes(t)).join(", "); }
+function syncPatterns(p){
+  let chEx = false, chSh = false;
+  if(p.gen && p.choice?.title && !p.excluded){
+    let ex = getExamples();
+    if(p.exampleId && !ex.some(e => e.id === p.exampleId)){ p.excluded = true; p.exampleId = undefined; }
+    else {
+      const item = { id: p.exampleId || Date.now(), title: (p.finalTitle || p.choice.title).trim(), thumb: (p.finalThumb || p.choice.thumb || "").trim(), desc: stripFooter(p.desc ?? p.gen.description ?? ""), tags: projectTags(p) };
+      ex = p.exampleId ? ex.map(e => e.id === p.exampleId ? item : e) : [item, ...ex];
+      p.exampleId = item.id; p.saved = true; store.setJ("vg_examples", ex); chEx = true;
+    }
+  }
+  (p.shorts||[]).forEach((sh, i) => {
+    if(!sh.chosenTitle || sh.excluded) return;
+    let pats = getShortPatterns();
+    if(sh.patternId && !pats.some(x => x.id === sh.patternId)){ sh.excluded = true; sh.patternId = undefined; return; }
+    const item = { id: sh.patternId || (Date.now() + i + 1), title: sh.chosenTitle, desc: sh.descEdited || "", texts: (sh.scenes||[]).map(x => x.text), label: projectLabel(p) };
+    pats = sh.patternId ? pats.map(x => x.id === sh.patternId ? item : x) : [item, ...pats];
+    sh.patternId = item.id; sh.saved = true; store.setJ("vg_shorts", pats); chSh = true;
+  });
+  if(chEx) drawExamples(); if(chSh) drawShortPatterns();
+}
+const choicesBlock = (kind, label) => (getPrefs()[kind]||[]).slice(0,8).map(x => `${label} wybrany: „${x.chosen}”${x.rejected.length ? " | odrzucone: " + x.rejected.map(r => "„"+r+"”").join(", ") : ""}`).join("\n");
+function seriesSiblings(i, currentId){
+  if(i.format !== "series" || !i.place) return [];
+  return getProjects().filter(p => p.id !== currentId && p.input?.format === "series" && (p.input.place||"").toLowerCase() === i.place.toLowerCase());
+}
+
+// ---------- prompts ----------
+function buildPrompt(i, pid){
+  const ex = getExamples().slice(0,5);
+  let s = `Jesteś kreatywnym partnerem kanału YouTube. Trzymaj się ściśle przewodnika stylu i wzorów.\n\n=== PRZEWODNIK STYLU ===\n${$("styleGuide").value.trim()}\n`;
+  if(ex.length){
+    s += `\n=== WZORY: OPUBLIKOWANE MATERIAŁY AUTORÓW (naśladuj ton, długość, budowę i liczbę emotek; nie kopiuj treści; jeśli wzór łamie zasadę z przewodnika, ważniejszy jest przewodnik) ===\n`;
+    ex.forEach((e,n) => { s += `\n--- Wzór ${n+1} ---\nTytuł: ${e.title}\n${e.thumb ? "Tekst na miniaturce: " + e.thumb + "\n" : ""}${e.desc ? "Opis:\n" + e.desc.slice(0,1800) + "\n" : ""}${e.tags ? "Tagi: " + e.tags + "\n" : ""}`; });
+  }
+  const ch = [choicesBlock("titles","Tytuł"), choicesBlock("thumbs","Miniaturka")].filter(Boolean).join("\n");
+  if(ch) s += `\n=== WCZEŚNIEJSZE WYBORY AUTORÓW (wyciągnij wnioski, co im się podoba) ===\n${ch}\n`;
+  const sib = seriesSiblings(i, pid).map(p => `Dzień ${p.input.episode}: ${p.finalTitle || p.choice?.title || ""}${p.finalThumb ? " | miniaturka: " + p.finalThumb : ""}`).filter(x => !/: $/.test(x));
+  if(sib.length) s += `\n=== WCZEŚNIEJSZE ODCINKI TEJ SERII (zachowaj spójność, nie powtarzaj haczyków) ===\n${sib.join("\n")}\n`;
+  const fmt = i.format === "weekend" ? `Weekendowy wypad. Każdy tytuł w formacie „[haczyk] | Weekend w ${i.place || "[miejsce]"}”.`
+    : i.format === "series" ? `Odcinek serii z wyjazdu „${i.place}”, dzień ${i.episode}. Każdy tytuł w formacie „[haczyk]! [flaga kraju, jeśli zagranica] [dopowiedzenie] | ${i.place} Dzień ${i.episode}”, jak we wzorach. Miniaturka spójna z poprzednimi odcinkami.`
+    : `Inny format. Miejsce/temat: ${i.place || "(nie podano)"}.`;
+  s += `\n=== NOWY FILM ===\nFormat: ${fmt}\nCo się dzieje w filmie: ${i.details || "(brak szczegółów)"}\nSłowa kluczowe: ${i.keywords || "(dobierz sam)"}\n${i.chapters ? "Rozdziały od autorów – wstaw je dokładnie, z tymi samymi czasami, pod nagłówkiem „Rozdziały” przed CTA:\n" + i.chapters : "Nie wymyślaj rozdziałów ani znaczników czasu."}
+
+Nie wymyślaj atrakcji ani zdarzeń, których nie ma w opisie filmu. Teksty mają być ciekawe i zachęcające, ale naturalne – bez cringe'u i bez nachalności.
+Przygotuj: 5 naprawdę różnych tytułów (każdy maks. 100 znaków, przy każdym jedno krótkie zdanie, czemu działa), jeden gotowy opis zgodny z przewodnikiem (z jednym zakończeniem, CTA i 3 hashtagami, bez stopki), tagi łącznie 200–300 znaków według kolejności z przewodnika, 3 pomysły na miniaturkę (napis z zachowaniem wielkości liter + krótki opis kadru i układu).
+
+Zwróć WYŁĄCZNIE JSON:
+{"titles":[{"text":"","why":""}],"description":"","tags":[""],"thumbnails":[{"text":"","scene":""}]}`;
+  return s;
+}
+
+function buildShortsPrompt(i, scenesList, pid){
+  const pats = getShortPatterns().slice(0,4);
+  let s = `Jesteś kreatywnym partnerem kanału YouTube i przygotowujesz shortsy wycięte z długiego vloga. Trzymaj się przewodnika shortsów.\n\n=== OGÓLNY STYL KANAŁU (skrót) ===\n${$("styleGuide").value.trim().split("\n\n").slice(0,2).join("\n\n")}\n\n=== PRZEWODNIK SHORTSÓW ===\n${$("shortsGuide").value.trim()}\n`;
+  if(pats.length){
+    s += `\n=== WZORY ZAAKCEPTOWANYCH SHORTSÓW ===\n`;
+    pats.forEach((p,n) => s += `\n--- Wzór ${n+1}${p.label ? " (" + p.label + ")" : ""} ---\n${p.title ? "Tytuł: " + p.title + "\n" : ""}Opis: ${p.desc}\nNapisy:\n${(p.texts||[]).map((t,k) => (k+1) + ". " + t).join("\n")}\n`);
+  }
+  const ch = choicesBlock("shortTitles","Tytuł shorta");
+  if(ch) s += `\n=== WCZEŚNIEJSZE WYBORY AUTORÓW ===\n${ch}\n`;
+  const prev = [...getProjects().filter(p => p.id !== pid).flatMap(p => (p.shorts||[]).map(x => x.chosenTitle).filter(Boolean)).slice(0,10), ...pats.map(p => p.title).filter(Boolean)];
+  if(prev.length) s += `\n=== WCZEŚNIEJSZE TYTUŁY SHORTSÓW (nie powtarzaj ich schematów) ===\n${prev.join("\n")}\n`;
+  s += `\n=== DŁUGI VLOG (kontekst) ===\n${i.format === "weekend" ? "Weekend w " + i.place : i.format === "series" ? i.place + " Dzień " + i.episode : i.place}\nCo się dzieje: ${i.details || "(brak szczegółów)"}\n`;
+  if(scenesList.length){
+    s += `\n=== SHORTSY DO PRZYGOTOWANIA ===\n`;
+    scenesList.forEach((sc,n) => s += `\nShort ${n+1} – kolejność ujęć:\n${sc.map((x,k) => (k+1) + ". " + x).join("\n")}\n`);
+    s += `\nDla każdego shorta zachowaj DOKŁADNIE te ujęcia w tej kolejności i daj jeden napis na każde ujęcie.`;
+  } else {
+    s += `\nAutorzy nie podali ujęć. Zaproponuj 2 różne shortsy (np. jeden z najmocniejszą ciekawostką, drugi z całego dnia w pigułce), każdy 4–7 ujęć wybranych z opisu vloga, i daj jeden napis na każde ujęcie. W polu "scene" krótko nazwij ujęcie.`;
+  }
+  s += `\nNie wymyślaj atrakcji, których nie ma w opisie. Pierwszy napis to hook. Ostatni zaprasza na pełny vlog.
+Dla każdego shorta: 4 naprawdę różne tytuły (różne schematy), opis bez hashtagów, dokładnie 5 hashtagów (małymi literami, z #), napisy do scen.
+
+Zwróć WYŁĄCZNIE JSON:
+{"shorts":[{"titles":[{"text":"","why":""}],"description":"","hashtags":["#..."],"scenes":[{"scene":"","text":""}]}]}`;
+  return s;
+}
+
+async function geminiRequest(body){
+  const key = $("apiKey").value.trim();
+  if(!key){ $("settings").open = true; throw new Error("Dodaj klucz API Gemini w ustawieniach (u góry)."); }
+  const r = await fetch(`${API}/models/${encodeURIComponent($("model").value)}:generateContent`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) });
+  let j; try{ j = await r.json(); }catch(e){ j = {}; }
+  if(!r.ok){
+    const msg = j.error?.message || ("Błąd " + r.status);
+    if(r.status === 429) throw new Error("Wyczerpany darmowy limit zapytań. Odczekaj minutę albo wybierz model „flash-lite” w ustawieniach.");
+    if(r.status === 400 && /API key/i.test(msg)) throw new Error("Klucz API jest nieprawidłowy. Sprawdź go w ustawieniach.");
+    if(r.status === 404) throw new Error("Ten model nie jest już dostępny. Kliknij „Pobierz listę” w ustawieniach i wybierz inny.");
+    if(r.status === 503) throw new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
+    throw new Error(msg);
+  }
+  const text = (j.candidates?.[0]?.content?.parts||[]).map(p => p.text||"").join("");
+  if(!text) throw new Error("Model nie zwrócił odpowiedzi. Spróbuj jeszcze raz.");
+  return text;
+}
+async function callGemini(parts, json, temp){
+  const body = { contents:[{ role:"user", parts }], generationConfig:{ temperature: temp ?? 0.9 } };
+  if(json) body.generationConfig.responseMimeType = "application/json";
+  const text = await geminiRequest(body);
+  if(!json) return text;
+  try{ return JSON.parse(text.replace(/```json|```/g,"").trim()); }
+  catch(e){ throw new Error("Odpowiedź miała zły format. Spróbuj jeszcze raz."); }
+}
+
+// ---------- generate ----------
+let current = null;
+function readInput(){
+  return { format:$("format").value, place:$("place").value.trim(), episode:$("episode").value, details:$("details").value.trim(), chapters:$("chapters").value.trim(), keywords:$("keywords").value.trim(),
+    shortScenes:[...$("shortInputs").querySelectorAll("textarea")].map(t => t.value) };
+}
+function fillInput(i){
+  $("format").value = i.format || "other"; syncFormat();
+  $("place").value = i.place || ""; $("episode").value = i.episode || 1; $("details").value = i.details || ""; $("chapters").value = i.chapters || ""; $("keywords").value = i.keywords || "";
+  $("shortInputs").innerHTML = ""; (i.shortScenes && i.shortScenes.length ? i.shortScenes : [""]).forEach(addShortInput);
+}
+function showErr(m){ $("error").textContent = m; $("error").hidden = false; }
+
+$("generate").onclick = async () => {
+  $("error").hidden = true;
+  const i = readInput();
+  if(!i.place && !i.details){ showErr("Wpisz miejsce i opisz, co dzieje się w filmie."); return; }
+  const scenes = i.shortScenes.map(t => t.split("\n").map(x => x.trim()).filter(Boolean)).filter(a => a.length);
+  const p = { id: Date.now(), at: Date.now(), input: i, gen: null, shorts: [], choice: {} };
+  const btn = $("generate"); btn.disabled = true; btn.textContent = "Generuję…";
+  const jobs = [callGemini([{ text: buildPrompt(i, p.id) }], true)];
+  if($("withShorts").checked) jobs.push(callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true));
+  const [g, sh] = await Promise.allSettled(jobs);
+  btn.disabled = false; btn.textContent = "Generuj";
+  const errs = [];
+  if(g.status === "fulfilled") p.gen = g.value; else errs.push("Film: " + g.reason.message);
+  if(sh){ if(sh.status === "fulfilled") p.shorts = (sh.value.shorts||[]).map(x => ({ ...x, scenes: x.scenes||[] })); else errs.push("Shortsy: " + sh.reason.message); }
+  if(errs.length) showErr(errs.join(" "));
+  if(!p.gen && !p.shorts.length) return;
+  current = p; saveProject(p, true); render(p);
+};
+
+// ---------- render helpers ----------
+function el(tag, attrs, ...kids){
+  const n = document.createElement(tag);
+  if(attrs) for(const [k,v] of Object.entries(attrs)){ if(k === "class") n.className = v; else if(k.startsWith("on")) n[k] = v; else n.setAttribute(k,v); }
+  kids.flat().forEach(c => { if(c === null || c === undefined || c === false) return; n.append(c instanceof Node ? c : document.createTextNode(c)); });
+  return n;
+}
+const copyBtn = (get, label) => el("button", { class:"btn small", type:"button", onclick: () => copy(get()) }, label || "Kopiuj");
+function pickList(items, isChosen, onPick, extra){
+  const ul = el("ul", { class:"titles" });
+  items.forEach((t, idx) => {
+    const pick = el("button", { class:"btn small" + (isChosen(t) ? " picked" : ""), type:"button" }, isChosen(t) ? "Wybrany" : "Wybieram");
+    const li = el("li", { class: isChosen(t) ? "chosen" : "" },
+      el("div", null, el("div", { class:"t" }, t.text || ""), t.why ? el("div", { class:"why" }, t.why) : null),
+      el("div", { class:"side" }, extra ? extra(t) : null, el("div", { class:"inline" }, pick, copyBtn(() => t.text))));
+    pick.onclick = () => {
+      ul.querySelectorAll("li").forEach(x => { x.classList.remove("chosen"); const b = x.querySelector(".btn"); b.classList.remove("picked"); b.textContent = "Wybieram"; });
+      li.classList.add("chosen"); pick.classList.add("picked"); pick.textContent = "Wybrany"; onPick(t);
+    };
+    ul.append(li);
+  });
+  return ul;
+}
+const fmtDate = t => new Date(t).toLocaleString("pl-PL", { day:"numeric", month:"short", year:"numeric", hour:"2-digit", minute:"2-digit" });
+const projectLabel = p => { const i = p.input || {}; return i.format === "weekend" ? "Weekend w " + i.place : i.format === "series" ? `${i.place} – Dzień ${i.episode}` : (i.place || (i.details||"").slice(0,40) || "Film"); };
+
+// ---------- render project ----------
+function render(p){
+  current = p;
+  const out = $("output"); out.innerHTML = "";
+  const wrap = el("div", { class:"result" });
+  wrap.append(el("div", { class:"viewing" }, el("span", null, el("strong", null, projectLabel(p)), " · " + fmtDate(p.at)), el("span", { class:"hint" }, "Zmiany zapisują się w historii automatycznie")));
+  const g = p.gen;
+  if(g){
+    p.choice = p.choice || {};
+    const titles = (g.titles||[]).map(t => t.text);
+    const finalTitle = el("input", { type:"text", "aria-label":"Ostateczny tytuł" }); finalTitle.value = p.finalTitle || p.choice.title || "";
+    finalTitle.oninput = () => { p.finalTitle = finalTitle.value; saveProject(p); };
+    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Tytuły")),
+      pickList(g.titles||[], t => t.text === p.choice.title, t => { p.choice.title = t.text; p.finalTitle = t.text; finalTitle.value = t.text; recordChoice("titles", t.text, titles); saveProject(p); p._drawStatus && p._drawStatus(); toast(p.excluded ? "Zapamiętano wybór tytułu" : "Zapamiętano wybór – film trafia do wzorów"); },
+        t => { const n = (t.text||"").length; return el("span", { class:"count" + (n > 100 ? " over" : "") }, n + "/100"); })));
+
+    const footer = $("footer").value.trim();
+    if(p.desc === undefined){ p.desc = (g.description||"").trim() + (footer ? "\n\n" + footer : ""); }
+    const ta = el("textarea", { class:"desc", "aria-label":"Opis filmu" }); ta.value = p.desc;
+    const dc = el("span", { class:"count" }, p.desc.length + "/5000");
+    ta.oninput = () => { p.desc = ta.value; dc.textContent = ta.value.length + "/5000"; saveProject(p); };
+    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Opis"), el("div", { class:"inline" }, dc, copyBtn(() => ta.value))), ta));
+
+    p.tagsOff = p.tagsOff || [];
+    const tags = (g.tags||[]).map(t => String(t).replace(/^#/,"").trim());
+    const tc = el("span", { class:"count" }), chips = el("div", { class:"chips" });
+    const tagText = () => tags.filter(t => !p.tagsOff.includes(t)).join(", ");
+    const drawTags = () => {
+      chips.innerHTML = "";
+      tags.forEach(t => chips.append(el("button", { type:"button", class:"chip" + (p.tagsOff.includes(t) ? " off" : ""), onclick: () => {
+        p.tagsOff = p.tagsOff.includes(t) ? p.tagsOff.filter(x => x !== t) : [...p.tagsOff, t]; drawTags(); saveProject(p); } }, t)));
+      const n = tagText().length; tc.textContent = n + " zn. (cel 200–300)"; tc.classList.toggle("over", n > 500);
+    };
+    drawTags();
+    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Tagi"), el("div", { class:"inline" }, tc, copyBtn(tagText))), chips, el("p", { class:"note" }, "Kliknij tag, żeby go wyłączyć.")));
+
+    const thumbsT = (g.thumbnails||[]).map(t => t.text);
+    const finalThumb = el("input", { type:"text", "aria-label":"Tekst na miniaturce" }); finalThumb.value = p.finalThumb || p.choice.thumb || "";
+    finalThumb.oninput = () => { p.finalThumb = finalThumb.value; saveProject(p); };
+    const tg = el("div", { class:"thumbs" });
+    (g.thumbnails||[]).forEach(t => {
+      const on = p.choice.thumb === t.text;
+      const pick = el("button", { class:"btn small" + (on ? " picked" : ""), type:"button", style:"justify-self:start" }, on ? "Wybrany" : "Wybieram");
+      const card = el("div", { class:"thumb" + (on ? " chosen" : "") }, el("div", { class:"big" }, t.text||""), el("p", null, t.scene||""), pick);
+      pick.onclick = () => {
+        tg.querySelectorAll(".thumb").forEach(x => { x.classList.remove("chosen"); const b = x.querySelector(".btn"); b.classList.remove("picked"); b.textContent = "Wybieram"; });
+        card.classList.add("chosen"); pick.classList.add("picked"); pick.textContent = "Wybrany";
+        p.choice.thumb = t.text; p.finalThumb = t.text; finalThumb.value = t.text; recordChoice("thumbs", t.text, thumbsT); saveProject(p); toast("Zapamiętano wybór miniaturki");
+      };
+      tg.append(card);
+    });
+    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Pomysły na miniaturkę")), tg));
+
+    const status = el("p", { class:"note" });
+    const toggle = el("button", { class:"btn small", type:"button", style:"margin-top:10px" });
+    const drawStatus = () => {
+      if(p.excluded){ status.textContent = "Ten film nie jest używany jako wzór."; toggle.textContent = "Dodaj z powrotem do wzorów"; }
+      else if(p.choice.title){ status.textContent = "Ten film jest we wzorach. Poprawki tytułu, opisu, tagów i miniaturki aktualizują wzór automatycznie."; toggle.textContent = "Nie używaj jako wzoru"; }
+      else { status.textContent = "Po wybraniu tytułu film automatycznie trafi do wzorów."; toggle.textContent = "Nie używaj jako wzoru"; }
+    };
+    toggle.onclick = () => {
+      if(p.excluded){ p.excluded = false; }
+      else { p.excluded = true; if(p.exampleId){ store.setJ("vg_examples", getExamples().filter(e => e.id !== p.exampleId)); p.exampleId = undefined; p.saved = false; drawExamples(); } }
+      saveProject(p, true); drawStatus();
+    };
+    drawStatus(); p._drawStatus = drawStatus;
+    wrap.append(el("div", { class:"block save-block" },
+      el("div", { class:"block-head" }, el("h3", null, "Wersja, którą publikujecie")),
+      el("label", null, "Ostateczny tytuł"), finalTitle,
+      el("label", null, "Ostateczny tekst na miniaturce"), finalThumb,
+      status, toggle));
+  }
+  if(p.shorts && p.shorts.length){
+    wrap.append(el("div", { class:"section-title" }, el("span", { class:"pill short" }, "Shorts"), el("h2", null, "Shortsy")));
+    p.shorts.forEach((s, idx) => wrap.append(renderShort(p, s, idx)));
+  }
+  out.append(wrap);
+  if(window.innerWidth < 860) out.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+function stripFooter(t){ const f = $("footer").value.trim(); return f && (t||"").includes(f) ? t.replace(f,"").trim() : (t||"").trim(); }
+
+function renderShort(p, s, idx){
+  const titles = (s.titles||[]).map(t => t.text);
+  if(s.descEdited === undefined) s.descEdited = (s.description||"").trim() + "\n\n" + (s.hashtags||[]).map(h => h.startsWith("#") ? h : "#" + h).join(" ");
+  const card = el("div", { class:"block short-card" });
+  card.append(el("div", { class:"block-head" }, el("h3", null, "Short " + (idx+1)), el("span", { class:"pill short" }, (s.scenes||[]).length + " ujęć")));
+  card.append(el("label", null, "Tytuł"));
+  card.append(pickList(s.titles||[], t => t.text === s.chosenTitle, t => { s.chosenTitle = t.text; recordChoice("shortTitles", t.text, titles); saveProject(p); s._drawSt && s._drawSt(); toast(s.excluded ? "Zapamiętano wybór" : "Zapamiętano – short trafia do wzorów"); }));
+
+  card.append(el("label", null, "Napisy do scen"));
+  const ul = el("ul", { class:"scenes" });
+  (s.scenes||[]).forEach((sc, k) => {
+    const inp = el("input", { type:"text", "aria-label":"Napis do ujęcia " + (k+1) }); inp.value = sc.text || "";
+    inp.oninput = () => { sc.text = inp.value; saveProject(p); };
+    const alts = el("div", { class:"alts" });
+    const altBtn = el("button", { class:"btn small", type:"button" }, "Inne wersje");
+    altBtn.onclick = async () => {
+      altBtn.disabled = true; altBtn.textContent = "Szukam…"; alts.innerHTML = "";
+      try{
+        const prompt = `${$("shortsGuide").value.trim()}\n\nShort z vloga: ${projectLabel(p)}\nWszystkie ujęcia i obecne napisy:\n${s.scenes.map((x,n) => `${n+1}. [${x.scene}] ${x.text}`).join("\n")}\n\nDaj 3 nowe, wyraźnie różne od siebie wersje napisu TYLKO dla ujęcia nr ${k+1}: „${sc.scene}”. Obecna wersja (nie powtarzaj jej): „${sc.text}”. Pasują do rytmu sąsiednich ujęć i nie powtarzają ich zwrotów.${k === 0 ? " To hook – mocne stwierdzenie." : ""}${k === s.scenes.length-1 ? " To ostatnie ujęcie – zaproszenie na pełny vlog." : ""}\nZwróć WYŁĄCZNIE JSON: {"options":["","",""]}`;
+        const r = await callGemini([{ text: prompt }], true, 1.0);
+        (r.options||[]).forEach(o => alts.append(el("button", { type:"button", class:"alt", onclick: () => { inp.value = o; sc.text = o; saveProject(p); alts.innerHTML = ""; } }, o)));
+      }catch(e){ alts.append(el("span", { class:"hint" }, e.message)); }
+      altBtn.disabled = false; altBtn.textContent = "Inne wersje";
+    };
+    ul.append(el("li", { class:"scene" }, el("span", { class:"num" }, String(k+1)),
+      el("div", null, el("div", { class:"what" }, sc.scene || ""), el("div", { class:"inline" }, inp, altBtn), alts)));
+  });
+  card.append(ul);
+  card.append(el("div", { class:"inline", style:"margin-top:10px" }, copyBtn(() => s.scenes.map(x => x.text).join("\n"), "Kopiuj wszystkie napisy")));
+
+  card.append(el("label", null, "Opis z hashtagami"));
+  const ta = el("textarea", { style:"min-height:150px" }); ta.value = s.descEdited;
+  ta.oninput = () => { s.descEdited = ta.value; saveProject(p); };
+  const hc = el("span", { class:"count" });
+  const updHc = () => { const n = (ta.value.match(/#[\p{L}\p{N}_]+/gu)||[]).length; hc.textContent = n + " hashtagów" + (n !== 5 ? " (powinno być 5)" : ""); hc.classList.toggle("over", n !== 5); };
+  ta.addEventListener("input", updHc); updHc();
+  card.append(ta, el("div", { class:"inline", style:"margin-top:8px;justify-content:space-between" }, hc, copyBtn(() => ta.value)));
+
+  const st = el("p", { class:"note" });
+  const tg = el("button", { class:"btn small", type:"button", style:"margin-top:8px" });
+  const drawSt = () => {
+    if(s.excluded){ st.textContent = "Ten short nie jest używany jako wzór."; tg.textContent = "Dodaj z powrotem do wzorów"; }
+    else if(s.chosenTitle){ st.textContent = "Ten short jest we wzorach. Poprawki napisów i opisu aktualizują wzór automatycznie."; tg.textContent = "Nie używaj jako wzoru"; }
+    else { st.textContent = "Po wybraniu tytułu short automatycznie trafi do wzorów."; tg.textContent = "Nie używaj jako wzoru"; }
+  };
+  tg.onclick = () => {
+    if(s.excluded){ s.excluded = false; }
+    else { s.excluded = true; if(s.patternId){ store.setJ("vg_shorts", getShortPatterns().filter(x => x.id !== s.patternId)); s.patternId = undefined; s.saved = false; drawShortPatterns(); } }
+    saveProject(p, true); drawSt();
+  };
+  drawSt(); s._drawSt = drawSt;
+  card.append(st, tg);
+  return card;
+}
+
+// ---------- history ----------
+$("histSearch").oninput = drawHistory;
+function drawHistory(){
+  const all = getProjects(); $("histCount").textContent = all.length;
+  const q = $("histSearch").value.trim().toLowerCase();
+  const list = all.filter(p => !q || (projectLabel(p) + " " + (p.finalTitle||"") + " " + (p.choice?.title||"")).toLowerCase().includes(q));
+  $("histEmpty").hidden = all.length > 0;
+  const ul = $("histList"); ul.innerHTML = "";
+  list.forEach(p => {
+    const title = p.finalTitle || p.choice?.title;
+    const shortsChosen = (p.shorts||[]).filter(s => s.chosenTitle);
+    const open = el("button", { class:"btn small", type:"button", onclick: () => { fillInput(p.input||{}); render(p); showTab("gen"); window.scrollTo({ top:0 }); } }, "Otwórz");
+    const del = el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten projekt z historii?")){ store.setJ("vg_projects", getProjects().filter(x => x.id !== p.id)); drawHistory(); } } }, "Usuń");
+    ul.append(el("li", { class:"ex hist-item" },
+      el("div", null,
+        el("div", { class:"t" }, projectLabel(p)),
+        el("time", null, fmtDate(p.at)),
+        el("div", { class:"meta" }, title ? "Tytuł: " + title : "Tytuł: nie wybrano"),
+        p.finalThumb || p.choice?.thumb ? el("div", { class:"meta" }, "Miniaturka: " + (p.finalThumb || p.choice.thumb)) : null,
+        shortsChosen.length ? el("div", { class:"meta" }, "Shortsy: " + shortsChosen.map(s => s.chosenTitle).join(" · ")) : null,
+        el("div", { class:"pills" },
+          p.saved ? el("span", { class:"pill ok" }, "Zapisany jako wzór") : null,
+          (p.shorts||[]).length ? el("span", { class:"pill short" }, (p.shorts||[]).length + " shorts") : null)),
+      el("div", { class:"ex-actions", style:"margin:0" }, open, del)));
+  });
+}
+drawHistory();
+
+// ---------- examples ----------
+let editingId = null;
+$("saveExample").onclick = () => {
+  const title = $("exTitle").value.trim(); if(!title){ alert("Wpisz tytuł."); return; }
+  const item = { id: editingId || Date.now(), title, thumb:$("exThumb").value.trim(), desc:$("exDesc").value.trim(), tags:$("exTags").value.trim() };
+  let ex = getExamples(); ex = editingId ? ex.map(e => e.id === editingId ? item : e) : [item, ...ex];
+  store.setJ("vg_examples", ex); clearExForm(); drawExamples(); toast("Wzór zapisany");
+};
+$("cancelEdit").onclick = clearExForm;
+function clearExForm(){ editingId = null; ["exTitle","exThumb","exDesc","exTags"].forEach(id => $(id).value = ""); $("cancelEdit").hidden = true; $("exFormTitle").textContent = "Dodaj wzór filmu"; }
+function drawExamples(){
+  const ex = getExamples(); $("exCount").textContent = ex.length + getShortPatterns().length;
+  const ul = $("exList"); ul.innerHTML = "";
+  ex.forEach((e, idx) => ul.append(el("li", { class:"ex" }, el("div", { class:"t" }, e.title),
+    el("div", { class:"meta" }, (idx < 5 ? "Używany przez AI" : "Starszy – nieużywany") + (e.thumb ? " | Miniaturka: " + e.thumb : " | brak tekstu miniaturki")),
+    el("div", { class:"ex-actions" },
+      el("button", { class:"btn small", type:"button", onclick: () => { editingId = e.id; $("exTitle").value = e.title; $("exThumb").value = e.thumb||""; $("exDesc").value = e.desc||""; $("exTags").value = e.tags||""; $("cancelEdit").hidden = false; $("exFormTitle").textContent = "Edytuj wzór filmu"; $("exTitle").focus(); $("exFormTitle").scrollIntoView({ behavior:"smooth", block:"start" }); } }, "Edytuj"),
+      el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten wzór?")){ store.setJ("vg_examples", getExamples().filter(x => x.id !== e.id)); drawExamples(); } } }, "Usuń")))));
+  drawPrefsInfo();
+}
+function drawPrefsInfo(){
+  const p = getPrefs(); const c = k => (p[k]||[]).length; const n = c("titles")+c("thumbs")+c("playlists")+c("shortTitles");
+  $("prefsInfo").textContent = n ? `Zapamiętane wybory: ${c("titles")} tytułów, ${c("thumbs")} miniaturek, ${c("shortTitles")} tytułów shortsów, ${c("playlists")} nazw playlist.` : "";
+  $("clearPrefs").hidden = !n;
+}
+$("clearPrefs").onclick = () => { if(confirm("Wyczyścić zapamiętane wybory?")){ store.setJ("vg_prefs", {}); drawPrefsInfo(); } };
+let shEditId = null;
+$("shExSave").onclick = () => {
+  const texts = $("shExTexts").value.split("\n").map(x => x.trim()).filter(Boolean);
+  if(!$("shExTitle").value.trim() && !texts.length){ alert("Wpisz tytuł albo napisy."); return; }
+  let pats = getShortPatterns();
+  if(shEditId){ pats = pats.map(x => x.id === shEditId ? { ...x, title:$("shExTitle").value.trim(), desc:$("shExDesc").value.trim(), texts } : x); }
+  else pats = [{ id: Date.now(), title:$("shExTitle").value.trim(), desc:$("shExDesc").value.trim(), texts }, ...pats];
+  store.setJ("vg_shorts", pats); clearShForm(); drawShortPatterns(); toast("Wzór shorta zapisany");
+};
+$("shCancel").onclick = clearShForm;
+function clearShForm(){ shEditId = null; ["shExTitle","shExDesc","shExTexts"].forEach(id => $(id).value = ""); $("shCancel").hidden = true; $("shFormTitle").textContent = "Dodaj wzór shorta"; }
+function drawShortPatterns(){
+  const ul = $("shList"); ul.innerHTML = "";
+  getShortPatterns().forEach((s, idx) => ul.append(el("li", { class:"ex" },
+    el("div", { class:"t" }, s.title || s.label || "Short bez tytułu"),
+    el("div", { class:"meta" }, (idx < 4 ? "Używany przez AI" : "Starszy – nieużywany") + "\n" + (s.texts||[]).join("\n")),
+    el("div", { class:"ex-actions" },
+      el("button", { class:"btn small", type:"button", onclick: () => { shEditId = s.id; $("shExTitle").value = s.title||""; $("shExDesc").value = s.desc||""; $("shExTexts").value = (s.texts||[]).join("\n"); $("shCancel").hidden = false; $("shFormTitle").textContent = "Edytuj wzór shorta" + (s.label ? " (" + s.label + ")" : ""); $("shExTitle").focus(); $("shFormTitle").scrollIntoView({ behavior:"smooth", block:"start" }); } }, "Edytuj"),
+      el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten wzór shorta?")){ store.setJ("vg_shorts", getShortPatterns().filter(x => x.id !== s.id)); drawShortPatterns(); } } }, "Usuń")))));
+  $("exCount").textContent = getExamples().length + getShortPatterns().length;
+}
+drawExamples(); drawShortPatterns();
+
+// ---------- playlists ----------
+function buildPlaylistPrompt(i){
+  const pls = getPlaylists().slice(0,6);
+  const eps = getExamples().slice(0,3).map(e => "- " + e.title).join("\n");
+  let s = `Jesteś kreatywnym partnerem kanału YouTube. Wymyśl nazwę i krótki opis nowej playlisty. Trzymaj się przewodnika stylu i wzorów.\n\n=== PRZEWODNIK STYLU ===\n${$("styleGuide").value.trim()}\n`;
+  if(pls.length){ s += `\n=== WZORY: DOTYCHCZASOWE PLAYLISTY (naśladuj budowę nazwy, długość i ton opisu) ===\n`; pls.forEach(x => s += `Nazwa: ${x.name}\nOpis: ${x.desc || "(brak)"}\n\n`); }
+  const ch = choicesBlock("playlists","Nazwa"); if(ch) s += `=== WCZEŚNIEJSZE WYBORY AUTORÓW ===\n${ch}\n`;
+  if(eps) s += `\nOstatnie tytuły filmów (dla wyczucia stylu):\n${eps}\n`;
+  s += `\n=== NOWA PLAYLISTA ===\nRodzaj: ${i.type === "series" ? "seria z jednego wyjazdu" : "zbiór weekendowych wypadów"}\nMiejsce / wyjazd: ${i.place}\nLiczba dni / odcinków: ${i.days}\n${i.when ? "Kiedy: " + i.when + "\n" : ""}Co łączy wyjazd: ${i.details || "(brak szczegółów)"}\n${i.episodes ? "Tytuły odcinków:\n" + i.episodes + "\n" : ""}
+Przy zbiorze weekendowych wypadów nazwa „Weekend w [miejsce]” jest dobra – propozycje mogą się różnić tylko drobnym dodatkiem, nie kombinuj na siłę.
+Opis: kilka krótkich zdań w 2–3 akapitach, cały wyjazd i klimat, bez streszczania odcinków, bez hashtagów, 2–3 emotki, zakończenie w stylu „Wpadajcie z nami w trasę!”. Nie wymyślaj atrakcji.
+Zwróć WYŁĄCZNIE JSON: {"titles":[{"text":"","why":""}],"descriptions":[""]} – 5 nazw i 3 różne opisy.`;
+  return s;
+}
+$("plGenerate").onclick = async () => {
+  $("plError").hidden = true;
+  const i = { type:$("plType").value, place:$("plPlace").value.trim(), days:$("plDays").value, when:$("plWhen").value.trim(), details:$("plDetails").value.trim(), episodes:$("plEpisodes").value.trim() };
+  if(!i.place){ $("plError").textContent = "Wpisz miejsce lub nazwę wyjazdu."; $("plError").hidden = false; return; }
+  const btn = $("plGenerate"); btn.disabled = true; btn.textContent = "Generuję…";
+  try{ renderPlaylist(await callGemini([{ text: buildPlaylistPrompt(i) }], true)); }
+  catch(e){ $("plError").textContent = e.message; $("plError").hidden = false; }
+  finally{ btn.disabled = false; btn.textContent = "Generuj playlistę"; }
+};
+function renderPlaylist(d){
+  const out = $("plOut"); out.innerHTML = "";
+  const wrap = el("div", { class:"result" });
+  const names = (d.titles||[]).map(t => t.text);
+  const finalName = el("input", { type:"text", "aria-label":"Nazwa playlisty" });
+  const finalDesc = el("textarea", { "aria-label":"Opis playlisty", style:"min-height:110px" });
+  let chosenName = "", chosenDesc = "";
+  wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Nazwa playlisty")),
+    pickList(d.titles||[], t => t.text === chosenName, t => { chosenName = t.text; finalName.value = t.text; recordChoice("playlists", t.text, names); toast("Zapamiętano wybór"); })));
+  wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Opis playlisty")),
+    pickList((d.descriptions||[]).map(x => ({ text:x })), t => t.text === chosenDesc, t => { chosenDesc = t.text; finalDesc.value = t.text; })));
+  const save = el("button", { class:"btn primary", type:"button", style:"width:auto" }, "Zapisz jako wzór playlisty");
+  save.onclick = () => {
+    if(!finalName.value.trim()){ alert("Wybierz lub wpisz nazwę."); return; }
+    store.setJ("vg_playlists", [{ id: Date.now(), name: finalName.value.trim(), desc: finalDesc.value.trim() }, ...getPlaylists()]);
+    drawPlaylists(); toast("Playlista zapisana"); save.disabled = true; save.textContent = "Zapisano";
+  };
+  wrap.append(el("div", { class:"block save-block" }, el("div", { class:"block-head" }, el("h3", null, "Wersja, którą tworzycie")),
+    el("label", null, "Nazwa"), finalName, el("label", null, "Opis"), finalDesc,
+    el("div", { class:"inline", style:"margin-top:12px" }, save, copyBtn(() => finalName.value, "Kopiuj nazwę"), copyBtn(() => finalDesc.value, "Kopiuj opis"))));
+  out.append(wrap);
+}
+$("plExSave").onclick = () => {
+  const name = $("plExName").value.trim(); if(!name){ alert("Wpisz nazwę playlisty."); return; }
+  store.setJ("vg_playlists", [{ id: Date.now(), name, desc: $("plExDesc").value.trim() }, ...getPlaylists()]);
+  $("plExName").value = ""; $("plExDesc").value = ""; drawPlaylists(); toast("Playlista dodana");
+};
+function drawPlaylists(){
+  const ul = $("plList"); ul.innerHTML = "";
+  getPlaylists().forEach((x, idx) => ul.append(el("li", { class:"ex" }, el("div", { class:"t" }, x.name),
+    x.desc ? el("div", { class:"meta" }, x.desc) : null,
+    el("div", { class:"meta" }, idx < 6 ? "Używana przez AI" : "Starsza – nieużywana"),
+    el("div", { class:"ex-actions" }, el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć tę playlistę z wzorów?")){ store.setJ("vg_playlists", getPlaylists().filter(y => y.id !== x.id)); drawPlaylists(); } } }, "Usuń")))));
+}
+drawPlaylists();
+
+// ---------- thumbnail review ----------
+let thumbData = null;
+$("thumbFile").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { thumbData = { mime: f.type || "image/jpeg", b64: r.result.split(",")[1] }; $("thumbPreview").src = r.result; $("thumbPreview").hidden = false; };
+  r.readAsDataURL(f);
+};
+$("reviewBtn").onclick = async () => {
+  $("thumbError").hidden = true;
+  if(!thumbData){ $("thumbError").textContent = "Najpierw wybierz plik miniaturki."; $("thumbError").hidden = false; return; }
+  const btn = $("reviewBtn"); btn.disabled = true; btn.textContent = "Oceniam…";
+  const ex = getExamples().filter(e => e.thumb).slice(0,5).map(e => "- " + e.thumb).join("\n");
+  const prompt = `Oceń miniaturkę YouTube kanału opisanego niżej. Bądź szczery, nie chwal na siłę i nie wymyślaj poprawek, jeśli coś jest dobre. Autorzy nie są ekspertami Photoshopa – podawaj proste, konkretne wskazówki (co przesunąć, zmniejszyć, powiększyć, rozjaśnić).\n\nPRZEWODNIK STYLU:\n${$("styleGuide").value.trim()}\n${ex ? "\nWcześniejsze napisy na miniaturkach (dla spójności serii):\n" + ex : ""}\n${$("thumbCtx").value.trim() ? "\nO filmie: " + $("thumbCtx").value.trim() : ""}\n\nOceń kompozycję, czytelność napisów (także w małym rozmiarze na telefonie), kontrast i kolory, proporcje tekstu do zdjęcia, spójność z serią.\nOdpowiedz po polsku, zwykłym tekstem bez markdownu i bez gwiazdek, w czterech częściach z nagłówkami:\nCO DZIAŁA\nCO NIE DZIAŁA\nCO POPRAWIĆ\nCO ZOSTAWIĆ W SPOKOJU\nNa koniec jedno zdanie: ogólna ocena od 1 do 10.`;
+  try{
+    const txt = await callGemini([{ inline_data:{ mime_type: thumbData.mime, data: thumbData.b64 } }, { text: prompt }], false);
+    $("thumbOut").innerHTML = "";
+    $("thumbOut").append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Ocena miniaturki"), copyBtn(() => txt)), el("div", { class:"review" }, txt.replace(/\*\*/g,"").replace(/^#+\s*/gm,""))));
+  }catch(e){ $("thumbError").textContent = e.message; $("thumbError").hidden = false; }
+  finally{ btn.disabled = false; btn.textContent = "Oceń"; }
+};
+
+// ---------- chat ----------
+const getChats = () => store.getJ("vg_chats", []);
+const saveChats = c => store.setJ("vg_chats", c.slice(0,100));
+let activeChat = null, chatBusy = false;
+const STARTERS = ["Jakie filmy warto nagrać, kiedy nie mamy żadnego wyjazdu?", "Jak zaplanować serię z kilkudniowego wyjazdu, żeby każdy odcinek był ciekawy?", "Jak często publikować przy naszym tempie wyjazdów?", "Co zmienić w shortsach, żeby więcej osób przechodziło na kanał?"];
+
+function chatContext(){
+  const ex = getExamples(), pls = getPlaylists(), sh = getShortPatterns().slice(0,6), pr = getProjects().slice(0,15);
+  let s = `Jesteś asystentem i kreatywnym partnerem kanału YouTube opisanego w przewodniku stylu poniżej. Rozmawiasz z autorem kanału w aplikacji, w której przygotowują tytuły, opisy, tagi, miniaturki, shortsy i playlisty. Poniżej masz cały kontekst z tej aplikacji – korzystaj z niego, odnoś się do konkretnych filmów i ustaleń, gdy to pomaga.
+Zasady rozmowy:
+- Odpowiadaj po polsku, luźno i konkretnie, jak doświadczony znajomy, który zna się na YouTube.
+- Szczerość ponad przytakiwanie: jeśli pomysł jest słaby, powiedz to i zaproponuj lepszy. Nie chwal na siłę.
+- Nie wymyślaj faktów o kanale (statystyk, liczby subskrybentów, wyników filmów), których nie ma w kontekście – zapytaj albo powiedz, czego nie wiesz. Jeśli mówisz o działaniu algorytmu YouTube, zaznacz, co jest pewne, a co jest ogólną praktyką.
+- Pisz zwięźle. Listy tylko wtedy, gdy naprawdę pomagają. Bez długich wstępów.
+- Jeśli autor poprosi o tytuły, opisy itp., możesz je przygotować zgodnie z przewodnikiem stylu.
+Dzisiejsza data: ${new Date().toLocaleDateString("pl-PL")}.
+
+=== PRZEWODNIK STYLU KANAŁU ===
+${$("styleGuide").value.trim()}
+
+=== PRZEWODNIK STYLU SHORTSÓW ===
+${$("shortsGuide").value.trim()}
+`;
+  if(ex.length){ s += `\n=== FILMY ZE WZORÓW (najnowsze pierwsze) ===\n`; ex.slice(0,12).forEach((e,i) => s += `- ${e.title}${e.thumb ? " | miniaturka: " + e.thumb : ""}${i < 3 && e.desc ? "\n  Opis: " + e.desc.replace(/\n+/g," ").slice(0,600) : ""}\n`); }
+  if(pls.length){ s += `\n=== PLAYLISTY ===\n`; pls.forEach(x => s += `- ${x.name}${x.desc ? ": " + x.desc.replace(/\n+/g," ").slice(0,250) : ""}\n`); }
+  if(sh.length){ s += `\n=== SHORTSY ZE WZORÓW ===\n`; sh.forEach(x => s += `- ${x.title || x.label || "short"}: ${(x.texts||[]).join(" / ")}\n`); }
+  if(pr.length){ s += `\n=== OSTATNIE PROJEKTY W APLIKACJI ===\n`; pr.forEach(p => s += `- ${projectLabel(p)} (${new Date(p.at).toLocaleDateString("pl-PL")})${(p.finalTitle||p.choice?.title) ? " – tytuł: " + (p.finalTitle||p.choice.title) : ""}${(p.shorts||[]).filter(x => x.chosenTitle).length ? " – shortsy: " + p.shorts.filter(x => x.chosenTitle).map(x => x.chosenTitle).join("; ") : ""}${p.input?.details ? "\n  Treść: " + p.input.details.replace(/\n+/g," ").slice(0,200) : ""}\n`); }
+  return s;
+}
+
+function md(text){
+  const esc = t => t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const inline = t => esc(t).replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g,"$1<em>$2</em>").replace(/`([^`]+)`/g,"<code>$1</code>");
+  const lines = text.replace(/\r/g,"").split("\n"); let html = "", list = null, para = [];
+  const flushP = () => { if(para.length){ html += "<p>" + para.map(inline).join("<br>") + "</p>"; para = []; } };
+  const flushL = () => { if(list){ html += `<${list.t}>` + list.items.map(i => "<li>" + inline(i) + "</li>").join("") + `</${list.t}>`; list = null; } };
+  lines.forEach(l => {
+    const ul = l.match(/^\s*[-*•]\s+(.*)/), ol = l.match(/^\s*\d+[.)]\s+(.*)/), h = l.match(/^#{1,6}\s+(.*)/);
+    if(ul || ol){ flushP(); const t = ul ? "ul" : "ol"; if(!list || list.t !== t){ flushL(); list = { t, items:[] }; } list.items.push((ul||ol)[1]); }
+    else if(h){ flushP(); flushL(); html += "<p><strong>" + inline(h[1]) + "</strong></p>"; }
+    else if(!l.trim()){ flushP(); flushL(); }
+    else { flushL(); para.push(l); }
+  });
+  flushP(); flushL(); return html;
+}
+
+function drawChatList(){
+  const ul = $("chatList"); ul.innerHTML = "";
+  const chats = getChats();
+  if(!chats.length) ul.append(el("li", { class:"note" }, "Tu pojawią się Twoje rozmowy."));
+  chats.forEach(c => {
+    const del = el("button", { type:"button", title:"Usuń czat", "aria-label":"Usuń czat", onclick: e => { e.stopPropagation(); if(confirm("Usunąć tę rozmowę?")){ saveChats(getChats().filter(x => x.id !== c.id)); if(activeChat?.id === c.id) openChat(null); drawChatList(); } } }, "×");
+    ul.append(el("li", { class:"chat-item" + (activeChat?.id === c.id ? " active" : ""), tabindex:"0", onclick: () => openChat(c.id), onkeydown: e => { if(e.key === "Enter") openChat(c.id); } },
+      el("div", { style:"min-width:0" }, el("div", { class:"t" }, c.title || "Nowy czat"), el("time", null, fmtDate(c.updatedAt || c.at))), del));
+  });
+}
+function openChat(id){
+  activeChat = id ? getChats().find(c => c.id === id) || null : null;
+  drawChatList(); drawMessages();
+}
+function drawMessages(pending, err){
+  const box = $("chatMsgs"); box.innerHTML = "";
+  const msgs = activeChat?.messages || [];
+  if(!msgs.length && !pending){
+    box.append(el("div", { class:"empty" }, el("strong", null, "O co chcesz zapytać?"), "Czat zna styl Kemisów, Wasze wzory, playlisty i ostatnie projekty.",
+      el("div", { class:"starters" }, STARTERS.map(t => el("button", { class:"chip", type:"button", onclick: () => { $("chatInput").value = t; $("chatInput").focus(); } }, t)))));
+    return;
+  }
+  msgs.forEach(m => {
+    if(m.role === "user") box.append(el("div", { class:"msg user" }, m.text));
+    else { const d = el("div", { class:"msg model" }); d.innerHTML = md(m.text); d.append(el("div", { class:"tools" }, copyBtn(() => m.text))); box.append(d); }
+  });
+  if(pending) box.append(el("div", { class:"msg model pending" }, "Piszę…"));
+  if(err) box.append(el("div", { class:"error", style:"margin:0" }, err + " ", el("button", { class:"btn small", type:"button", onclick: () => sendChat(null) }, "Spróbuj ponownie")));
+  box.scrollTop = box.scrollHeight;
+}
+async function sendChat(text){
+  if(chatBusy) return;
+  if(text !== null){
+    text = text.trim(); if(!text) return;
+    if(!activeChat){ activeChat = { id: Date.now(), at: Date.now(), title: text.slice(0,48), messages: [] }; }
+    activeChat.messages.push({ role:"user", text }); activeChat.updatedAt = Date.now();
+    persistChat(); $("chatInput").value = "";
+  }
+  if(!activeChat || activeChat.messages.at(-1)?.role !== "user") return;
+  chatBusy = true; $("chatSend").disabled = true; drawMessages(true);
+  try{
+    const contents = activeChat.messages.slice(-30).map(m => ({ role: m.role === "user" ? "user" : "model", parts:[{ text: m.text }] }));
+    const reply = await geminiRequest({ system_instruction:{ parts:[{ text: chatContext() }] }, contents, generationConfig:{ temperature: 0.8 } });
+    activeChat.messages.push({ role:"model", text: reply }); activeChat.updatedAt = Date.now(); persistChat(); drawMessages();
+  }catch(e){ drawMessages(false, e.message); }
+  finally{ chatBusy = false; $("chatSend").disabled = false; }
+}
+function persistChat(){ const all = getChats().filter(c => c.id !== activeChat.id); all.unshift(activeChat); all.sort((a,b) => (b.updatedAt||b.at) - (a.updatedAt||a.at)); saveChats(all); drawChatList(); }
+$("chatSend").onclick = () => sendChat($("chatInput").value);
+$("chatInput").addEventListener("keydown", e => { if(e.key === "Enter" && !e.shiftKey && !e.isComposing){ e.preventDefault(); sendChat($("chatInput").value); } });
+$("newChat").onclick = () => { openChat(null); $("chatInput").focus(); };
+openChat(null);
+
+// ---------- sync (GitHub Gist) ----------
+var pushTimer, syncing = false, syncAgain = false, localVersion = 0;
+const GIST_DESC = "vlog-generator-sync", GIST_FILE = "kemisy-sync.json";
+function syncTokenVal(){ try{ return localStorage.getItem("vg_sync_token") || ""; }catch(e){ return ""; } }
+function onLocalChange(){
+  try{ localStorage.setItem("vg_local_at", String(Date.now())); localStorage.setItem("vg_sync_dirty", "1"); }catch(e){}
+  localVersion++;
+  if(!syncTokenVal()) return;
+  clearTimeout(pushTimer); pushTimer = setTimeout(() => syncNow(), 4000);
+}
+function setSyncStatus(t, bad){
+  const st = document.getElementById("syncStatus"), b = document.getElementById("syncBadge");
+  if(st){ st.textContent = t; st.style.color = bad ? "var(--rec)" : ""; }
+  if(b){ b.hidden = !syncTokenVal(); b.textContent = (bad ? "⚠ " : "⟳ ") + t; b.style.color = bad ? "var(--rec)" : ""; }
+}
+function syncUi(){
+  const on = !!syncTokenVal();
+  $("syncNowBtn").hidden = !on; $("syncOff").hidden = !on; $("syncConnect").textContent = on ? "Zmień token" : "Połącz";
+  if(!on) setSyncStatus("Synchronizacja wyłączona.");
+}
+async function gh(path, opts){
+  const r = await fetch("https://api.github.com" + path, { ...(opts||{}), headers:{ "Authorization":"Bearer " + syncTokenVal(), "Accept":"application/vnd.github+json", ...(opts?.body ? { "Content-Type":"application/json" } : {}) } });
+  if(r.status === 401) throw new Error("token GitHub jest nieprawidłowy lub wygasł");
+  if(r.status === 403) throw new Error("token nie ma uprawnienia do gistów");
+  if(r.status === 404) { const e = new Error("nie znaleziono danych synchronizacji"); e.notFound = true; throw e; }
+  if(!r.ok) throw new Error("GitHub zwrócił błąd " + r.status);
+  return r.json();
+}
+async function gistRead(id){
+  const j = await gh("/gists/" + id);
+  const f = j.files?.[GIST_FILE]; if(!f) return null;
+  const txt = f.truncated ? await (await fetch(f.raw_url)).text() : f.content;
+  return JSON.parse(txt);
+}
+function localData(){ const d = {}; SYNC_KEYS.forEach(k => d[k] = localStorage.getItem(k)); return d; }
+function applyData(d){
+  applyingRemote = true;
+  try{ SYNC_KEYS.forEach(k => { if(d[k] === null || d[k] === undefined) localStorage.removeItem(k); else localStorage.setItem(k, d[k]); }); }
+  finally{ applyingRemote = false; }
+}
+async function gistWrite(data, id){
+  const payload = JSON.stringify({ updatedAt: Date.now(), data });
+  const ver = localVersion;
+  let j;
+  if(id) j = await gh("/gists/" + id, { method:"PATCH", body: JSON.stringify({ files:{ [GIST_FILE]:{ content: payload } } }) });
+  else j = await gh("/gists", { method:"POST", body: JSON.stringify({ description: GIST_DESC, public: false, files:{ [GIST_FILE]:{ content: payload } } }) });
+  localStorage.setItem("vg_sync_gist", j.id);
+  localStorage.setItem("vg_sync_remote_at", String(JSON.parse(payload).updatedAt));
+  if(ver === localVersion) localStorage.setItem("vg_sync_dirty", "0"); else { clearTimeout(pushTimer); pushTimer = setTimeout(() => syncNow(), 4000); }
+}
+function mergeData(local, remote, localNewer){
+  const P = (v, d) => { try{ return v ? JSON.parse(v) : d; }catch(e){ return d; } };
+  const out = {};
+  const del = new Set([...P(local.vg_deleted, []), ...P(remote.vg_deleted, [])]);
+  out.vg_deleted = JSON.stringify([...del].slice(-3000));
+  SYNC_KEYS.forEach(k => {
+    if(k === "vg_deleted") return;
+    if(!MERGE_KEYS.includes(k)){ out[k] = localNewer ? (local[k] ?? remote[k]) : (remote[k] ?? local[k]); return; }
+    const a = P(local[k], []), b = P(remote[k], []), m = new Map();
+    const ts = x => x.updatedAt || x.at || 0;
+    [...(localNewer ? b : a), ...(localNewer ? a : b)].forEach(x => {
+      if(del.has(k + ":" + x.id)) return;
+      const prev = m.get(x.id);
+      if(!prev || ts(x) >= ts(prev)) m.set(x.id, x);
+    });
+    let arr = [...m.values()];
+    if(k === "vg_projects") arr.sort((x,y) => y.at - x.at);
+    else if(k === "vg_chats") arr.sort((x,y) => (y.updatedAt||y.at) - (x.updatedAt||x.at));
+    else arr.sort((x,y) => y.id - x.id);
+    out[k] = JSON.stringify(arr);
+  });
+  return out;
+}
+async function syncNow(){
+  if(!syncTokenVal()) return;
+  if(syncing){ syncAgain = true; return; }
+  syncing = true; setSyncStatus("Synchronizuję…");
+  let reload = false;
+  try{
+    const id = localStorage.getItem("vg_sync_gist");
+    let remote = null;
+    if(id){ try{ remote = await gistRead(id); }catch(e){ if(e.notFound){ localStorage.removeItem("vg_sync_gist"); } else throw e; } }
+    const remoteAt = +(localStorage.getItem("vg_sync_remote_at") || 0);
+    const dirty = localStorage.getItem("vg_sync_dirty") === "1";
+    if(remote && remote.updatedAt > remoteAt){
+      if(!dirty){ applyData(remote.data); localStorage.setItem("vg_sync_remote_at", String(remote.updatedAt)); reload = true; }
+      else {
+        const merged = mergeData(localData(), remote.data, +(localStorage.getItem("vg_local_at") || 0) > remote.updatedAt);
+        applyData(merged); await gistWrite(merged, localStorage.getItem("vg_sync_gist")); reload = true;
+      }
+    } else if(dirty || !localStorage.getItem("vg_sync_gist")){
+      await gistWrite(localData(), localStorage.getItem("vg_sync_gist"));
+    }
+    setSyncStatus("Zsynchronizowano " + new Date().toLocaleTimeString("pl-PL", { hour:"2-digit", minute:"2-digit" }));
+  }catch(e){ setSyncStatus("Błąd synchronizacji: " + e.message, true); }
+  finally{
+    syncing = false;
+    if(reload){ location.reload(); return; }
+    if(syncAgain){ syncAgain = false; syncNow(); }
+  }
+}
+$("syncConnect").onclick = async () => {
+  const t = $("syncToken").value.trim(); if(!t){ alert("Wklej token GitHub."); return; }
+  localStorage.setItem("vg_sync_token", t); $("syncToken").value = ""; syncUi(); setSyncStatus("Łączę…");
+  try{
+    const list = await gh("/gists?per_page=100");
+    const found = list.find(g => g.description === GIST_DESC || g.description === "kemisy-generator-sync");
+    if(found){
+      localStorage.setItem("vg_sync_gist", found.id);
+      const remote = await gistRead(found.id);
+      if(remote && confirm("Na koncie są już zsynchronizowane dane z innego urządzenia.\n\nOK – pobierz je i zastąp dane na tym urządzeniu (zalecane przy nowym urządzeniu).\nAnuluj – połącz dane z obu urządzeń.")){
+        applyData(remote.data); localStorage.setItem("vg_sync_remote_at", String(remote.updatedAt)); localStorage.setItem("vg_sync_dirty", "0");
+        location.reload(); return;
+      }
+      localStorage.setItem("vg_sync_remote_at", "0"); localStorage.setItem("vg_sync_dirty", "1");
+    } else {
+      localStorage.removeItem("vg_sync_gist"); localStorage.setItem("vg_sync_dirty", "1");
+    }
+    await syncNow();
+  }catch(e){ setSyncStatus("Błąd połączenia: " + e.message, true); }
+};
+$("syncNowBtn").onclick = () => syncNow();
+$("syncOff").onclick = () => {
+  if(!confirm("Rozłączyć synchronizację na tym urządzeniu? Dane zostaną tutaj, ale przestaną się aktualizować.")) return;
+  ["vg_sync_token","vg_sync_gist","vg_sync_remote_at"].forEach(k => localStorage.removeItem(k)); syncUi();
+};
+document.addEventListener("visibilitychange", () => { if(syncTokenVal()) syncNow(); });
+syncUi(); if(syncTokenVal()) syncNow();
+
+// ---------- helpers ----------
+async function copy(t){
+  try{ await navigator.clipboard.writeText(t); }
+  catch(e){ const x = document.createElement("textarea"); x.value = t; document.body.append(x); x.select(); document.execCommand("copy"); x.remove(); }
+  toast("Skopiowano");
+}
+var tt; function toast(m){ const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1600); }
+})();
+</script>
+<script>
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+}
+</script>
+</body></html>

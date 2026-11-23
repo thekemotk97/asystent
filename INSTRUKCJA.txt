@@ -1,0 +1,8 @@
+ASYSTENT KANAŁU – INSTALACJA JAKO APLIKACJA
+
+Wszystkie pliki z tego folderu muszą leżeć razem na serwerze (GitHub Pages):
+index.html, manifest.webmanifest, sw.js, icon-192.png, icon-512.png, icon-maskable-512.png, apple-touch-icon.png
+
+AKTUALIZACJA: gdy dostaniesz nową wersję, podmień w repozytorium tylko plik index.html.
+
+Ten sam index.html działa też otwarty dwuklikiem z dysku (bez instalacji i synchronizacji).
