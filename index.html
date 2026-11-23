@@ -242,6 +242,12 @@ table.st tr:hover td{background:var(--surface-2)}
 .toast{display:flex;gap:12px;align-items:center}
 .toast.show{pointer-events:auto}
 .toast button{background:none;border:none;color:var(--bg);font-weight:700;text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
+.tab-settings{margin-left:auto}
+.subtabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.subtab{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 16px;font-weight:600;cursor:pointer;color:var(--muted)}
+.subtab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.subtab .n{font-size:12px;opacity:.8;margin-left:4px}
+.subview[hidden]{display:none}
 .viewing{background:var(--short-soft);border:1px solid var(--short);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
@@ -256,59 +262,7 @@ table.st tr:hover td{background:var(--surface-2)}
     </div>
   </header>
 
-  <details class="settings panel" id="settings">
-    <summary><span class="dot" id="keyDot"></span><span id="keyStatus">Ustawienia: dodaj klucz API Gemini</span></summary>
-    <label for="apiKey">Klucz API Gemini <span class="hint">(darmowy, z Google AI Studio)</span></label>
-    <div class="inline">
-      <input type="password" id="apiKey" placeholder="Wklej klucz…" autocomplete="off">
-      <button class="btn" id="saveKey" type="button">Zapisz klucz</button>
-    </div>
-    <p class="note">Klucz utworzysz na <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Zostaje tylko w tej przeglądarce.</p>
-    <label for="model">Model</label>
-    <div class="inline">
-      <select id="model">
-        <option value="gemini-flash-latest">gemini-flash-latest (zalecany)</option>
-        <option value="gemini-flash-lite-latest">gemini-flash-lite-latest (szybszy, większy limit)</option>
-      </select>
-      <button class="btn" id="loadModels" type="button">Pobierz listę</button>
-    </div>
-    <p class="note">Jeśli model przestanie działać, kliknij „Pobierz listę” i wybierz inny z nazwą „flash”.</p>
-    <label for="speed">Tryb generowania</label>
-    <select id="speed">
-      <option value="fast">Szybki (zalecany)</option>
-      <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
-    </select>
-    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy główny model jest przeciążony lub wyczerpie limit, automatycznie użyj flash-lite</label>
-    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="lintToggle"> Podpowiedzi stylu (np. za dużo emotek, tytuł zostanie ucięty)</label>
-    <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
-    <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
-    <div class="inline" style="margin-top:10px"><button class="btn" id="saveFooter" type="button">Zapisz stopkę</button></div>
-    <label>Kopia zapasowa <span class="hint">(style, wzory, historia, wybory, stopka – bez klucza)</span></label>
-    <div class="inline">
-      <button class="btn" id="exportAll" type="button">Pobierz kopię</button>
-      <button class="btn" id="importBtn" type="button">Wczytaj kopię</button>
-      <input type="file" id="importFile" accept="application/json,.json" hidden>
-    </div>
-    <p class="note">Rób kopię co kilka filmów, jeśli nie używasz synchronizacji.</p>
-    <p class="note" id="storageInfo"></p>
-    <label>Raport błędów <span class="hint">(do wklejenia, gdy coś nie działa)</span></label>
-    <div class="inline"><span class="note" id="errInfo" style="margin:0"></span><button class="btn small" id="errCopy" type="button">Kopiuj raport</button><button class="btn small" id="errClear" type="button">Wyczyść</button></div>
-    <label for="syncToken">Synchronizacja między urządzeniami <span class="hint">(opcjonalnie, przez darmowe konto GitHub)</span></label>
-    <div class="inline">
-      <input type="password" id="syncToken" placeholder="Token GitHub z uprawnieniem do gistów" autocomplete="off">
-      <button class="btn" id="syncConnect" type="button">Połącz</button>
-    </div>
-    <div class="inline" style="margin-top:8px">
-      <span class="note" id="syncStatus" style="margin:0">Synchronizacja wyłączona.</span>
-      <button class="btn small" id="syncNowBtn" type="button" hidden>Synchronizuj teraz</button>
-      <button class="btn small danger" id="syncOff" type="button" hidden>Rozłącz</button>
-    </div>
-    <p class="note">Synchronizowane są style, wzory, historia, czaty, wyniki, wyjazdy i stopka. Klucz Gemini wpisujesz osobno na każdym urządzeniu.</p>
-    <div id="syncVersionsWrap" hidden>
-      <button class="btn small" id="syncVersions" type="button">Przywróć wcześniejszą wersję danych</button>
-      <div id="syncVersionList" style="margin-top:10px"></div>
-    </div>
-  </details>
+  <div id="keyBanner" class="viewing" hidden style="margin-bottom:16px"><span><span class="dot"></span> Aby generować, dodaj darmowy klucz Gemini.</span><button class="btn small" type="button" id="keyBannerBtn">Otwórz ustawienia</button></div>
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-view="gen" aria-selected="true">Nowy film</button>
@@ -317,9 +271,8 @@ table.st tr:hover td{background:var(--surface-2)}
     <button class="tab" role="tab" data-view="stats" aria-selected="false">Wyniki</button>
     <button class="tab" role="tab" data-view="chat" aria-selected="false">Czat AI</button>
     <button class="tab" role="tab" data-view="playlist" aria-selected="false">Playlisty</button>
-    <button class="tab" role="tab" data-view="examples" aria-selected="false">Wzory <span class="n" id="exCount">0</span></button>
-    <button class="tab" role="tab" data-view="style" aria-selected="false">Styl kanału</button>
     <button class="tab" role="tab" data-view="thumb" aria-selected="false">Miniaturki</button>
+    <button class="tab tab-settings" role="tab" data-view="settings" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16" style="vertical-align:-3px;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Ustawienia</button>
   </nav>
 
   <!-- NEW VIDEO -->
@@ -492,8 +445,95 @@ table.st tr:hover td{background:var(--surface-2)}
     </div>
   </div>
 
-  <!-- EXAMPLES -->
-  <div class="view" id="view-examples" hidden>
+  
+  
+  <!-- SETTINGS -->
+  <div class="view" id="view-settings" hidden>
+    <div class="subtabs" role="tablist">
+      <button class="subtab" type="button" data-sub="app" aria-selected="true">Aplikacja</button>
+      <button class="subtab" type="button" data-sub="style" aria-selected="false">Styl kanału</button>
+      <button class="subtab" type="button" data-sub="examples" aria-selected="false">Wzory <span class="n" id="exCount">0</span></button>
+    </div>
+    <div class="subview" id="sub-app">
+      <section class="panel settings" id="settings">
+        <h2 style="display:flex;align-items:center;gap:10px"><span class="dot" id="keyDot"></span><span id="keyStatus">Ustawienia aplikacji</span></h2>
+
+    <label for="apiKey">Klucz API Gemini <span class="hint">(darmowy, z Google AI Studio)</span></label>
+    <div class="inline">
+      <input type="password" id="apiKey" placeholder="Wklej klucz…" autocomplete="off">
+      <button class="btn" id="saveKey" type="button">Zapisz klucz</button>
+    </div>
+    <p class="note">Klucz utworzysz na <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Zostaje tylko w tej przeglądarce.</p>
+    <label for="model">Model</label>
+    <div class="inline">
+      <select id="model">
+        <option value="gemini-flash-latest">gemini-flash-latest (zalecany)</option>
+        <option value="gemini-flash-lite-latest">gemini-flash-lite-latest (szybszy, większy limit)</option>
+      </select>
+      <button class="btn" id="loadModels" type="button">Pobierz listę</button>
+    </div>
+    <p class="note">Jeśli model przestanie działać, kliknij „Pobierz listę” i wybierz inny z nazwą „flash”.</p>
+    <label for="speed">Tryb generowania</label>
+    <select id="speed">
+      <option value="fast">Szybki (zalecany)</option>
+      <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
+    </select>
+    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy główny model jest przeciążony lub wyczerpie limit, automatycznie użyj flash-lite</label>
+    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="lintToggle"> Podpowiedzi stylu (np. za dużo emotek, tytuł zostanie ucięty)</label>
+    <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
+    <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
+    <div class="inline" style="margin-top:10px"><button class="btn" id="saveFooter" type="button">Zapisz stopkę</button></div>
+    <label>Kopia zapasowa <span class="hint">(style, wzory, historia, wybory, stopka – bez klucza)</span></label>
+    <div class="inline">
+      <button class="btn" id="exportAll" type="button">Pobierz kopię</button>
+      <button class="btn" id="importBtn" type="button">Wczytaj kopię</button>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+    </div>
+    <p class="note">Rób kopię co kilka filmów, jeśli nie używasz synchronizacji.</p>
+    <p class="note" id="storageInfo"></p>
+    <label>Raport błędów <span class="hint">(do wklejenia, gdy coś nie działa)</span></label>
+    <div class="inline"><span class="note" id="errInfo" style="margin:0"></span><button class="btn small" id="errCopy" type="button">Kopiuj raport</button><button class="btn small" id="errClear" type="button">Wyczyść</button></div>
+    <label for="syncToken">Synchronizacja między urządzeniami <span class="hint">(opcjonalnie, przez darmowe konto GitHub)</span></label>
+    <div class="inline">
+      <input type="password" id="syncToken" placeholder="Token GitHub z uprawnieniem do gistów" autocomplete="off">
+      <button class="btn" id="syncConnect" type="button">Połącz</button>
+    </div>
+    <div class="inline" style="margin-top:8px">
+      <span class="note" id="syncStatus" style="margin:0">Synchronizacja wyłączona.</span>
+      <button class="btn small" id="syncNowBtn" type="button" hidden>Synchronizuj teraz</button>
+      <button class="btn small danger" id="syncOff" type="button" hidden>Rozłącz</button>
+    </div>
+    <p class="note">Synchronizowane są style, wzory, historia, czaty, wyniki, wyjazdy i stopka. Klucz Gemini wpisujesz osobno na każdym urządzeniu.</p>
+    <div id="syncVersionsWrap" hidden>
+      <button class="btn small" id="syncVersions" type="button">Przywróć wcześniejszą wersję danych</button>
+      <div id="syncVersionList" style="margin-top:10px"></div>
+    </div>
+  
+      </section>
+    </div>
+<div class="subview" id="sub-style" hidden>
+    <div class="stack">
+      <section class="panel">
+        <h2>Przewodnik stylu: filmy, opisy, tagi, playlisty</h2>
+        <p class="note" style="margin-top:0">Trafia do AI przy każdym generowaniu. Pisz zasady krótko i konkretnie.</p>
+        <textarea id="styleGuide" style="min-height:480px;margin-top:12px"></textarea>
+        <div class="inline" style="margin-top:10px">
+          <button class="btn" id="saveStyle" type="button">Zapisz styl</button>
+          <button class="btn" id="resetStyle" type="button">Przywróć domyślny</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Przewodnik stylu: shortsy</h2>
+        <textarea id="shortsGuide" style="min-height:420px"></textarea>
+        <div class="inline" style="margin-top:10px">
+          <button class="btn" id="saveShortsStyle" type="button">Zapisz styl shortsów</button>
+          <button class="btn" id="resetShortsStyle" type="button">Przywróć domyślny</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+<div class="subview" id="sub-examples" hidden>
     <div class="grid">
       <div class="stack">
         <section class="panel">
@@ -532,27 +572,6 @@ table.st tr:hover td{background:var(--surface-2)}
     </div>
   </div>
 
-  <!-- STYLE -->
-  <div class="view" id="view-style" hidden>
-    <div class="stack">
-      <section class="panel">
-        <h2>Przewodnik stylu: filmy, opisy, tagi, playlisty</h2>
-        <p class="note" style="margin-top:0">Trafia do AI przy każdym generowaniu. Pisz zasady krótko i konkretnie.</p>
-        <textarea id="styleGuide" style="min-height:480px;margin-top:12px"></textarea>
-        <div class="inline" style="margin-top:10px">
-          <button class="btn" id="saveStyle" type="button">Zapisz styl</button>
-          <button class="btn" id="resetStyle" type="button">Przywróć domyślny</button>
-        </div>
-      </section>
-      <section class="panel">
-        <h2>Przewodnik stylu: shortsy</h2>
-        <textarea id="shortsGuide" style="min-height:420px"></textarea>
-        <div class="inline" style="margin-top:10px">
-          <button class="btn" id="saveShortsStyle" type="button">Zapisz styl shortsów</button>
-          <button class="btn" id="resetShortsStyle" type="button">Przywróć domyślny</button>
-        </div>
-      </section>
-    </div>
   </div>
 
   <!-- THUMB REVIEW -->
@@ -618,9 +637,7 @@ table.st tr:hover td{background:var(--surface-2)}
   <button type="button" data-view="stats">Wyniki</button>
   <button type="button" data-view="thumb">Miniaturki</button>
   <button type="button" data-view="playlist">Playlisty</button>
-  <button type="button" data-view="examples">Wzory</button>
-  <button type="button" data-view="style">Styl kanału</button>
-  <button type="button" data-settings="1">Ustawienia</button>
+  <button type="button" data-view="settings">Ustawienia, styl i wzory</button>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -770,8 +787,9 @@ $("shortsGuide").value = store.get("vg_shorts_style", DEFAULT_SHORTS);
 const savedModel = store.get("vg_model","gemini-flash-latest"); ensureOption(savedModel); $("model").value = savedModel;
 
 function ensureOption(name){ const sel = $("model"); if(![...sel.options].some(o => o.value === name)){ const o = document.createElement("option"); o.value = o.textContent = name; sel.appendChild(o); } }
-function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia: klucz API zapisany" : "Ustawienia: dodaj klucz API Gemini"; }
-refreshKey(); if(!$("apiKey").value) $("settings").open = true;
+function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia aplikacji" : "Ustawienia aplikacji – dodaj klucz API Gemini"; $("keyBanner").hidden = has; }
+refreshKey();
+$("keyBannerBtn").onclick = () => openSettings("app", "apiKey");
 $("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); refreshKey(); toast("Klucz zapisany"); };
 $("model").onchange = () => { store.set("vg_model", $("model").value); try{ localStorage.removeItem("vg_think_compat"); }catch(e){} };
 $("speed").value = store.get("vg_speed", "fast");
@@ -835,10 +853,17 @@ document.querySelectorAll("#bottomNav button").forEach(b => b.onclick = () => {
   showTab(b.dataset.view); window.scrollTo({ top:0 });
 });
 document.querySelectorAll("#moreSheet button").forEach(b => b.onclick = () => {
-  if(b.dataset.settings){ closeSheet(); $("settings").open = true; $("settings").scrollIntoView({ behavior:"smooth", block:"start" }); return; }
   showTab(b.dataset.view); window.scrollTo({ top:0 });
 });
 $("sheetBg").onclick = closeSheet;
+function showSub(name){
+  document.querySelectorAll(".subtab").forEach(b => b.setAttribute("aria-selected", b.dataset.sub === name));
+  document.querySelectorAll(".subview").forEach(v => v.hidden = v.id !== "sub-" + name);
+  try{ localStorage.setItem("vg_sub", name); }catch(e){}
+}
+document.querySelectorAll(".subtab").forEach(b => b.onclick = () => showSub(b.dataset.sub));
+function openSettings(sub, focusId){ showTab("settings"); showSub(sub || "app"); window.scrollTo({ top:0 }); if(focusId) setTimeout(() => $(focusId)?.focus(), 100); }
+showSub(localStorage.getItem("vg_sub") || "app");
 showTab("gen");
 
 function syncFormat(){
@@ -1002,7 +1027,7 @@ function apiError(status, j, model){
 }
 function apiKeyOrThrow(){
   const key = $("apiKey").value.trim();
-  if(!key){ $("settings").open = true; throw new Error("Dodaj klucz API Gemini w ustawieniach (u góry)."); }
+  if(!key){ throw new Error("Dodaj klucz API Gemini w zakładce Ustawienia."); }
   return key;
 }
 const activeReqs = new Set();
