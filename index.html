@@ -468,8 +468,8 @@ table.st tr:hover td{background:var(--surface-2)}
     <label for="model">Model</label>
     <div class="inline">
       <select id="model">
-        <option value="gemini-flash-latest">gemini-flash-latest (zalecany)</option>
-        <option value="gemini-flash-lite-latest">gemini-flash-lite-latest (szybszy, większy limit)</option>
+        <option value="gemini-flash-lite-latest">Flash-Lite – szybki i rzadziej przeciążony (domyślny)</option>
+        <option value="gemini-flash-latest">Flash – trochę lepsze teksty, częściej przeciążony</option>
       </select>
       <button class="btn" id="loadModels" type="button">Pobierz listę</button>
     </div>
@@ -479,7 +479,7 @@ table.st tr:hover td{background:var(--surface-2)}
       <option value="fast">Szybki (zalecany)</option>
       <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
     </select>
-    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy główny model jest przeciążony lub wyczerpie limit, automatycznie użyj flash-lite</label>
+    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy wybrany model jest przeciążony lub wyczerpie limit, automatycznie spróbuj innych modeli</label>
     <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="lintToggle"> Podpowiedzi stylu (np. za dużo emotek, tytuł zostanie ucięty)</label>
     <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
     <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
@@ -785,11 +785,21 @@ if(!localStorage.getItem("vg_mig_soft1")){
 }
 $("styleGuide").value = store.get("vg_style", DEFAULT_STYLE);
 $("shortsGuide").value = store.get("vg_shorts_style", DEFAULT_SHORTS);
-const savedModel = store.get("vg_model","gemini-flash-latest"); ensureOption(savedModel); $("model").value = savedModel;
+const savedModel = store.get("vg_model","gemini-flash-lite-latest"); ensureOption(savedModel); $("model").value = savedModel;
 
 function ensureOption(name){ const sel = $("model"); if(![...sel.options].some(o => o.value === name)){ const o = document.createElement("option"); o.value = o.textContent = name; sel.appendChild(o); } }
 function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia aplikacji" : "Ustawienia aplikacji – dodaj klucz API Gemini"; $("keyBanner").hidden = has; }
 refreshKey();
+(async () => {
+  const key = $("apiKey").value.trim(); if(!key) return;
+  const at = +(localStorage.getItem("vg_models_at") || 0); if(Date.now() - at < 86400000) return;
+  try{
+    const r = await fetch(API + "/models?pageSize=200", { headers:{ "x-goog-api-key": key } }); if(!r.ok) return;
+    const j = await r.json();
+    const names = (j.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes("generateContent") && /gemini/i.test(m.name)).map(m => m.name.replace(/^models\//,""));
+    if(names.length){ localStorage.setItem("vg_models_cache", JSON.stringify(names)); localStorage.setItem("vg_models_at", String(Date.now())); }
+  }catch(e){}
+})();
 $("keyBannerBtn").onclick = () => openSettings("app", "apiKey");
 $("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); refreshKey(); toast("Klucz zapisany"); };
 $("model").onchange = () => { store.set("vg_model", $("model").value); try{ localStorage.removeItem("vg_think_compat"); }catch(e){} };
@@ -812,7 +822,7 @@ $("loadModels").onclick = async () => {
     const r = await fetch(API + "/models?pageSize=200", { headers:{ "x-goog-api-key": key } });
     const j = await r.json(); if(!r.ok) throw new Error(j.error?.message || r.status);
     const names = (j.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes("generateContent") && /gemini/i.test(m.name)).map(m => m.name.replace(/^models\//,""));
-    names.forEach(ensureOption); toast("Dodano " + names.length + " modeli");
+    names.forEach(ensureOption); try{ localStorage.setItem("vg_models_cache", JSON.stringify(names)); localStorage.setItem("vg_models_at", String(Date.now())); }catch(e){} toast("Dodano " + names.length + " modeli");
   }catch(e){ alert("Nie udało się pobrać listy: " + e.message); }
   $("loadModels").disabled = false;
 };
@@ -1016,11 +1026,11 @@ function apiError(status, j, model){
   const retry = parseInt((details.find(d => d.retryDelay) || {}).retryDelay || "", 10);
   const daily = /PerDay/i.test(quotaIds) || /per.?day/i.test(msg);
   let e;
-  if(status === 429 && daily) e = new Error(`Wykorzystany dzienny darmowy limit dla modelu ${model}. Odnowi się około 9:00 rano. Do tego czasu wybierz w ustawieniach inny model (np. flash-lite).`);
+  if(status === 429 && daily) e = new Error(`Wykorzystany dzienny darmowy limit dla modelu ${model}. Odnowi się około 9:00 rano. Do tego czasu zmień model w ustawieniach (Flash ↔ Flash-Lite) – każdy ma osobny limit.`);
   else if(status === 429) e = new Error("Za dużo zapytań w krótkim czasie (limit na minutę)." + (retry ? ` Spróbuj ponownie za ${retry} s.` : " Odczekaj minutę i spróbuj ponownie."));
   else if(status === 400 && /API key/i.test(msg)) e = new Error("Klucz API jest nieprawidłowy. Sprawdź go w ustawieniach.");
   else if(status === 404) e = new Error("Ten model nie jest już dostępny. Kliknij „Pobierz listę” w ustawieniach i wybierz inny.");
-  else if(status === 503) e = new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
+  else if(status === 503 || /high demand|overloaded/i.test(msg)) e = new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
   else e = new Error(msg);
   if(status === 400 && /think/i.test(msg)) e.thinkingIssue = true;
   e.status = status; e.daily = daily;
@@ -1038,7 +1048,7 @@ function makeReq(firstMs){
   const ctl = { why: null, reader: null, abort(why){
     if(ctl.why) return; ctl.why = why;
     try{ ctl.reader && ctl.reader.cancel(); }catch(e){}
-    rejectFn(new Error(why === "cancel" ? "Anulowano." : "Gemini nie odpowiada od dłuższego czasu. Spróbuj ponownie, a jeśli to się powtarza, w ustawieniach wybierz model „flash-lite” albo tryb „Szybki”."));
+    rejectFn(new Error(why === "cancel" ? "Anulowano." : "Gemini nie odpowiada od dłuższego czasu. Spróbuj ponownie, a jeśli to się powtarza, w ustawieniach zmień model albo włącz tryb „Szybki”."));
   } };
   const arm = ms => { clearTimeout(t); t = setTimeout(() => ctl.abort("timeout"), ms); };
   arm(firstMs); activeReqs.add(ctl);
@@ -1114,16 +1124,38 @@ async function withThinking(body, run){
 }
 const FALLBACK_MODEL = "gemini-flash-lite-latest";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+function fallbackModels(main){
+  let cached = []; try{ cached = JSON.parse(localStorage.getItem("vg_models_cache") || "[]"); }catch(e){}
+  const ok = n => /flash/i.test(n) && !/(image|tts|audio|live|embed|vision|thinking-exp|learnlm)/i.test(n);
+  const alt = main === "gemini-flash-lite-latest" ? "gemini-flash-latest" : "gemini-flash-lite-latest";
+  const extra = cached.filter(ok).filter(n => n !== main && n !== alt)
+    .sort((a,b) => (/latest/.test(b) - /latest/.test(a)) || (/preview|exp/.test(a) - /preview|exp/.test(b)) || b.localeCompare(a));
+  return [...new Set([main, alt, ...extra.slice(0, 2)])];
+}
 async function withModels(run){
   const main = $("model").value;
-  let err;
-  try{ return await run(main); }catch(e){ err = e; }
-  if(err.status === 503){ await sleep(3000); try{ return await run(main); }catch(e){ err = e; } }
-  if((err.status === 503 || err.status === 429) && main !== FALLBACK_MODEL && store.get("vg_fallback","1") === "1"){
-    toast(err.status === 503 ? "Główny model przeciążony – używam flash-lite" : "Limit głównego modelu – używam flash-lite");
-    try{ return await run(FALLBACK_MODEL); }catch(e2){ logError("gemini " + FALLBACK_MODEL, e2); throw e2; }
+  const chain = store.get("vg_fallback","1") === "1" ? fallbackModels(main) : [main];
+  let err, tried = 0;
+  for(let mi = 0; mi < chain.length; mi++){
+    const m = chain[mi];
+    const tries = mi === 0 ? 3 : 2;
+    for(let a = 0; a < tries; a++){
+      try{ return await run(m); }
+      catch(e){
+        err = e; tried++;
+        if(e.message === "Anulowano.") throw e;
+        const busy = e.status === 503 || e.status === 500 || /high demand|overloaded|unavailable/i.test(e.message || "");
+        if(busy && a < tries - 1){ toast(`Gemini przeciążony – ponawiam (${a + 2}/${tries})…`); await sleep([2500, 6000, 10000][a]); continue; }
+        if(busy || e.status === 429 || e.status === 404) break;
+        logError("gemini " + m, e); throw e;
+      }
+    }
+    if(mi < chain.length - 1) toast(`Model ${m} nie odpowiada – próbuję ${chain[mi + 1]}`);
   }
-  if(err.message !== "Anulowano.") logError("gemini " + main, err);
+  logError("gemini " + chain.join(" → "), err);
+  if(err && (err.status === 503 || err.status === 500 || /high demand|overloaded/i.test(err.message || ""))){
+    const e2 = new Error(`Serwery Gemini są teraz przeciążone dla darmowych kluczy (sprawdzone modele: ${chain.join(", ")}). Zwykle mija to w ciągu kilkunastu minut – spróbuj ponownie później.`); e2.status = err.status; throw e2;
+  }
   throw err;
 }
 const geminiRequest = body => withModels(m => withThinking(body, b => geminiCall(b, m)));
