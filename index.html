@@ -643,7 +643,7 @@ table.st tr:hover td{background:var(--surface-2)}
 <div class="toast" id="toast"></div>
 <script>
 // ---------- error log ----------
-const APP_VERSION = "2026.11.23-b";
+const APP_VERSION = "2026.11.23-c";
 function logError(where, err){
   try{
     const list = JSON.parse(localStorage.getItem("vg_errlog") || "[]");
@@ -1092,7 +1092,7 @@ async function geminiStream(body, onUpdate, model){
       const line = buf.slice(0, idx).trim(); buf = buf.slice(idx + 1);
       if(!line.startsWith("data:")) continue;
       let j; try{ j = JSON.parse(line.slice(5).trim()); }catch(e){ continue; }
-      if(j.error) throw new Error(j.error.message || "Błąd podczas generowania.");
+      if(j.error){ const e = apiError(j.error.code || 503, { error: j.error }, model); e.midStream = true; if(!e.status || e.status < 500) e.status = /overload|demand|unavailable/i.test(j.error.message||"") ? 503 : e.status; throw e; }
       for(const part of (j.candidates?.[0]?.content?.parts || [])){
         if(part.thought) thought = part.text || thought; else if(part.text) text += part.text;
       }
@@ -1140,7 +1140,7 @@ async function withModels(run){
     const m = chain[mi];
     const tries = mi === 0 ? 3 : 2;
     for(let a = 0; a < tries; a++){
-      try{ return await run(m); }
+      try{ return await run(m, a); }
       catch(e){
         err = e; tried++;
         if(e.message === "Anulowano.") throw e;
@@ -1159,14 +1159,22 @@ async function withModels(run){
   throw err;
 }
 const geminiRequest = body => withModels(m => withThinking(body, b => geminiCall(b, m)));
-const geminiStreamReq = (body, onUpdate) => withModels(m => withThinking(body, b => geminiStream(b, onUpdate, m)));
+const geminiStreamReq = (body, onUpdate) => withModels((m, a) => withThinking(body, b => {
+  if(a > 0 || m !== $("model").value){ try{ onUpdate && onUpdate({ retry:true }); }catch(e){} return geminiCall(b, m); }
+  return geminiStream(b, onUpdate, m);
+}));
 async function callGemini(parts, json, temp, onUpdate){
   const body = { contents:[{ role:"user", parts }], generationConfig:{ temperature: temp ?? 0.9 } };
   if(json) body.generationConfig.responseMimeType = "application/json";
   const text = onUpdate ? await geminiStreamReq(body, onUpdate) : await geminiRequest(body);
   if(!json) return text;
-  try{ return JSON.parse(text.replace(/```json|```/g,"").trim()); }
-  catch(e){ throw new Error("Odpowiedź miała zły format. Spróbuj jeszcze raz."); }
+  const parse = t => JSON.parse(t.replace(/```json|```/g,"").trim());
+  try{ return parse(text); }
+  catch(e){
+    try{ onUpdate && onUpdate({ retry:true }); }catch(x){}
+    const t2 = await geminiRequest(body);
+    try{ return parse(t2); }catch(e2){ logError("json", new Error("Zły format odpowiedzi: " + t2.slice(0, 200))); throw new Error("Odpowiedź miała zły format. Spróbuj jeszcze raz."); }
+  }
 }
 
 // ---------- progress ----------
@@ -1200,11 +1208,14 @@ function showProgress(target, rowsDef, hint){
   target.innerHTML = ""; target.append(box);
   const iv = setInterval(() => {
     timer.textContent = Math.round((Date.now() - start) / 1000) + " s";
-    Object.values(rows).forEach(r => { if(!r.got && !r.fin){ const w = Math.min(18, 3 + (Date.now() - r.start) / 1500); r.bar.firstChild.style.width = w + "%"; const el2 = Date.now() - r.start; if(el2 > 70000) r.st.textContent = "To trwa dłużej niż zwykle – Gemini może być teraz przeciążony. Możesz poczekać albo kliknąć „Anuluj” i spróbować ponownie."; else if(el2 > 6000 && !r.think.textContent) r.st.textContent = "AI analizuje Wasz styl i planuje odpowiedź…"; } });
+    Object.values(rows).forEach(r => { if(!r.got && !r.fin && !r.waiting){ const w = Math.min(18, 3 + (Date.now() - r.start) / 1500); r.bar.firstChild.style.width = w + "%"; const el2 = Date.now() - r.start; if(r.retrying){ if(el2 > 70000) r.st.textContent = "Wciąż ponawiam – Gemini jest mocno obciążony. Możesz poczekać albo anulować."; } else if(el2 > 70000) r.st.textContent = "To trwa dłużej niż zwykle – Gemini może być teraz przeciążony. Możesz poczekać albo kliknąć „Anuluj” i spróbować ponownie."; else if(el2 > 6000 && !r.think.textContent) r.st.textContent = "AI analizuje Wasz styl i planuje odpowiedź…"; } });
   }, 500);
   return {
+    wait(key, msg){ const r = rows[key]; if(!r) return; r.waiting = true; r.st.textContent = msg; },
+    begin(key){ const r = rows[key]; if(!r) return; r.waiting = false; r.start = Date.now(); r.st.textContent = "Czytam Wasz styl, wzory i historię…"; },
     update(key, u){
       const r = rows[key]; if(!r || r.fin) return;
+      if(u.retry){ r.got = false; r.start = Date.now(); r.prev.innerHTML = ""; r.shown = 0; r.cnt.textContent = ""; r.think.textContent = ""; r.st.textContent = "Google przerwał odpowiedź – ponawiam bez podglądu na żywo (to może chwilę potrwać)…"; r.retrying = true; return; }
       if(u.thought && !u.text){ r.think.textContent = "💭 " + thoughtTitle(u.thought); r.st.textContent = "AI zastanawia się nad odpowiedzią…"; }
       if(u.text){
         r.got = true; r.think.textContent = "";
@@ -1245,10 +1256,15 @@ $("generate").onclick = async () => {
   const prog = showProgress($("output"), [["film", "Film: tytuły, opis, tagi i miniaturki", 2400], ...(withSh ? [["shorts", "Shortsy", 1600 * Math.max(1, scenes.length || 2)]] : [])],
     "Zwykle trwa to 20–60 sekund. Tytuły pojawiają się tutaj na bieżąco, gdy AI je pisze.");
   if(window.innerWidth < 860) $("output").scrollIntoView({ behavior:"smooth", block:"start" });
-  const track = (key, promise) => promise.then(v => { prog.done(key); return v; }, e => { prog.fail(key, e.message); throw e; });
-  const jobs = [track("film", callGemini([{ text: buildPrompt(i, p.id) }], true, undefined, u => prog.update("film", u)))];
-  if(withSh) jobs.push(track("shorts", callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true, undefined, u => prog.update("shorts", u))));
-  const [g, sh] = await Promise.allSettled(jobs);
+  const settle = pr => pr.then(value => ({ status:"fulfilled", value }), reason => ({ status:"rejected", reason }));
+  const track = (key, fn) => { prog.begin(key); return settle(fn().then(v => { prog.done(key); return v; }, e => { prog.fail(key, e.message); throw e; })); };
+  if(withSh) prog.wait("shorts", "Czeka, aż skończy się film – po kolei jest pewniej przy obciążonych serwerach.");
+  const g = await track("film", () => callGemini([{ text: buildPrompt(i, p.id) }], true, undefined, u => prog.update("film", u)));
+  let sh = null;
+  if(withSh){
+    if(g.status === "fulfilled") await sleep(800);
+    sh = await track("shorts", () => callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true, undefined, u => prog.update("shorts", u)));
+  }
   prog.stop();
   btn.disabled = false; btn.textContent = "Generuj";
   const errs = [];
