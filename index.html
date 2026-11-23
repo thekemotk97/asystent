@@ -161,6 +161,87 @@ details.settings summary::-webkit-details-marker{display:none}
 .prog-prev li{font-size:14px;background:var(--surface-2);border-radius:8px;padding:5px 10px;animation:fadein .3s ease}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.prog-bar span{transition:none}.prog-prev li{animation:none}}
+.regen{background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:10px;margin:0 0 12px}
+.regen[hidden]{display:none}
+.regen .count{display:block;margin-top:6px;white-space:normal}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi .v{font-family:"Bricolage Grotesque",sans-serif;font-size:28px;font-weight:800;line-height:1.1;margin-top:4px}
+.kpi .l{font-size:13px;color:var(--muted)}
+.kpi .s{font-size:12px;color:var(--muted);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.chart svg{width:100%;height:auto;display:block}
+.chart .ax{stroke:var(--line)}
+.chart text{fill:var(--muted);font-size:11px;font-family:"Instrument Sans",system-ui,sans-serif}
+.chart .lbl{fill:var(--ink);font-size:12px}
+.chart .q{fill:var(--muted);font-size:11px;font-style:italic}
+.tablewrap{overflow-x:auto}
+table.st{width:100%;border-collapse:collapse;font-size:14px;min-width:760px}
+table.st th,table.st td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.st th{font-size:12px;color:var(--muted);font-weight:600;cursor:pointer;user-select:none}
+table.st th:first-child,table.st td:first-child{text-align:left;white-space:normal;min-width:240px}
+table.st tr:hover td{background:var(--surface-2)}
+.good{color:var(--ok);font-weight:600}.bad{color:var(--rec);font-weight:600}
+.mapgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 14px;margin-top:10px}
+.mapgrid label{margin:6px 0 4px}
+.rep-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.rep-card{background:var(--surface-2);border-radius:12px;padding:14px 16px}
+.rep-card h4{margin:0 0 8px;font-family:"Bricolage Grotesque",sans-serif;font-size:16px}
+.rep-card ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.rep-card.ok{border-left:4px solid var(--ok)}.rep-card.no{border-left:4px solid var(--rec)}
+.action{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.action input{margin-top:4px}
+.action.done span{text-decoration:line-through;color:var(--muted)}
+.rule{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;background:var(--surface-2);border-radius:10px;margin-top:6px}
+.shot{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px 12px;background:var(--surface-2);border-radius:12px;border:1px solid transparent;cursor:pointer}
+.shot input{width:22px;height:22px;margin-top:1px;accent-color:var(--ok)}
+.shot.done{background:var(--ok-soft);border-color:var(--ok)}
+.shot.done .stx{text-decoration:line-through;color:var(--muted)}
+.shot .stx{font-weight:600}
+.shot .tip{font-size:13px;color:var(--muted);margin-top:2px}
+.shot .x{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px}
+.cat{display:inline-block;font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;margin-right:6px;color:#fff;vertical-align:1px}
+.cat-hook{background:#DD2E28}.cat-miniatura{background:#B4600B}.cat-short{background:#6C3BD1}.cat-przebitka{background:#5A6476}.cat-jedzenie{background:#1E7A4F}.cat-opowiesc{background:#2F6FDB}.cat-zakonczenie{background:#8A3FA0}.cat-inne{background:#5A6476}
+.day-h{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:16px;margin:16px 0 8px}
+.note-item{background:var(--surface-2);border-radius:10px;padding:10px 12px;white-space:pre-wrap}
+.note-item time{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.progress-line{height:8px;background:var(--surface-2);border-radius:999px;overflow:hidden;margin-top:6px}
+.progress-line span{display:block;height:100%;background:var(--ok)}
+.yt-mock{display:grid;gap:14px;background:#0f0f0f;border-radius:14px;padding:14px;color:#f1f1f1;max-width:400px}
+.yt-feed canvas{width:100%;border-radius:10px;display:block}
+.yt-meta{display:flex;gap:10px;margin-top:8px}
+.yt-av{width:32px;height:32px;border-radius:50%;background:#DD2E28;flex:none}
+.yt-row{display:grid;grid-template-columns:168px 1fr;gap:10px;align-items:start}
+.yt-row canvas{width:168px;height:94px;border-radius:8px;display:block}
+.yt-t{font-size:14px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-family:Roboto,Arial,sans-serif}
+.yt-s{font-size:12px;color:#aaa;margin-top:2px;font-family:Roboto,Arial,sans-serif}
+.social{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.social textarea{min-height:170px}
+.chat-item .snip{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lint{margin-top:6px;font-size:13px;color:var(--warn);display:grid;gap:2px}
+.titles li.divider{background:none;padding:6px 2px 0;font-size:12px;color:var(--muted);font-weight:600;display:block;border:none}
+.titles li.rec{border-color:var(--warn);background:color-mix(in srgb, var(--warn) 10%, var(--surface-2))}
+.titles li.rec.chosen{border-color:var(--ok);background:var(--ok-soft)}
+.rec-badge{font-size:12px;font-weight:700;color:var(--warn);margin-bottom:2px}
+.rec-why{color:var(--ink) !important;opacity:.8}
+.thumb.rec{outline:2px solid var(--warn)}
+.bottom-nav{display:none}
+@media (max-width:760px){
+  .tabs{display:none}
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}
+  .bottom-nav button{background:none;border:none;display:grid;justify-items:center;gap:2px;padding:6px 0;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;border-radius:10px}
+  .bottom-nav button.on{color:var(--rec)}
+  .bottom-nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:30}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:18px 18px 0 0;padding:14px 14px calc(18px + env(safe-area-inset-bottom,0px));display:grid;gap:6px;box-shadow:0 -8px 30px rgba(0,0,0,.2)}
+.sheet button{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:16px;font-weight:600;text-align:left;cursor:pointer}
+.sheet[hidden],.sheet-bg[hidden]{display:none}
+.toast{display:flex;gap:12px;align-items:center}
+.toast.show{pointer-events:auto}
+.toast button{background:none;border:none;color:var(--bg);font-weight:700;text-decoration:underline;cursor:pointer;font-size:14px;padding:0}
 .viewing{background:var(--short-soft);border:1px solid var(--short);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
@@ -197,6 +278,8 @@ details.settings summary::-webkit-details-marker{display:none}
       <option value="fast">Szybki (zalecany)</option>
       <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
     </select>
+    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy główny model jest przeciążony lub wyczerpie limit, automatycznie użyj flash-lite</label>
+    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="lintToggle"> Podpowiedzi stylu (np. za dużo emotek, tytuł zostanie ucięty)</label>
     <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
     <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
     <div class="inline" style="margin-top:10px"><button class="btn" id="saveFooter" type="button">Zapisz stopkę</button></div>
@@ -207,6 +290,9 @@ details.settings summary::-webkit-details-marker{display:none}
       <input type="file" id="importFile" accept="application/json,.json" hidden>
     </div>
     <p class="note">Rób kopię co kilka filmów, jeśli nie używasz synchronizacji.</p>
+    <p class="note" id="storageInfo"></p>
+    <label>Raport błędów <span class="hint">(do wklejenia, gdy coś nie działa)</span></label>
+    <div class="inline"><span class="note" id="errInfo" style="margin:0"></span><button class="btn small" id="errCopy" type="button">Kopiuj raport</button><button class="btn small" id="errClear" type="button">Wyczyść</button></div>
     <label for="syncToken">Synchronizacja między urządzeniami <span class="hint">(opcjonalnie, przez darmowe konto GitHub)</span></label>
     <div class="inline">
       <input type="password" id="syncToken" placeholder="Token GitHub z uprawnieniem do gistów" autocomplete="off">
@@ -217,17 +303,23 @@ details.settings summary::-webkit-details-marker{display:none}
       <button class="btn small" id="syncNowBtn" type="button" hidden>Synchronizuj teraz</button>
       <button class="btn small danger" id="syncOff" type="button" hidden>Rozłącz</button>
     </div>
-    <p class="note">Synchronizowane są style, wzory, historia, czaty i stopka. Klucz Gemini wpisujesz osobno na każdym urządzeniu.</p>
+    <p class="note">Synchronizowane są style, wzory, historia, czaty, wyniki, wyjazdy i stopka. Klucz Gemini wpisujesz osobno na każdym urządzeniu.</p>
+    <div id="syncVersionsWrap" hidden>
+      <button class="btn small" id="syncVersions" type="button">Przywróć wcześniejszą wersję danych</button>
+      <div id="syncVersionList" style="margin-top:10px"></div>
+    </div>
   </details>
 
   <nav class="tabs" role="tablist">
     <button class="tab" role="tab" data-view="gen" aria-selected="true">Nowy film</button>
+    <button class="tab" role="tab" data-view="trip" aria-selected="false">W trasie</button>
     <button class="tab" role="tab" data-view="history" aria-selected="false">Historia <span class="n" id="histCount">0</span></button>
+    <button class="tab" role="tab" data-view="stats" aria-selected="false">Wyniki</button>
     <button class="tab" role="tab" data-view="chat" aria-selected="false">Czat AI</button>
     <button class="tab" role="tab" data-view="playlist" aria-selected="false">Playlisty</button>
     <button class="tab" role="tab" data-view="examples" aria-selected="false">Wzory <span class="n" id="exCount">0</span></button>
     <button class="tab" role="tab" data-view="style" aria-selected="false">Styl kanału</button>
-    <button class="tab" role="tab" data-view="thumb" aria-selected="false">Oceń miniaturkę</button>
+    <button class="tab" role="tab" data-view="thumb" aria-selected="false">Miniaturki</button>
   </nav>
 
   <!-- NEW VIDEO -->
@@ -280,6 +372,7 @@ details.settings summary::-webkit-details-marker{display:none}
     <div class="chat-layout">
       <aside class="panel chat-side">
         <button class="btn primary" id="newChat" type="button">Nowy czat</button>
+        <input type="search" id="chatSearch" placeholder="Szukaj w czatach…" aria-label="Szukaj w czatach" style="margin-top:12px">
         <ul class="list" id="chatList"></ul>
       </aside>
       <section class="panel chat-main">
@@ -293,6 +386,23 @@ details.settings summary::-webkit-details-marker{display:none}
     </div>
   </div>
 
+  <!-- TRIP -->
+  <div class="view" id="view-trip" hidden>
+    <div class="grid">
+      <section class="panel">
+        <h2>W trasie</h2>
+        <p class="note" style="margin-top:0">Przed wyjazdem: plan i lista ujęć do nagrania. Na miejscu: odhaczanie i szybkie notatki. Po powrocie: jednym kliknięciem do nowego filmu.</p>
+        <label for="tripSel">Wyjazd</label>
+        <div class="inline"><select id="tripSel" aria-label="Wybierz wyjazd"></select><button class="btn small" id="tripNew" type="button">+ Nowy wyjazd</button></div>
+        <div id="tripForm"></div>
+      </section>
+      <div class="stack">
+        <section id="tripShots"></section>
+        <section id="tripNotes"></section>
+      </div>
+    </div>
+  </div>
+
   <!-- HISTORY -->
   <div class="view" id="view-history" hidden>
     <section class="panel">
@@ -301,6 +411,44 @@ details.settings summary::-webkit-details-marker{display:none}
       <ul class="list" id="histList" style="margin-top:14px"></ul>
       <div class="empty" id="histEmpty" style="padding:24px;margin-top:14px">Nie ma jeszcze historii. Każde generowanie trafi tutaj razem z Twoimi wyborami.</div>
     </section>
+  </div>
+
+  <!-- STATS -->
+  <div class="view" id="view-stats" hidden>
+    <div class="stack">
+      <section class="panel">
+        <div class="block-head" style="margin-bottom:6px">
+          <h2 style="margin:0">Wyniki kanału</h2>
+          <div class="inline">
+            <button class="btn" id="stImportBtn" type="button">Wczytaj CSV z YouTube Studio</button>
+            <input type="file" id="stFile" accept=".csv,text/csv" hidden>
+            <button class="btn" id="stAddBtn" type="button">+ Dodaj ręcznie</button>
+          </div>
+        </div>
+        <details class="note">
+          <summary style="cursor:pointer">Jak pobrać plik CSV z YouTube Studio?</summary>
+          <ol style="margin:8px 0 0;padding-left:20px">
+            <li>Otwórz YouTube Studio na komputerze i wejdź w „Analityka”.</li>
+            <li>Kliknij „Tryb zaawansowany” w prawym górnym rogu.</li>
+            <li>Ustaw zakres dat (np. „Cały okres”) i zostaw podział na filmy (zakładka „Treść”).</li>
+            <li>Przez „Wskaźniki” dodaj kolumny: Wyświetlenia, Wyświetlenia miniatur (impresje), CTR, Średni czas oglądania, Średni odsetek obejrzenia, Subskrybenci.</li>
+            <li>Kliknij ikonę pobierania (strzałka w dół) i wybierz „Wartości rozdzielone przecinkami (.csv)”. W pobranym pliku ZIP znajdziesz plik z danymi tabeli – wczytaj go tutaj.</li>
+          </ol>
+        </details>
+        <div id="stMap" hidden></div>
+        <div id="stForm" hidden></div>
+      </section>
+      <div id="stDash"></div>
+      <section class="panel" id="stAiPanel">
+        <h2>Analiza AI</h2>
+        <p class="note" style="margin-top:0">AI porównuje wyniki z Waszymi tytułami, miniaturkami i shortsami z historii i mówi, co u Was działa, a co nie. Wnioski możesz jednym kliknięciem dopisać do przewodnika stylu – wtedy kolejne generowania będą z nich korzystać.</p>
+        <label for="stQuestion">Na co szczególnie zwrócić uwagę? <span class="hint">(opcjonalnie)</span></label>
+        <input type="text" id="stQuestion" placeholder="np. czemu ostatni odcinek ma mniej wyświetleń? jak poprawić shortsy?">
+        <div style="margin-top:14px"><button class="btn primary" id="stAnalyze" type="button" style="width:auto">Analizuj wyniki</button></div>
+        <div id="stAiOut" style="margin-top:16px"></div>
+        <div id="stReports" style="margin-top:16px"></div>
+      </section>
+    </div>
   </div>
 
   <!-- PLAYLIST -->
@@ -424,34 +572,157 @@ details.settings summary::-webkit-details-marker{display:none}
         <div class="empty"><strong>Tu pojawi się ocena</strong>Co działa, co nie działa, co poprawić i co zostawić w spokoju.</div>
       </section>
     </div>
+    <section class="panel" style="margin-top:18px">
+      <h2>Podgląd napisu na miniaturce</h2>
+      <p class="note" style="margin-top:0">Wrzuć zdjęcie i wpisz tekst – zobaczysz, jak miniaturka wygląda w dużym rozmiarze i tak małym, jak na liście YouTube’a w telefonie. To szkic do sprawdzenia czytelności, nie gotowy projekt.</p>
+      <div class="grid">
+        <div>
+          <label for="tpFile">Zdjęcie</label>
+          <input type="file" id="tpFile" accept="image/*">
+          <label for="tpL1">Linia 1 <span class="hint">(np. nazwa miejsca)</span></label><input type="text" id="tpL1" placeholder="Berlin">
+          <label for="tpL2">Linia 2 – hasło <span class="hint">(wyróżnione kolorem)</span></label><input type="text" id="tpL2" placeholder="TO NIE TYLKO BRAMA!">
+          <label for="tpL3">Linia 3 <span class="hint">(np. Dzień 2)</span></label><input type="text" id="tpL3" placeholder="Dzień 2">
+          <button class="btn small" id="tpFromProject" type="button" style="margin-top:8px">Weź tekst z ostatniego filmu</button>
+          <div class="row">
+            <div><label for="tpLayout">Układ</label><select id="tpLayout"><option value="left">Po lewej</option><option value="right">Po prawej</option><option value="bottom">Na dole</option><option value="center">Na środku</option></select></div>
+            <div><label for="tpColor">Kolor hasła</label><select id="tpColor"><option value="#FFD400">Żółty</option><option value="#FFFFFF">Biały</option><option value="#FF3B30">Czerwony</option><option value="#B4FF39">Limonkowy</option><option value="#4FD1FF">Błękitny</option></select></div>
+          </div>
+          <label for="tpSize">Wielkość tekstu</label><input type="range" id="tpSize" min="60" max="160" value="110" style="width:100%">
+          <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="tpShade" checked> Przyciemnienie pod tekstem</label>
+          <div class="inline" style="margin-top:12px">
+            <button class="btn" id="tpDownload" type="button">Pobierz PNG</button>
+            <button class="btn" id="tpReview" type="button">Oceń ten podgląd</button>
+          </div>
+        </div>
+        <div>
+          <canvas id="tpCanvas" width="1280" height="720" style="width:100%;border-radius:12px;border:1px solid var(--line);background:var(--surface-2)" aria-label="Podgląd miniaturki"></canvas>
+          <h3 style="font-size:15px;margin:16px 0 8px">Tak to widać w telefonie</h3>
+          <div class="yt-mock">
+            <div class="yt-feed"><canvas id="tpFeed" width="720" height="405"></canvas><div class="yt-meta"><div class="yt-av"></div><div><div class="yt-t" id="tpTitle1">Tytuł filmu</div><div class="yt-s">Wasz kanał · 1,2 tys. wyświetleń · 2 dni temu</div></div></div></div>
+            <div class="yt-row"><canvas id="tpSmall" width="336" height="189"></canvas><div><div class="yt-t" id="tpTitle2">Tytuł filmu</div><div class="yt-s">Wasz kanał · 1,2 tys. wyświetleń</div></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
+</div>
+<nav class="bottom-nav" id="bottomNav" aria-label="Nawigacja">
+  <button type="button" data-view="gen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Nowy film</span></button>
+  <button type="button" data-view="trip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.3-6-10a6 6 0 0 1 12 0c0 4.7-6 10-6 10z"/><circle cx="12" cy="11" r="2.2"/></svg><span>W trasie</span></button>
+  <button type="button" data-view="history"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Historia</span></button>
+  <button type="button" data-view="chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v10H9l-4 4z"/></svg><span>Czat</span></button>
+  <button type="button" data-more="1"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/></svg><span>Więcej</span></button>
+</nav>
+<div class="sheet-bg" id="sheetBg" hidden></div>
+<div class="sheet" id="moreSheet" hidden role="dialog" aria-label="Więcej">
+  <button type="button" data-view="stats">Wyniki</button>
+  <button type="button" data-view="thumb">Miniaturki</button>
+  <button type="button" data-view="playlist">Playlisty</button>
+  <button type="button" data-view="examples">Wzory</button>
+  <button type="button" data-view="style">Styl kanału</button>
+  <button type="button" data-settings="1">Ustawienia</button>
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const DEFAULT_STYLE = "KANAŁ: [Opisz tutaj swój kanał: kto go prowadzi, jakie filmy nagrywasz, jaki ma klimat.]\n\nJĘZYK I TON:\n- Luźno i naturalnie. Ma zachęcać i budzić ciekawość, ale bez cringe'u i bez nachalności.\n- Unikaj zwrotów marketingowych i pompatycznych („niezapomniana przygoda czeka na Was”, „magiczne miejsce”, „nie uwierzycie, co…”).\n- Konkret zamiast przymiotników: nazwa miejsca, co tam robicie, co z tego wynika.\n\nTYTUŁY: haczyk na początku, 2–3 konkretne elementy filmu, bez taniego clickbaitu, najważniejsze słowa w pierwszych ok. 50 znakach.\n\nOPIS: krótki wstęp z głównym miejscem w pierwszym zdaniu, najważniejsze punkty po kolei bez streszczania każdej minuty, jedno zakończenie, CTA z pytaniem wynikającym z filmu, 3 konkretne hashtagi na końcu. 3–4 emotki w całym opisie.\n\nTAGI: łącznie 200–300 znaków: nazwa kanału, główne miejsce, frazy wyszukiwane przez widzów, atrakcje z filmu, nazwa angielska, 1–2 szersze hasła.\n\nMINIATURKI: krótkie hasło 2–4 słowa + nazwa miejsca, czytelne na telefonie, spójne w serii.\n\nPLAYLISTY: krótka nazwa z miejscem i klimatem wyjazdu, opis przedstawia cały wyjazd, nie streszcza odcinków.\n\nWSPÓŁPRACA: szczerość ponad przytakiwanie. Nie poprawiaj niczego na siłę.";
-const DEFAULT_SHORTS = "CEL SHORTSÓW: zatrzymać widza podczas przewijania, zaciekawić konkretnym miejscem lub ciekawostką i zachęcić do obejrzenia pełnego vloga. Nie opisujemy, co robimy – piszemy tak, żeby widz chciał zobaczyć, co będzie za chwilę.\n\nTYTUŁ: krótki, chwytliwy, konkretny, zgodny z treścią, inny niż poprzednie. Mocniejszy baiting z głową, 1–2 emotki.\n\nOPIS: 2–3 zdania: ciekawy wstęp, co dzieje się w shorcie, zaproszenie na pełny vlog. Na końcu dokładnie 5 hashtagów małymi literami.\n\nNAPISY DO SCEN: jeden krótki napis na ujęcie (3–8 słów), buduje ciekawość, nie opisuje obrazu dosłownie, każda scena w innym rytmie. Pierwszy napis to mocny hook, ostatni zaprasza na pełny vlog.\n\nUNIKAJ: „skradło nasze serca”, „niezapomniana przygoda”, „zapiera dech w piersiach”, „efekt WOW”.";
+// ---------- error log ----------
+const APP_VERSION = "2026.11.23-b";
+function logError(where, err){
+  try{
+    const list = JSON.parse(localStorage.getItem("vg_errlog") || "[]");
+    const msg = (err && (err.message || err.reason?.message)) || String(err);
+    const last = list[list.length - 1];
+    if(last && last.msg === msg && Date.now() - last.t < 3000) return;
+    list.push({ t: Date.now(), where, msg: String(msg).slice(0, 400), stack: String(err?.stack || "").split("\n").slice(0, 4).join(" | ").slice(0, 500), tab: (document.querySelector('.tab[aria-selected="true"]')||{}).dataset?.view || "" });
+    localStorage.setItem("vg_errlog", JSON.stringify(list.slice(-60)));
+  }catch(e){}
+}
+window.addEventListener("error", e => logError("js", e.error || e.message));
+window.addEventListener("unhandledrejection", e => logError("promise", e.reason));
+
+// ---------- storage: IndexedDB with in-memory cache ----------
+const IDB_KEYS = new Set(["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats","vg_deleted","vg_stats","vg_reports","vg_trips"]);
+const __mem = new Map();
+let __db = null, __pending = 0, __flushWaiters = [];
+function __idbOpen(){
+  return new Promise((res, rej) => {
+    if(!("indexedDB" in window)) return rej(new Error("no idb"));
+    const r = indexedDB.open("asystent-kanalu", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("kv");
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+}
+function __idbAll(db){
+  return new Promise((res, rej) => {
+    const out = new Map(), tx = db.transaction("kv", "readonly"), st = tx.objectStore("kv");
+    const req = st.openCursor();
+    req.onsuccess = () => { const c = req.result; if(c){ out.set(c.key, c.value); c.continue(); } else res(out); };
+    req.onerror = () => rej(req.error);
+  });
+}
+function __idbWrite(k, v){
+  if(!__db) return;
+  __pending++;
+  try{
+    const tx = __db.transaction("kv", "readwrite");
+    if(v === null || v === undefined) tx.objectStore("kv").delete(k); else tx.objectStore("kv").put(v, k);
+    const fin = () => { __pending--; if(!__pending){ const w = __flushWaiters; __flushWaiters = []; w.forEach(f => f()); } };
+    tx.oncomplete = fin; tx.onerror = fin; tx.onabort = fin;
+  }catch(e){ __pending--; }
+}
+function flushStorage(){ return __pending ? new Promise(r => __flushWaiters.push(r)) : Promise.resolve(); }
+function rawGet(k){
+  if(__db && IDB_KEYS.has(k)) return __mem.has(k) ? __mem.get(k) : null;
+  try{ return localStorage.getItem(k); }catch(e){ return null; }
+}
+function rawSet(k, v){
+  if(__db && IDB_KEYS.has(k)){ __mem.set(k, v); __idbWrite(k, v); return true; }
+  localStorage.setItem(k, v); return true;
+}
+function rawRemove(k){
+  if(__db && IDB_KEYS.has(k)){ __mem.delete(k); __idbWrite(k, null); return; }
+  try{ localStorage.removeItem(k); }catch(e){}
+}
+async function bootStorage(){
+  try{
+    __db = await Promise.race([__idbOpen(), new Promise((_, rej) => setTimeout(() => rej(new Error("idb timeout")), 4000))]);
+    const all = await __idbAll(__db);
+    all.forEach((v, k) => __mem.set(k, v));
+    // one-time migration from localStorage
+    let moved = [];
+    IDB_KEYS.forEach(k => { let v = null; try{ v = localStorage.getItem(k); }catch(e){} if(v !== null && !__mem.has(k)){ __mem.set(k, v); __idbWrite(k, v); moved.push(k); } });
+    if(moved.length){ await flushStorage(); moved.forEach(k => { try{ localStorage.removeItem(k); }catch(e){} }); }
+    if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  }catch(e){ __db = null; logError("storage", e); }
+}
+</script>
+<script>
+const DEFAULT_STYLE = "KANAŁ: [Opisz tutaj swój kanał: kto go prowadzi, jakie filmy nagrywasz, jaki ma klimat.]\n\nJĘZYK I TON:\n- Luźno i naturalnie. Ma zachęcać i budzić ciekawość, ale bez cringe'u i bez nachalności.\n- Mocne zwroty („niezapomniana przygoda”, „magiczne miejsce”, „zapiera dech w piersiach”) są w porządku, ale oszczędnie: nie w każdym tekście, nie kilka naraz i nie te same z filmu na film. Bez tonu reklamy biura podróży.\n- Konkret zamiast przymiotników: nazwa miejsca, co tam robicie, co z tego wynika.\n\nTYTUŁY: haczyk na początku, 2–3 konkretne elementy filmu, bez taniego clickbaitu, najważniejsze słowa w pierwszych ok. 50 znakach.\n\nOPIS: krótki wstęp z głównym miejscem w pierwszym zdaniu, najważniejsze punkty po kolei bez streszczania każdej minuty, jedno zakończenie, CTA z pytaniem wynikającym z filmu, 3 konkretne hashtagi na końcu.\n\nEMOTKI W OPISIE (preferencja, nie sztywna reguła – opis ma nie wyglądać dziecinnie): zwykle 3–4 w całym opisie.\n\nTAGI: łącznie 200–300 znaków: nazwa kanału, główne miejsce, frazy wyszukiwane przez widzów, atrakcje z filmu, nazwa angielska, 1–2 szersze hasła.\n\nMINIATURKI: krótkie hasło 2–4 słowa + nazwa miejsca, czytelne na telefonie, spójne w serii.\n\nPLAYLISTY: krótka nazwa z miejscem i klimatem wyjazdu, opis przedstawia cały wyjazd, nie streszcza odcinków.\n\nWSPÓŁPRACA: szczerość ponad przytakiwanie. Nie poprawiaj niczego na siłę.";
+const DEFAULT_SHORTS = "CEL SHORTSÓW: zatrzymać widza podczas przewijania, zaciekawić konkretnym miejscem lub ciekawostką i zachęcić do obejrzenia pełnego vloga. Nie opisujemy, co robimy – piszemy tak, żeby widz chciał zobaczyć, co będzie za chwilę.\n\nTYTUŁ: krótki, chwytliwy, konkretny, zgodny z treścią, inny niż poprzednie. Mocniejszy baiting z głową, 1–2 emotki.\n\nOPIS: 2–3 zdania: ciekawy wstęp, co dzieje się w shorcie, zaproszenie na pełny vlog. Na końcu dokładnie 5 hashtagów małymi literami.\n\nNAPISY DO SCEN: jeden krótki napis na ujęcie (3–8 słów), buduje ciekawość, nie opisuje obrazu dosłownie, każda scena w innym rytmie. Pierwszy napis to mocny hook, ostatni zaprasza na pełny vlog.\n\nOSZCZĘDNIE: mocne zwroty typu „skradło nasze serca”, „niezapomniana przygoda”, „zapiera dech w piersiach”, „efekt WOW” mogą się pojawić, ale rzadko i niewymuszone – nie w każdym shorcie i nie te same co chwilę.";
 const SEED_EX = [];
 const SEED_PL = [];
 const SEED_SH = [];
 const DAY1_FIXED = "";
-(function(){
+window.__startApp = function(){
 const $ = id => document.getElementById(id);
 const API = "https://generativelanguage.googleapis.com/v1beta";
-const SYNC_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats","vg_deleted"];
-const MERGE_KEYS = ["vg_projects","vg_chats","vg_examples","vg_playlists","vg_shorts"];
+const SYNC_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats","vg_deleted","vg_stats","vg_reports","vg_trips"];
+const MERGE_KEYS = ["vg_projects","vg_chats","vg_examples","vg_playlists","vg_shorts","vg_stats","vg_reports","vg_trips"];
 var applyingRemote = false;
 const store = {
-  get(k,d){ try{ const v = localStorage.getItem(k); return v === null ? d : v; }catch(e){ return d; } },
+  get(k,d){ try{ const v = rawGet(k); return v === null || v === undefined ? d : v; }catch(e){ return d; } },
   set(k,v){
-    try{ localStorage.setItem(k,v); }catch(e){ toast("Brak miejsca w pamięci przeglądarki – usuń stare projekty z historii"); }
+    try{ rawSet(k,v); }catch(e){ toast("Brak miejsca w pamięci przeglądarki – usuń stare projekty z historii"); }
     if(!applyingRemote && SYNC_KEYS.includes(k)) onLocalChange();
   },
-  getJ(k,d){ try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } },
+  _noUndo: false,
+  getJ(k,d){ try{ const v = rawGet(k); return v === null || v === undefined ? d : JSON.parse(v); }catch(e){ return d; } },
   setJ(k,v){
     if(!applyingRemote && MERGE_KEYS.includes(k) && Array.isArray(v)){
       const now = new Set(v.map(x => x.id));
+      const prevRaw = rawGet(k);
       const gone = store.getJ(k, []).filter(x => !now.has(x.id)).map(x => k + ":" + x.id);
-      if(gone.length){ const d = store.getJ("vg_deleted", []); try{ localStorage.setItem("vg_deleted", JSON.stringify([...new Set([...d, ...gone])].slice(-3000))); }catch(e){} }
+      if(gone.length && !store._noUndo) offerUndo(k, prevRaw, gone);
+      if(gone.length){ const d = store.getJ("vg_deleted", []); try{ rawSet("vg_deleted", JSON.stringify([...new Set([...d, ...gone])].slice(-3000))); }catch(e){} }
     }
     store.set(k, JSON.stringify(v));
   }
@@ -477,6 +748,23 @@ if(store.get("vg_projects", null) === null){
 // ---------- settings ----------
 $("apiKey").value = store.get("vg_key","");
 $("footer").value = store.get("vg_footer","");
+if(!localStorage.getItem("vg_mig_soft1")){
+  let g = store.get("vg_style", null);
+  if(g){
+    const g0 = g;
+    g = g.replace(/^- Unikaj:? zwrotów marketingowych[^\n]*/m, "- Mocne zwroty („niezapomniana przygoda”, „magiczne miejsce”, „zapiera dech w piersiach”, „skradło nasze serca”, „efekt WOW”) są w porządku, ale oszczędnie: nie w każdym tekście, nie kilka naraz i nie te same z filmu na film. Bez tonu reklamy biura podróży. Wykrzykniki i słowa WIELKIMI literami z umiarem.");
+    if(!/EMOTKI[^\n]*preferencja/.test(g)) g = g.replace(/EMOTKI W OPISIE: (\d)/, "EMOTKI W OPISIE (preferencja, nie sztywna reguła – opis ma nie wyglądać dziecinnie): zwykle $1");
+    g = g.replace("Nigdy ogólnych typu #Vlog, #Travel, #Podróże.", "Raczej bez ogólnych typu #Vlog czy #Travel.");
+    if(g !== g0) store.set("vg_style", g);
+  }
+  let sg = store.get("vg_shorts_style", null);
+  if(sg){
+    const s0 = sg;
+    sg = sg.replace(/^UNIKAJ:[^\n]*/m, "OSZCZĘDNIE: mocne zwroty typu „To miejsce skradło nasze serca!”, „niezapomniana przygoda”, „zapiera dech w piersiach”, „efekt WOW” mogą się pojawić, ale rzadko i niewymuszone – nie w każdym shorcie i nie te same co chwilę.");
+    if(sg !== s0) store.set("vg_shorts_style", sg);
+  }
+  try{ localStorage.setItem("vg_mig_soft1", "1"); }catch(e){}
+}
 $("styleGuide").value = store.get("vg_style", DEFAULT_STYLE);
 $("shortsGuide").value = store.get("vg_shorts_style", DEFAULT_SHORTS);
 const savedModel = store.get("vg_model","gemini-flash-latest"); ensureOption(savedModel); $("model").value = savedModel;
@@ -488,6 +776,10 @@ $("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); re
 $("model").onchange = () => { store.set("vg_model", $("model").value); try{ localStorage.removeItem("vg_think_compat"); }catch(e){} };
 $("speed").value = store.get("vg_speed", "fast");
 $("speed").onchange = () => store.set("vg_speed", $("speed").value);
+$("fallback").checked = store.get("vg_fallback","1") === "1";
+$("fallback").onchange = () => store.set("vg_fallback", $("fallback").checked ? "1" : "0");
+$("lintToggle").checked = store.get("vg_lint", "1") === "1";
+$("lintToggle").onchange = () => { store.set("vg_lint", $("lintToggle").checked ? "1" : "0"); if(current) render(current); };
 $("saveFooter").onclick = () => { store.set("vg_footer", $("footer").value); toast("Stopka zapisana"); };
 $("saveStyle").onclick = () => { store.set("vg_style", $("styleGuide").value); toast("Styl zapisany"); };
 $("resetStyle").onclick = () => { if(confirm("Przywrócić domyślny przewodnik? Twoje zmiany zostaną nadpisane.")){ $("styleGuide").value = DEFAULT_STYLE; store.set("vg_style", DEFAULT_STYLE); toast("Przywrócono"); } };
@@ -506,7 +798,7 @@ $("loadModels").onclick = async () => {
   $("loadModels").disabled = false;
 };
 
-const BACKUP_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats"];
+const BACKUP_KEYS = ["vg_style","vg_shorts_style","vg_footer","vg_examples","vg_playlists","vg_shorts","vg_prefs","vg_projects","vg_chats","vg_stats","vg_reports","vg_trips"];
 $("exportAll").onclick = () => {
   const data = { version:3 }; BACKUP_KEYS.forEach(k => data[k] = store.get(k, null));
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(data)], { type:"application/json" }));
@@ -525,16 +817,29 @@ $("importFile").onchange = async e => {
       if(Array.isArray(d.playlists)) store.setJ("vg_playlists", d.playlists);
       if(d.prefs) store.setJ("vg_prefs", d.prefs);
     }
-    location.reload();
+    await flushStorage(); location.reload();
   }catch(err){ alert("To nie jest poprawny plik kopii."); }
 };
 
 // ---------- tabs ----------
 function showTab(name){
+  document.querySelectorAll("#bottomNav button").forEach(b => b.classList.toggle("on", b.dataset.view === name || (b.dataset.more && !["gen","trip","history","chat"].includes(name))));
+  closeSheet();
   document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", x.dataset.view === name));
   document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + name);
 }
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => showTab(t.dataset.view));
+function closeSheet(){ $("moreSheet").hidden = true; $("sheetBg").hidden = true; }
+document.querySelectorAll("#bottomNav button").forEach(b => b.onclick = () => {
+  if(b.dataset.more){ const open = $("moreSheet").hidden; $("moreSheet").hidden = !open; $("sheetBg").hidden = !open; return; }
+  showTab(b.dataset.view); window.scrollTo({ top:0 });
+});
+document.querySelectorAll("#moreSheet button").forEach(b => b.onclick = () => {
+  if(b.dataset.settings){ closeSheet(); $("settings").open = true; $("settings").scrollIntoView({ behavior:"smooth", block:"start" }); return; }
+  showTab(b.dataset.view); window.scrollTo({ top:0 });
+});
+$("sheetBg").onclick = closeSheet;
+showTab("gen");
 
 function syncFormat(){
   const f = $("format").value; $("epWrap").hidden = f !== "series";
@@ -554,8 +859,15 @@ function addShortInput(val){
   $("shortInputs").append(box);
 }
 function renumber(){ [...$("shortInputs").children].forEach((b,i) => b.querySelector(".lbl").textContent = "Short " + (i+1)); }
-$("addShort").onclick = () => addShortInput("");
+$("addShort").onclick = () => { addShortInput(""); saveDraft(); };
 addShortInput("");
+let draftT;
+function saveDraft(){ clearTimeout(draftT); draftT = setTimeout(() => { try{ const i = readInput(); const empty = !i.place && !i.details && !i.chapters && !i.keywords && !i.shortScenes.some(x => x.trim()); if(empty) localStorage.removeItem("vg_draft"); else localStorage.setItem("vg_draft", JSON.stringify(i)); }catch(e){} }, 300); }
+function clearDraft(){ try{ localStorage.removeItem("vg_draft"); }catch(e){} }
+["format","place","episode","details","chapters","keywords"].forEach(id => $(id).addEventListener("input", saveDraft));
+$("format").addEventListener("change", saveDraft);
+$("shortInputs").addEventListener("input", saveDraft);
+setTimeout(() => { try{ const d = JSON.parse(localStorage.getItem("vg_draft") || "null"); if(d && !$("place").value && !$("details").value){ fillInput(d); toast("Przywrócono niedokończony szkic"); } }catch(e){} }, 0);
 
 // ---------- data ----------
 const getExamples = () => store.getJ("vg_examples", []);
@@ -575,7 +887,7 @@ function saveProject(p, now){
     syncPatterns(p);
     const all = getProjects().filter(x => x.id !== p.id); all.unshift(JSON.parse(JSON.stringify(p, (k, v) => typeof v === "function" ? undefined : v)));
     all.sort((a,b) => b.at - a.at);
-    store.setJ("vg_projects", all.slice(0,80)); drawHistory();
+    store._noUndo = all.length > 80; store.setJ("vg_projects", all.slice(0,80)); store._noUndo = false; drawHistory();
   };
   clearTimeout(saveTimer); if(now) write(); else saveTimer = setTimeout(write, 400);
 }
@@ -601,49 +913,61 @@ function syncPatterns(p){
   });
   if(chEx) drawExamples(); if(chSh) drawShortPatterns();
 }
-const choicesBlock = (kind, label) => (getPrefs()[kind]||[]).slice(0,8).map(x => `${label} wybrany: „${x.chosen}”${x.rejected.length ? " | odrzucone: " + x.rejected.map(r => "„"+r+"”").join(", ") : ""}`).join("\n");
+const choicesBlock = (kind, label, n) => (getPrefs()[kind]||[]).slice(0, n || 8).map(x => `${label} wybrany: „${x.chosen}”${x.rejected.length ? " | odrzucone: " + x.rejected.map(r => "„"+r+"”").join(", ") : ""}`).join("\n");
 function seriesSiblings(i, currentId){
   if(i.format !== "series" || !i.place) return [];
   return getProjects().filter(p => p.id !== currentId && p.input?.format === "series" && (p.input.place||"").toLowerCase() === i.place.toLowerCase());
 }
 
 // ---------- prompts ----------
-function buildPrompt(i, pid){
-  const ex = getExamples().slice(0,5);
+function buildPrompt(i, pid, task, focus){
+  focus = focus || "all";
+  const allEx = getExamples();
+  const sameFmt = e => i.format === "series" ? /dzie[nń] \d/i.test(e.title) : i.format === "weekend" ? /weekend w/i.test(e.title) : true;
+  const ex = [...allEx.filter(sameFmt), ...allEx.filter(e => !sameFmt(e))].slice(0,5);
+  const fullN = focus === "all" ? 3 : focus === "desc" ? 2 : 0;
   let s = `Jesteś kreatywnym partnerem kanału YouTube. Trzymaj się ściśle przewodnika stylu i wzorów.\n\n=== PRZEWODNIK STYLU ===\n${$("styleGuide").value.trim()}\n`;
   if(ex.length){
     s += `\n=== WZORY: OPUBLIKOWANE MATERIAŁY AUTORÓW (naśladuj ton, długość, budowę i liczbę emotek; nie kopiuj treści; jeśli wzór łamie zasadę z przewodnika, ważniejszy jest przewodnik) ===\n`;
-    ex.forEach((e,n) => { s += `\n--- Wzór ${n+1} ---\nTytuł: ${e.title}\n${e.thumb ? "Tekst na miniaturce: " + e.thumb + "\n" : ""}${e.desc ? "Opis:\n" + e.desc.slice(0,1800) + "\n" : ""}${e.tags ? "Tagi: " + e.tags + "\n" : ""}`; });
+    ex.forEach((e,n) => { s += `\n--- Wzór ${n+1} ---\nTytuł: ${e.title}\n${e.thumb ? "Tekst na miniaturce: " + e.thumb + "\n" : ""}${e.desc && n < fullN ? "Opis:\n" + e.desc.slice(0,1300) + "\n" : ""}${e.tags && (focus === "tags" || (focus === "all" && n < 2)) ? "Tagi: " + e.tags + "\n" : ""}`; });
   }
-  const ch = [choicesBlock("titles","Tytuł"), choicesBlock("thumbs","Miniaturka")].filter(Boolean).join("\n");
+  const ch = [focus === "all" || focus === "titles" ? choicesBlock("titles","Tytuł", 6) : "", focus === "all" || focus === "thumbs" ? choicesBlock("thumbs","Miniaturka", 6) : ""].filter(Boolean).join("\n");
   if(ch) s += `\n=== WCZEŚNIEJSZE WYBORY AUTORÓW (wyciągnij wnioski, co im się podoba) ===\n${ch}\n`;
   const sib = seriesSiblings(i, pid).map(p => `Dzień ${p.input.episode}: ${p.finalTitle || p.choice?.title || ""}${p.finalThumb ? " | miniaturka: " + p.finalThumb : ""}`).filter(x => !/: $/.test(x));
   if(sib.length) s += `\n=== WCZEŚNIEJSZE ODCINKI TEJ SERII (zachowaj spójność, nie powtarzaj haczyków) ===\n${sib.join("\n")}\n`;
+  if(focus === "all" || focus === "titles" || focus === "thumbs") s += statsForPrompt("film");
   const fmt = i.format === "weekend" ? `Weekendowy wypad. Każdy tytuł w formacie „[haczyk] | Weekend w ${i.place || "[miejsce]"}”.`
     : i.format === "series" ? `Odcinek serii z wyjazdu „${i.place}”, dzień ${i.episode}. Każdy tytuł w formacie „[haczyk]! [flaga kraju, jeśli zagranica] [dopowiedzenie] | ${i.place} Dzień ${i.episode}”, jak we wzorach. Miniaturka spójna z poprzednimi odcinkami.`
     : `Inny format. Miejsce/temat: ${i.place || "(nie podano)"}.`;
   s += `\n=== NOWY FILM ===\nFormat: ${fmt}\nCo się dzieje w filmie: ${i.details || "(brak szczegółów)"}\nSłowa kluczowe: ${i.keywords || "(dobierz sam)"}\n${i.chapters ? "Rozdziały od autorów – wstaw je dokładnie, z tymi samymi czasami, pod nagłówkiem „Rozdziały” przed CTA:\n" + i.chapters : "Nie wymyślaj rozdziałów ani znaczników czasu."}
 
-Nie wymyślaj atrakcji ani zdarzeń, których nie ma w opisie filmu. Teksty mają być ciekawe i zachęcające, ale naturalne – bez cringe'u i bez nachalności.
-Przygotuj: 5 naprawdę różnych tytułów (każdy maks. 100 znaków, przy każdym jedno krótkie zdanie, czemu działa), jeden gotowy opis zgodny z przewodnikiem (z jednym zakończeniem, CTA i 3 hashtagami, bez stopki), tagi łącznie 200–300 znaków według kolejności z przewodnika, 3 pomysły na miniaturkę (napis z zachowaniem wielkości liter + krótki opis kadru i układu).
+Nie wymyślaj atrakcji ani zdarzeń, których nie ma w opisie filmu. Teksty mają być ciekawe i zachęcające, ale naturalne – bez cringe'u i bez nachalności. Mocne zwroty są OK, ale oszczędnie i nie te same co chwilę.${overusedNote()}
+${task || `Przygotuj: 5 naprawdę różnych tytułów (każdy maks. 100 znaków, przy każdym jedno krótkie zdanie, czemu działa), jeden gotowy opis zgodny z przewodnikiem (z jednym zakończeniem, CTA i 3 hashtagami, bez stopki), tagi łącznie 200–300 znaków według kolejności z przewodnika, 3 pomysły na miniaturkę (napis z zachowaniem wielkości liter + krótki opis kadru i układu).
 
 Zwróć WYŁĄCZNIE JSON:
-{"titles":[{"text":"","why":""}],"description":"","tags":[""],"thumbnails":[{"text":"","scene":""}]}`;
+{"titles":[{"text":"","why":""}],"description":"","tags":[""],"thumbnails":[{"text":"","scene":""}],"recommended":{"title":"","titleWhy":"","thumb":"","thumbWhy":""}}
+
+W "recommended" wskaż DOKŁADNY tekst najlepszego tytułu i najlepszego napisu na miniaturkę spośród swoich propozycji – oceń je jak krytyczny redaktor według przewodnika, wcześniejszych wyborów autorów i danych z YouTube (jeśli są). Uzasadnienie: jedno krótkie zdanie.`}`;
   return s;
 }
 
-function buildShortsPrompt(i, scenesList, pid){
+function buildShortsPrompt(i, scenesList, pid, longCtx){
   const pats = getShortPatterns().slice(0,4);
   let s = `Jesteś kreatywnym partnerem kanału YouTube i przygotowujesz shortsy wycięte z długiego vloga. Trzymaj się przewodnika shortsów.\n\n=== OGÓLNY STYL KANAŁU (skrót) ===\n${$("styleGuide").value.trim().split("\n\n").slice(0,2).join("\n\n")}\n\n=== PRZEWODNIK SHORTSÓW ===\n${$("shortsGuide").value.trim()}\n`;
   if(pats.length){
     s += `\n=== WZORY ZAAKCEPTOWANYCH SHORTSÓW ===\n`;
     pats.forEach((p,n) => s += `\n--- Wzór ${n+1}${p.label ? " (" + p.label + ")" : ""} ---\n${p.title ? "Tytuł: " + p.title + "\n" : ""}Opis: ${p.desc}\nNapisy:\n${(p.texts||[]).map((t,k) => (k+1) + ". " + t).join("\n")}\n`);
   }
-  const ch = choicesBlock("shortTitles","Tytuł shorta");
+  const ch = choicesBlock("shortTitles","Tytuł shorta", 6);
   if(ch) s += `\n=== WCZEŚNIEJSZE WYBORY AUTORÓW ===\n${ch}\n`;
-  const prev = [...getProjects().filter(p => p.id !== pid).flatMap(p => (p.shorts||[]).map(x => x.chosenTitle).filter(Boolean)).slice(0,10), ...pats.map(p => p.title).filter(Boolean)];
+  const prev = [...new Set([...getProjects().filter(p => p.id !== pid).flatMap(p => (p.shorts||[]).map(x => x.chosenTitle).filter(Boolean)).slice(0,8), ...pats.map(p => p.title).filter(Boolean)])];
   if(prev.length) s += `\n=== WCZEŚNIEJSZE TYTUŁY SHORTSÓW (nie powtarzaj ich schematów) ===\n${prev.join("\n")}\n`;
+  s += statsForPrompt("short");
   s += `\n=== DŁUGI VLOG (kontekst) ===\n${i.format === "weekend" ? "Weekend w " + i.place : i.format === "series" ? i.place + " Dzień " + i.episode : i.place}\nCo się dzieje: ${i.details || "(brak szczegółów)"}\n`;
+  if(longCtx?.title) s += `Ostateczny tytuł vloga: ${longCtx.title}\n`;
+  if(longCtx?.thumb) s += `Tekst na miniaturce vloga: ${longCtx.thumb}\n`;
+  if(longCtx?.desc) s += `Opis vloga (dla kontekstu – shortsy mają być inne, krótsze i mocniej budować ciekawość):\n${longCtx.desc.slice(0,900)}\n`;
+  if(longCtx?.existing?.length) s += `\nShortsy z tego vloga, które już istnieją (zrób inne, nie powtarzaj ich tytułów ani hooków):\n${longCtx.existing.join("\n")}\n`;
   if(scenesList.length){
     s += `\n=== SHORTSY DO PRZYGOTOWANIA ===\n`;
     scenesList.forEach((sc,n) => s += `\nShort ${n+1} – kolejność ujęć:\n${sc.map((x,k) => (k+1) + ". " + x).join("\n")}\n`);
@@ -651,23 +975,29 @@ function buildShortsPrompt(i, scenesList, pid){
   } else {
     s += `\nAutorzy nie podali ujęć. Zaproponuj 2 różne shortsy (np. jeden z najmocniejszą ciekawostką, drugi z całego dnia w pigułce), każdy 4–7 ujęć wybranych z opisu vloga, i daj jeden napis na każde ujęcie. W polu "scene" krótko nazwij ujęcie.`;
   }
-  s += `\nNie wymyślaj atrakcji, których nie ma w opisie. Pierwszy napis to hook. Ostatni zaprasza na pełny vlog.
-Dla każdego shorta: 4 naprawdę różne tytuły (różne schematy), opis bez hashtagów, dokładnie 5 hashtagów (małymi literami, z #), napisy do scen.
+  s += `\nNie wymyślaj atrakcji, których nie ma w opisie. Pierwszy napis to hook. Ostatni zaprasza na pełny vlog.${overusedNote()}
+Dla każdego shorta: 4 naprawdę różne tytuły (różne schematy), opis bez hashtagów, dokładnie 5 hashtagów (małymi literami, z #), napisy do scen. W "recommendedTitle" podaj DOKŁADNY tekst najlepszego z 4 tytułów (oceń krytycznie wg przewodnika, wyborów autorów i danych), a w "recommendedWhy" jedno krótkie zdanie dlaczego.
 
 Zwróć WYŁĄCZNIE JSON:
-{"shorts":[{"titles":[{"text":"","why":""}],"description":"","hashtags":["#..."],"scenes":[{"scene":"","text":""}]}]}`;
+{"shorts":[{"titles":[{"text":"","why":""}],"recommendedTitle":"","recommendedWhy":"","description":"","hashtags":["#..."],"scenes":[{"scene":"","text":""}]}]}`;
   return s;
 }
 
-function apiError(status, j){
+function apiError(status, j, model){
   const msg = j?.error?.message || ("Błąd " + status);
+  const details = j?.error?.details || [];
+  const quotaIds = details.flatMap(d => (d.violations||[]).map(v => v.quotaId || "")).join(" ");
+  const retry = parseInt((details.find(d => d.retryDelay) || {}).retryDelay || "", 10);
+  const daily = /PerDay/i.test(quotaIds) || /per.?day/i.test(msg);
   let e;
-  if(status === 429) e = new Error("Wyczerpany darmowy limit zapytań. Odczekaj minutę albo wybierz model „flash-lite” w ustawieniach.");
+  if(status === 429 && daily) e = new Error(`Wykorzystany dzienny darmowy limit dla modelu ${model}. Odnowi się około 9:00 rano. Do tego czasu wybierz w ustawieniach inny model (np. flash-lite).`);
+  else if(status === 429) e = new Error("Za dużo zapytań w krótkim czasie (limit na minutę)." + (retry ? ` Spróbuj ponownie za ${retry} s.` : " Odczekaj minutę i spróbuj ponownie."));
   else if(status === 400 && /API key/i.test(msg)) e = new Error("Klucz API jest nieprawidłowy. Sprawdź go w ustawieniach.");
   else if(status === 404) e = new Error("Ten model nie jest już dostępny. Kliknij „Pobierz listę” w ustawieniach i wybierz inny.");
   else if(status === 503) e = new Error("Serwery Gemini są przeciążone. Spróbuj za chwilę.");
   else e = new Error(msg);
   if(status === 400 && /think/i.test(msg)) e.thinkingIssue = true;
+  e.status = status; e.daily = daily;
   return e;
 }
 function apiKeyOrThrow(){
@@ -689,26 +1019,26 @@ function makeReq(firstMs){
   return { race: x => Promise.race([x, stop]), arm, ctl, done(){ clearTimeout(t); activeReqs.delete(ctl); } };
 }
 function cancelAll(){ activeReqs.forEach(c => c.abort("cancel")); }
-async function geminiCall(body){
+async function geminiCall(body, model){
   const key = apiKeyOrThrow();
   const q = makeReq(150000);
   let r, j;
   try{
-    r = await q.race(fetch(`${API}/models/${encodeURIComponent($("model").value)}:generateContent`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
+    r = await q.race(fetch(`${API}/models/${encodeURIComponent(model)}:generateContent`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
     try{ j = await q.race(r.json()); }catch(e){ if(q.ctl.why) throw e; j = {}; }
   }
   finally{ q.done(); }
-  if(!r.ok) throw apiError(r.status, j);
+  if(!r.ok) throw apiError(r.status, j, model);
   const text = (j.candidates?.[0]?.content?.parts||[]).filter(p => !p.thought).map(p => p.text||"").join("");
   if(!text) throw new Error("Model nie zwrócił odpowiedzi. Spróbuj jeszcze raz.");
   return text;
 }
-async function geminiStream(body, onUpdate){
+async function geminiStream(body, onUpdate, model){
   const key = apiKeyOrThrow();
   const q = makeReq(150000);
   try{
-  const r = await q.race(fetch(`${API}/models/${encodeURIComponent($("model").value)}:streamGenerateContent?alt=sse`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
-  if(!r.ok){ let j; try{ j = await r.json(); }catch(e){ j = {}; } throw apiError(r.status, j); }
+  const r = await q.race(fetch(`${API}/models/${encodeURIComponent(model)}:streamGenerateContent?alt=sse`, { method:"POST", headers:{ "Content-Type":"application/json", "x-goog-api-key": key }, body: JSON.stringify(body) }));
+  if(!r.ok){ let j; try{ j = await r.json(); }catch(e){ j = {}; } throw apiError(r.status, j, model); }
   if(!r.body || !r.body.getReader){
     const raw = await q.race(r.text()); let out = "";
     raw.split("\n").forEach(l => { l = l.trim(); if(!l.startsWith("data:")) return; try{ const j = JSON.parse(l.slice(5)); (j.candidates?.[0]?.content?.parts||[]).forEach(p => { if(!p.thought && p.text) out += p.text; }); }catch(e){} });
@@ -756,8 +1086,22 @@ async function withThinking(body, run){
     }
   }
 }
-const geminiRequest = body => withThinking(body, geminiCall);
-const geminiStreamReq = (body, onUpdate) => withThinking(body, b => geminiStream(b, onUpdate));
+const FALLBACK_MODEL = "gemini-flash-lite-latest";
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+async function withModels(run){
+  const main = $("model").value;
+  let err;
+  try{ return await run(main); }catch(e){ err = e; }
+  if(err.status === 503){ await sleep(3000); try{ return await run(main); }catch(e){ err = e; } }
+  if((err.status === 503 || err.status === 429) && main !== FALLBACK_MODEL && store.get("vg_fallback","1") === "1"){
+    toast(err.status === 503 ? "Główny model przeciążony – używam flash-lite" : "Limit głównego modelu – używam flash-lite");
+    try{ return await run(FALLBACK_MODEL); }catch(e2){ logError("gemini " + FALLBACK_MODEL, e2); throw e2; }
+  }
+  if(err.message !== "Anulowano.") logError("gemini " + main, err);
+  throw err;
+}
+const geminiRequest = body => withModels(m => withThinking(body, b => geminiCall(b, m)));
+const geminiStreamReq = (body, onUpdate) => withModels(m => withThinking(body, b => geminiStream(b, onUpdate, m)));
 async function callGemini(parts, json, temp, onUpdate){
   const body = { contents:[{ role:"user", parts }], generationConfig:{ temperature: temp ?? 0.9 } };
   if(json) body.generationConfig.responseMimeType = "application/json";
@@ -771,6 +1115,8 @@ async function callGemini(parts, json, temp, onUpdate){
 function thoughtTitle(t){ const m = (t||"").match(/\*\*(.+?)\*\*/); return (m ? m[1] : (t||"").split("\n")[0]).slice(0, 120); }
 function lastKey(b, keys){ let best = null, pos = -1; keys.forEach(([k, label]) => { const i = b.lastIndexOf('"' + k + '"'); if(i > pos){ pos = i; best = label; } }); return best; }
 function stageText(kind, b){
+  if(kind === "report") return stageReport(b);
+  if(kind === "shots"){ const n = (b.match(/"text"/g)||[]).length; const d = (b.match(/"day"\s*:\s*(\d+)/g)||[]).pop(); return "Układam ujęcia" + (d ? " – dzień " + d.replace(/\D/g,"") : "") + (n ? " (" + n + ")" : "") + "…"; }
   if(kind === "playlist") return lastKey(b, [["titles","Wymyślam nazwy playlisty…"],["descriptions","Piszę opisy…"]]) || "Zaczynam pisać…";
   if(kind === "film") return lastKey(b, [["titles","Wymyślam tytuły…"],["description","Piszę opis…"],["tags","Dobieram tagi…"],["thumbnails","Wymyślam miniaturki…"]]) || "Zaczynam pisać…";
   const n = (b.match(/"titles"/g)||[]).length || 1;
@@ -852,7 +1198,7 @@ $("generate").onclick = async () => {
   if(sh){ if(sh.status === "fulfilled") p.shorts = (sh.value.shorts||[]).map(x => ({ ...x, scenes: x.scenes||[] })); else errs.push("Shortsy: " + sh.reason.message); }
   if(errs.length) showErr(errs.join(" "));
   if(!p.gen && !p.shorts.length) return;
-  current = p; saveProject(p, true); render(p);
+  current = p; saveProject(p, true); render(p); clearDraft();
 };
 
 // ---------- render helpers ----------
@@ -863,15 +1209,121 @@ function el(tag, attrs, ...kids){
   return n;
 }
 const copyBtn = (get, label) => el("button", { class:"btn small", type:"button", onclick: () => copy(get()) }, label || "Kopiuj");
-function pickList(items, isChosen, onPick, extra){
+// ---------- style guard (lint) & recommendations ----------
+const STRONG = ["niezapomnian","magiczn","zapiera dech","zapierają dech","skradł","efekt wow","nie uwierzycie","musicie to zobaczyć","must see","perełk","raj na ziemi","jak z bajki","niesamowit","obłędn"];
+const emojiCount = t => (String(t||"").match(/\p{Extended_Pictographic}/gu)||[]).length + (String(t||"").match(/[\u{1F1E6}-\u{1F1FF}]{2}/gu)||[]).length;
+const hashCount = t => (String(t||"").match(/#[\p{L}\p{N}_]+/gu)||[]).length;
+function prefEmoji(){ const m = $("styleGuide").value.match(/EMOTKI[^\n]*?(\d+)\s*[–-]\s*(\d+)/); return m ? [+m[1], +m[2]] : [3, 4]; }
+let _recentCache = null, _recentAt = 0;
+function recentTexts(){
+  if(_recentCache && Date.now() - _recentAt < 5000) return _recentCache;
+  _recentCache = [...getExamples().slice(0,6).map(e => (e.title||"") + " " + (e.desc||"")), ...getShortPatterns().slice(0,4).map(x => (x.title||"") + " " + (x.desc||"") + " " + (x.texts||[]).join(" "))].map(x => x.toLowerCase());
+  _recentAt = Date.now(); return _recentCache;
+}
+function overused(){ const rt = recentTexts(); return STRONG.filter(w => rt.filter(t => t.includes(w)).length >= 2); }
+function overusedNote(){ const o = overused(); return o.length ? `\nW ostatnich tekstach kanału kilka razy pojawiły się już zwroty: ${o.map(w => "„" + w + "…”").join(", ")}. Tym razem sięgnij po inne sformułowania (to nie zakaz – chodzi o to, żeby się nie powtarzały).` : ""; }
+const lintOn = () => store.get("vg_lint", "1") === "1";
+function lint(kind, text, opts){
+  const L = []; if(!lintOn()) return L;
+  let t = String(text || "").trim(); if(!t) return L;
+  if(kind === "desc"){ const f = $("footer").value.trim(); if(f) t = t.replace(f, "").trim(); }
+  const low = t.toLowerCase();
+  const strongIn = STRONG.filter(w => low.includes(w));
+  if(strongIn.length >= 2) L.push(`Kilka mocnych zwrotów naraz (${strongIn.map(w => w + "…").join(", ")}) – może zabrzmieć przesadnie.`);
+  const rep = strongIn.find(w => recentTexts().filter(x => x.includes(w)).length >= 2);
+  if(rep) L.push(`„${rep}…” było już w kilku ostatnich tekstach – może tym razem coś innego?`);
+  const words = t.split(/\s+/).filter(Boolean);
+  if(kind === "title"){
+    if(t.length > 100) L.push(`${t.length}/100 znaków – YouTube nie przyjmie tak długiego tytułu.`);
+    else if(t.length > 52){ const vis = t.slice(0, 50).split(" "); vis.pop(); const w = vis.filter(x => x.replace(/[^\p{L}\p{N}]/gu,"").length >= 3).pop(); if(w) L.push(`W wąskim widoku (lista, polecane) widać ok. 50 znaków – tytuł urwie się po „${w.replace(/[!?.,:]+$/,"")}”.`); }
+    const e = emojiCount(t); if(e > 2) L.push(`${e} emotki w tytule – sporo.`);
+    const caps = words.filter(w => w.replace(/[^\p{L}]/gu,"").length >= 4 && w === w.toUpperCase() && /\p{L}/u.test(w)).length;
+    if(caps > 1) L.push(`${caps} słowa WIELKIMI literami – w długich filmach raczej oszczędnie.`);
+  }
+  if(kind === "desc"){
+    const [a, b] = prefEmoji(), e = emojiCount(t);
+    if(e > b + 1) L.push(`${e} emotek – zwykle dajecie ${a}–${b}. Przy większej liczbie opis może wyglądać dziecinnie.`);
+    else if(e > b) L.push(`${e} emotek, zwykle dajecie ${a}–${b}.`);
+    const h = hashCount(t); if(h !== 3) L.push(h ? `${h} hashtagi(-ów) – zwykle dajecie 3.` : "Brak hashtagów na końcu – zwykle dajecie 3.");
+    if(words.length > 230) L.push(`Dość długi opis (${words.length} słów) – zwykle macie ok. 120–180.`);
+    const ex = (t.match(/!/g)||[]).length; if(ex > 6) L.push(`Sporo wykrzykników (${ex}).`);
+  }
+  if(kind === "tags"){
+    const arr = (opts?.tags || []), n = arr.join(", ").length;
+    if(n > 500) L.push(`${n} znaków – ponad limit YouTube (500), część tagów się nie zapisze.`);
+    else if(n > 320) L.push(`${n} znaków – cel to ok. 200–300.`);
+    else if(n && n < 150) L.push(`Tylko ${n} znaków – można dodać kilka fraz, które ludzie wpisują w wyszukiwarkę.`);
+    const seen = {}, dup = []; arr.forEach(x => { const k = normT(x); if(seen[k]) dup.push(x); seen[k] = 1; });
+    if(dup.length) L.push(`Powtórzone tagi: ${dup.join(", ")}.`);
+  }
+  if(kind === "thumb"){
+    const longest = Math.max(...t.split(/\s*\/\s*/).map(x => x.split(/\s+/).filter(Boolean).length));
+    if(longest > 5) L.push(`Długi napis (${longest} słów w jednej linii) – na miniaturce najlepiej 2–4 słowa.`);
+  }
+  if(kind === "shortTitle"){
+    if(t.length > 75) L.push(`${t.length} znaków – w shortsach krótszy tytuł zwykle działa lepiej.`);
+    const e = emojiCount(t); if(e > 3) L.push(`${e} emotki w tytule – sporo.`);
+  }
+  if(kind === "shortDesc"){
+    const h = hashCount(t); if(h !== 5) L.push(`${h} hashtagów – w shortsach dajecie 5.`);
+    const e = emojiCount(t); if(e > 5) L.push(`${e} emotek – sporo jak na krótki opis.`);
+  }
+  if(kind === "scene"){ if(words.length > 10) L.push(`${words.length} słów – trudno przeczytać w 2 sekundy.`); }
+  if(kind === "scenes"){
+    const openers = (opts?.texts || []).map(x => normT(x).split(" ").slice(0,2).join(" ")).filter(Boolean);
+    const weak = (opts?.texts || []).filter(x => /^a (potem|tutaj|następnie|teraz)\b/i.test(x.trim())).length;
+    if(weak > 1) L.push(`${weak} napisy zaczynają się od „A potem/A tutaj…” – warto zmienić rytm.`);
+    const c = {}; openers.forEach(o => c[o] = (c[o]||0) + 1); const r = Object.entries(c).find(([o, n]) => n > 1 && o.length > 3);
+    if(r) L.push(`Kilka napisów zaczyna się tak samo („${r[0]}…”).`);
+  }
+  return L;
+}
+function lintBox(items){ return items.length ? el("div", { class:"lint" }, items.map(x => el("div", null, "💡 " + x))) : null; }
+function liveLint(holder, kind, getText, opts){
+  const box = el("div"); const upd = () => { box.innerHTML = ""; const b = lintBox(lint(kind, getText(), opts ? opts() : null)); if(b) box.append(b); };
+  upd(); holder.addEventListener("input", upd); return box;
+}
+async function judge(kind, options, ctxText){
+  const g = kind === "thumb" ? "napisów na miniaturkę" : kind === "shortTitle" ? "tytułów shorta" : "tytułów filmu";
+  const prompt = `Jesteś krytycznym redaktorem kanału YouTube. Wybierz najlepszą z propozycji ${g}.
+
+=== PRZEWODNIK STYLU ===
+${$("styleGuide").value.trim().split("\n\n").slice(0,4).join("\n\n")}
+${kind === "shortTitle" ? "\n=== STYL SHORTSÓW ===\n" + $("shortsGuide").value.trim().split("\n\n").slice(0,3).join("\n\n") + "\n" : ""}
+${choicesBlock(kind === "thumb" ? "thumbs" : kind === "shortTitle" ? "shortTitles" : "titles", "Wybrany", 6) ? "\n=== CO AUTORZY WYBIERALI WCZEŚNIEJ ===\n" + choicesBlock(kind === "thumb" ? "thumbs" : kind === "shortTitle" ? "shortTitles" : "titles", "Wybrany", 6) + "\n" : ""}${kind !== "thumb" ? statsForPrompt(kind === "shortTitle" ? "short" : "film") : ""}
+=== KONTEKST ===
+${ctxText}
+
+=== PROPOZYCJE ===
+${options.map((o, i) => (i+1) + ". " + o).join("\n")}
+
+Oceń, która najlepiej zatrzyma widza i pasuje do stylu kanału (konkret, ciekawość, naturalność, czytelność na telefonie). Podaj DOKŁADNY tekst zwycięzcy i jedno krótkie zdanie uzasadnienia.
+Zwróć WYŁĄCZNIE JSON: {"best":"","why":""}`;
+  const d = await callGemini([{ text: prompt }], true, 0.3);
+  const best = options.find(o => o.trim() === (d.best||"").trim()) || options.find(o => normT(o) === normT(d.best)) || options[Math.max(0, (parseInt(d.best, 10) || 1) - 1)];
+  return { text: best, why: d.why || "" };
+}
+function recHeader(rec, onJudge){
+  const st = el("span", { class:"count" });
+  const b = el("button", { class:"btn small", type:"button" }, rec ? "Oceń ponownie" : "Wskaż najlepszy");
+  b.onclick = async () => { b.disabled = true; st.textContent = "AI porównuje propozycje…"; try{ await onJudge(); }catch(e){ st.textContent = e.message; st.style.color = "var(--rec)"; b.disabled = false; } };
+  return el("div", { class:"inline" }, st, b);
+}
+
+function pickList(items, isChosen, onPick, extra, opt){
+  opt = opt || {};
   const ul = el("ul", { class:"titles" });
-  items.forEach((t, idx) => {
+  const recIdx = opt.rec ? items.findIndex(t => (t.text||"").trim() === opt.rec.trim()) : -1;
+  const ordered = recIdx >= 0 ? [items[recIdx], ...items.filter((_, i) => i !== recIdx)] : items;
+  ordered.forEach((t, idx) => {
+    const isRec = recIdx >= 0 && idx === 0;
+    if(recIdx >= 0 && idx === 1) ul.append(el("li", { class:"divider" }, "Pozostałe propozycje"));
     const pick = el("button", { class:"btn small" + (isChosen(t) ? " picked" : ""), type:"button" }, isChosen(t) ? "Wybrany" : "Wybieram");
-    const li = el("li", { class: isChosen(t) ? "chosen" : "" },
-      el("div", null, el("div", { class:"t" }, t.text || ""), t.why ? el("div", { class:"why" }, t.why) : null),
+    const li = el("li", { class: (isChosen(t) ? "chosen" : "") + (isRec ? " rec" : "") },
+      el("div", null, isRec ? el("div", { class:"rec-badge" }, "⭐ Polecany") : null, el("div", { class:"t" }, t.text || ""), isRec && opt.recWhy ? el("div", { class:"why rec-why" }, opt.recWhy) : (t.why ? el("div", { class:"why" }, t.why) : null), opt.lintKind ? lintBox(lint(opt.lintKind, t.text)) : null),
       el("div", { class:"side" }, extra ? extra(t) : null, el("div", { class:"inline" }, pick, copyBtn(() => t.text))));
     pick.onclick = () => {
-      ul.querySelectorAll("li").forEach(x => { x.classList.remove("chosen"); const b = x.querySelector(".btn"); b.classList.remove("picked"); b.textContent = "Wybieram"; });
+      ul.querySelectorAll("li:not(.divider)").forEach(x => { x.classList.remove("chosen"); const b = x.querySelector(".btn"); b.classList.remove("picked"); b.textContent = "Wybieram"; });
       li.classList.add("chosen"); pick.classList.add("picked"); pick.textContent = "Wybrany"; onPick(t);
     };
     ul.append(li);
@@ -893,16 +1345,21 @@ function render(p){
     const titles = (g.titles||[]).map(t => t.text);
     const finalTitle = el("input", { type:"text", "aria-label":"Ostateczny tytuł" }); finalTitle.value = p.finalTitle || p.choice.title || "";
     finalTitle.oninput = () => { p.finalTitle = finalTitle.value; saveProject(p); };
-    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Tytuły")),
+    const rgT = regenRow("Więcej tytułów", (h, u) => regenSection(p, "titles", h, u));
+    const recT = g.recommended?.title, recTW = g.recommended?.titleWhy;
+    const judgeT = recHeader(recT, async () => { const r = await judge("title", (g.titles||[]).map(t => t.text), projectLabel(p) + "\n" + (p.input?.details||"").slice(0,400)); g.recommended = { ...(g.recommended||{}), title: r.text, titleWhy: r.why }; saveProject(p, true); render(p); $("sec-titles")?.scrollIntoView({ block:"start" }); });
+    wrap.append(el("div", { class:"block", id:"sec-titles" }, el("div", { class:"block-head" }, el("h3", null, "Tytuły"), el("div", { class:"inline" }, judgeT, rgT.btn)), rgT.panel,
       pickList(g.titles||[], t => t.text === p.choice.title, t => { p.choice.title = t.text; p.finalTitle = t.text; finalTitle.value = t.text; recordChoice("titles", t.text, titles); saveProject(p); p._drawStatus && p._drawStatus(); toast(p.excluded ? "Zapamiętano wybór tytułu" : "Zapamiętano wybór – film trafia do wzorów"); },
-        t => { const n = (t.text||"").length; return el("span", { class:"count" + (n > 100 ? " over" : "") }, n + "/100"); })));
+        t => { const n = (t.text||"").length; return el("span", { class:"count" + (n > 100 ? " over" : "") }, n + "/100"); }, { rec: recT, recWhy: recTW, lintKind:"title" })));
 
     const footer = $("footer").value.trim();
     if(p.desc === undefined){ p.desc = (g.description||"").trim() + (footer ? "\n\n" + footer : ""); }
     const ta = el("textarea", { class:"desc", "aria-label":"Opis filmu" }); ta.value = p.desc;
     const dc = el("span", { class:"count" }, p.desc.length + "/5000");
     ta.oninput = () => { p.desc = ta.value; dc.textContent = ta.value.length + "/5000"; saveProject(p); };
-    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Opis"), el("div", { class:"inline" }, dc, copyBtn(() => ta.value))), ta));
+    const rgD = regenRow("Nowy opis", (h, u) => regenSection(p, "desc", h, u));
+    const undoD = (p.descHistory||[]).length ? el("button", { class:"btn small", type:"button", onclick: () => { p.desc = p.descHistory.pop(); saveProject(p, true); render(p); $("sec-desc")?.scrollIntoView({ block:"start" }); } }, "Przywróć poprzedni") : null;
+    wrap.append(el("div", { class:"block", id:"sec-desc" }, el("div", { class:"block-head" }, el("h3", null, "Opis"), el("div", { class:"inline" }, dc, undoD, rgD.btn, copyBtn(() => ta.value))), rgD.panel, ta, liveLint(ta, "desc", () => ta.value)));
 
     p.tagsOff = p.tagsOff || [];
     const tags = (g.tags||[]).map(t => String(t).replace(/^#/,"").trim());
@@ -913,18 +1370,24 @@ function render(p){
       tags.forEach(t => chips.append(el("button", { type:"button", class:"chip" + (p.tagsOff.includes(t) ? " off" : ""), onclick: () => {
         p.tagsOff = p.tagsOff.includes(t) ? p.tagsOff.filter(x => x !== t) : [...p.tagsOff, t]; drawTags(); saveProject(p); } }, t)));
       const n = tagText().length; tc.textContent = n + " zn. (cel 200–300)"; tc.classList.toggle("over", n > 500);
+      tagLint.innerHTML = ""; const lb = lintBox(lint("tags", "x", { tags: tags.filter(t => !p.tagsOff.includes(t)) })); if(lb) tagLint.append(lb);
     };
+    const tagLint = el("div");
     drawTags();
-    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Tagi"), el("div", { class:"inline" }, tc, copyBtn(tagText))), chips, el("p", { class:"note" }, "Kliknij tag, żeby go wyłączyć.")));
+    const rgG = regenRow("Nowe tagi", (h, u) => regenSection(p, "tags", h, u));
+    const undoG = (p.tagsHistory||[]).length ? el("button", { class:"btn small", type:"button", onclick: () => { const prev = p.tagsHistory.pop(); g.tags = prev.tags; p.tagsOff = prev.off; saveProject(p, true); render(p); $("sec-tags")?.scrollIntoView({ block:"start" }); } }, "Przywróć poprzednie") : null;
+    wrap.append(el("div", { class:"block", id:"sec-tags" }, el("div", { class:"block-head" }, el("h3", null, "Tagi"), el("div", { class:"inline" }, tc, undoG, rgG.btn, copyBtn(tagText))), rgG.panel, chips, tagLint, el("p", { class:"note" }, "Kliknij tag, żeby go wyłączyć.")));
 
     const thumbsT = (g.thumbnails||[]).map(t => t.text);
     const finalThumb = el("input", { type:"text", "aria-label":"Tekst na miniaturce" }); finalThumb.value = p.finalThumb || p.choice.thumb || "";
     finalThumb.oninput = () => { p.finalThumb = finalThumb.value; saveProject(p); };
     const tg = el("div", { class:"thumbs" });
-    (g.thumbnails||[]).forEach(t => {
-      const on = p.choice.thumb === t.text;
+    const recM = g.recommended?.thumb, recMW = g.recommended?.thumbWhy;
+    const thArr = g.thumbnails||[], rIdx = recM ? thArr.findIndex(t => (t.text||"").trim() === recM.trim()) : -1;
+    (rIdx >= 0 ? [thArr[rIdx], ...thArr.filter((_, i) => i !== rIdx)] : thArr).forEach((t, ti) => {
+      const on = p.choice.thumb === t.text, isRec = rIdx >= 0 && ti === 0;
       const pick = el("button", { class:"btn small" + (on ? " picked" : ""), type:"button", style:"justify-self:start" }, on ? "Wybrany" : "Wybieram");
-      const card = el("div", { class:"thumb" + (on ? " chosen" : "") }, el("div", { class:"big" }, t.text||""), el("p", null, t.scene||""), pick);
+      const card = el("div", { class:"thumb" + (on ? " chosen" : "") + (isRec ? " rec" : "") }, isRec ? el("div", { class:"rec-badge" }, "⭐ Polecany") : null, el("div", { class:"big" }, t.text||""), el("p", null, t.scene||""), isRec && recMW ? el("p", { class:"rec-why", style:"font-size:13px" }, recMW) : null, lintBox(lint("thumb", t.text)), pick);
       pick.onclick = () => {
         tg.querySelectorAll(".thumb").forEach(x => { x.classList.remove("chosen"); const b = x.querySelector(".btn"); b.classList.remove("picked"); b.textContent = "Wybieram"; });
         card.classList.add("chosen"); pick.classList.add("picked"); pick.textContent = "Wybrany";
@@ -932,7 +1395,9 @@ function render(p){
       };
       tg.append(card);
     });
-    wrap.append(el("div", { class:"block" }, el("div", { class:"block-head" }, el("h3", null, "Pomysły na miniaturkę")), tg));
+    const rgM = regenRow("Więcej pomysłów", (h, u) => regenSection(p, "thumbs", h, u));
+    const judgeM = recHeader(recM, async () => { const r = await judge("thumb", thArr.map(t => t.text), projectLabel(p) + "\nTytuł: " + (p.finalTitle || p.choice?.title || "")); g.recommended = { ...(g.recommended||{}), thumb: r.text, thumbWhy: r.why }; saveProject(p, true); render(p); $("sec-thumbs")?.scrollIntoView({ block:"start" }); });
+    wrap.append(el("div", { class:"block", id:"sec-thumbs" }, el("div", { class:"block-head" }, el("h3", null, "Pomysły na miniaturkę"), el("div", { class:"inline" }, judgeM, rgM.btn)), rgM.panel, tg));
 
     const status = el("p", { class:"note" });
     const toggle = el("button", { class:"btn small", type:"button", style:"margin-top:10px" });
@@ -949,32 +1414,128 @@ function render(p){
     drawStatus(); p._drawStatus = drawStatus;
     wrap.append(el("div", { class:"block save-block" },
       el("div", { class:"block-head" }, el("h3", null, "Wersja, którą publikujecie")),
-      el("label", null, "Ostateczny tytuł"), finalTitle,
-      el("label", null, "Ostateczny tekst na miniaturce"), finalThumb,
+      el("label", null, "Ostateczny tytuł"), finalTitle, liveLint(finalTitle, "title", () => finalTitle.value),
+      el("label", null, "Ostateczny tekst na miniaturce"), finalThumb, liveLint(finalThumb, "thumb", () => finalThumb.value),
       status, toggle));
   }
-  if(p.shorts && p.shorts.length){
-    wrap.append(el("div", { class:"section-title" }, el("span", { class:"pill short" }, "Shorts"), el("h2", null, "Shortsy")));
-    p.shorts.forEach((s, idx) => wrap.append(renderShort(p, s, idx)));
-  }
+  p.shorts = p.shorts || [];
+  wrap.append(el("div", { class:"section-title" }, el("span", { class:"pill short" }, "Shorts"), el("h2", null, "Shortsy")));
+  p.shorts.forEach((s, idx) => wrap.append(renderShort(p, s, idx)));
+  wrap.append(renderAddShorts(p));
   out.append(wrap);
   if(window.innerWidth < 860) out.scrollIntoView({ behavior:"smooth", block:"start" });
 }
 function stripFooter(t){ const f = $("footer").value.trim(); return f && (t||"").includes(f) ? t.replace(f,"").trim() : (t||"").trim(); }
 
+function regenRow(label, runFn){
+  const hint = el("input", { type:"text", placeholder:"Wskazówka (opcjonalnie), np. krócej, więcej o jedzeniu", "aria-label":"Wskazówka dla AI" });
+  const go = el("button", { class:"btn small", type:"button" }, "Generuj");
+  const st = el("span", { class:"count" });
+  const panel = el("div", { class:"regen", hidden:"" }, el("div", { class:"inline" }, hint, go), st);
+  const btn = el("button", { class:"btn small", type:"button", onclick: () => { panel.hidden = !panel.hidden; if(!panel.hidden) hint.focus(); } }, label);
+  const run = async () => {
+    if(go.disabled) return;
+    go.disabled = true; st.style.color = ""; const t0 = Date.now(); let got = false;
+    st.textContent = "Łączę się…";
+    const iv = setInterval(() => { if(!got) st.textContent = "AI się zastanawia… " + Math.round((Date.now() - t0) / 1000) + " s"; }, 500);
+    try{ await runFn(hint.value.trim(), u => { if(u.text){ got = true; st.textContent = "Piszę… " + u.text.length + " zn."; } }); }
+    catch(e){ st.textContent = e.message; st.style.color = "var(--rec)"; }
+    finally{ clearInterval(iv); go.disabled = false; }
+  };
+  go.onclick = run;
+  hint.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); run(); } });
+  return { btn, panel };
+}
+function projectCtx(p){
+  const t = p.finalTitle || p.choice?.title, th = p.finalThumb || p.choice?.thumb;
+  return (t ? `Tytuł wybrany przez autorów: ${t}\n` : "") + (th ? `Tekst miniaturki wybrany przez autorów: ${th}\n` : "");
+}
+async function regenSection(p, kind, hint, onUpdate){
+  const g = p.gen; if(!g) return;
+  const h = hint ? `Wskazówka od autorów (ważna!): ${hint}\n` : "";
+  const list = a => a.map(x => "- " + x).join("\n");
+  let task;
+  if(kind === "titles") task = `${projectCtx(p)}${h}Autorom nie pasują dotychczasowe propozycje tytułów:\n${list((g.titles||[]).map(t => t.text))}\n\nPrzygotuj 5 NOWYCH tytułów, wyraźnie innych od powyższych (inne schematy i haczyki, nie przeróbki tych samych zdań). Każdy maks. 100 znaków, przy każdym jedno krótkie zdanie, czemu działa.\nW "recommended" wskaż DOKŁADNY tekst najlepszego tytułu spośród WSZYSTKICH – starych i nowych – i jedno zdanie dlaczego.\n\nZwróć WYŁĄCZNIE JSON: {"titles":[{"text":"","why":""}],"recommended":{"title":"","titleWhy":""}}`;
+  if(kind === "desc") task = `${projectCtx(p)}${h}Obecny opis, który autorom nie pasuje:\n${stripFooter(p.desc || "")}\n\nNapisz NOWY opis zgodny z przewodnikiem, wyraźnie inny niż obecny (inny wstęp, inny haczyk, inne pytanie w CTA), z jednym zakończeniem, CTA i 3 hashtagami, bez stopki.\n\nZwróć WYŁĄCZNIE JSON: {"description":""}`;
+  if(kind === "tags") task = `${projectCtx(p)}${h}Poprzednie tagi: ${(g.tags||[]).join(", ")}\n\nPrzygotuj NOWY zestaw tagów, łącznie 200–300 znaków, według kolejności z przewodnika. Popraw to, co w poprzednim zestawie było słabe (powtórzenia, zbyt ogólne frazy, brak fraz wyszukiwanych przez widzów).\n\nZwróć WYŁĄCZNIE JSON: {"tags":[""]}`;
+  if(kind === "thumbs") task = `${projectCtx(p)}${h}Dotychczasowe pomysły na miniaturkę:\n${list((g.thumbnails||[]).map(t => t.text))}\n\nPrzygotuj 3 NOWE pomysły na miniaturkę, wyraźnie inne od powyższych (napis z zachowaniem wielkości liter + krótki opis kadru i układu).\nW "recommended" wskaż DOKŁADNY tekst najlepszego napisu spośród WSZYSTKICH – starych i nowych – i jedno zdanie dlaczego.\n\nZwróć WYŁĄCZNIE JSON: {"thumbnails":[{"text":"","scene":""}],"recommended":{"thumb":"","thumbWhy":""}}`;
+  const d = await callGemini([{ text: buildPrompt(p.input || {}, p.id, task, kind) }], true, 1.0, onUpdate);
+  if(kind === "titles"){ const add = (d.titles||[]).filter(t => t.text); if(!add.length) throw new Error("Brak nowych tytułów, spróbuj jeszcze raz."); g.titles = [...(g.titles||[]), ...add]; if(d.recommended?.title) g.recommended = { ...(g.recommended||{}), title: d.recommended.title, titleWhy: d.recommended.titleWhy || "" }; }
+  if(kind === "desc"){ if(!d.description) throw new Error("Brak opisu, spróbuj jeszcze raz."); p.descHistory = [...(p.descHistory||[]), p.desc].slice(-5); const f = $("footer").value.trim(); p.desc = d.description.trim() + (f ? "\n\n" + f : ""); }
+  if(kind === "tags"){ if(!(d.tags||[]).length) throw new Error("Brak tagów, spróbuj jeszcze raz."); p.tagsHistory = [...(p.tagsHistory||[]), { tags: g.tags, off: p.tagsOff }].slice(-5); g.tags = d.tags; p.tagsOff = []; }
+  if(kind === "thumbs"){ const add = (d.thumbnails||[]).filter(t => t.text); if(!add.length) throw new Error("Brak pomysłów, spróbuj jeszcze raz."); g.thumbnails = [...(g.thumbnails||[]), ...add]; if(d.recommended?.thumb) g.recommended = { ...(g.recommended||{}), thumb: d.recommended.thumb, thumbWhy: d.recommended.thumbWhy || "" }; }
+  saveProject(p, true); render(p);
+  $("sec-" + kind)?.scrollIntoView({ block:"start" });
+  toast(kind === "titles" ? "Dodano nowe tytuły" : kind === "desc" ? "Nowy opis gotowy" : kind === "tags" ? "Nowe tagi gotowe" : "Dodano nowe pomysły");
+}
+async function regenShort(p, s, idx, kind, hint, onUpdate){
+  const h = hint ? `Wskazówka od autorów (ważna!): ${hint}\n` : "";
+  const ctx = `${$("shortsGuide").value.trim()}\n\nDługi vlog: ${projectLabel(p)}\n${projectCtx(p)}Ujęcia i napisy tego shorta:\n${(s.scenes||[]).map((x,n) => `${n+1}. [${x.scene}] ${x.text}`).join("\n")}\n`;
+  let prompt;
+  if(kind === "titles") prompt = `${ctx}${h}Dotychczasowe tytuły tego shorta, które autorom nie pasują:\n${(s.titles||[]).map(t => "- " + t.text).join("\n")}\n\nPrzygotuj 4 NOWE tytuły shorta, wyraźnie inne (inne schematy, nie przeróbki). Przy każdym jedno krótkie zdanie, czemu działa.\nW "recommendedTitle" wskaż DOKŁADNY tekst najlepszego tytułu spośród WSZYSTKICH – starych i nowych – a w "recommendedWhy" jedno zdanie dlaczego.\nZwróć WYŁĄCZNIE JSON: {"titles":[{"text":"","why":""}],"recommendedTitle":"","recommendedWhy":""}`;
+  else prompt = `${ctx}${s.chosenTitle ? "Wybrany tytuł shorta: " + s.chosenTitle + "\n" : ""}${h}Obecny opis, który autorom nie pasuje:\n${s.descEdited || ""}\n\nNapisz NOWY opis shorta zgodny z przewodnikiem (2–3 zdania, krótka opowieść, zaproszenie na pełny vlog), wyraźnie inny niż obecny, oraz dokładnie 5 hashtagów.\nZwróć WYŁĄCZNIE JSON: {"description":"","hashtags":["#..."]}`;
+  const d = await callGemini([{ text: prompt }], true, 1.0, onUpdate);
+  if(kind === "titles"){ const add = (d.titles||[]).filter(t => t.text); if(!add.length) throw new Error("Brak nowych tytułów, spróbuj jeszcze raz."); s.titles = [...(s.titles||[]), ...add]; if(d.recommendedTitle){ s.recommendedTitle = d.recommendedTitle; s.recommendedWhy = d.recommendedWhy || ""; } }
+  else { if(!d.description) throw new Error("Brak opisu, spróbuj jeszcze raz."); s.descHistory = [...(s.descHistory||[]), s.descEdited].slice(-5); s.descEdited = d.description.trim() + "\n\n" + (d.hashtags||[]).map(x => x.startsWith("#") ? x : "#" + x).join(" "); }
+  saveProject(p, true); render(p);
+  $("short-" + idx)?.scrollIntoView({ block:"start" });
+  toast(kind === "titles" ? "Dodano nowe tytuły shorta" : "Nowy opis shorta gotowy");
+}
+
+function renderAddShorts(p){
+  const inputs = el("div");
+  const addInput = val => {
+    const ta = el("textarea", { style:"min-height:90px", "aria-label":"Ujęcia shorta", placeholder:"Każde ujęcie w nowej linii, np.\nWejście do pałacu\nWnętrza\nOgrody\nZakończenie" }); ta.value = val || "";
+    const box = el("div", { class:"short-in" }, el("div", { class:"inline" }, el("strong", null, "Nowy short"), el("button", { class:"btn small danger", type:"button", onclick: () => box.remove() }, "Usuń")), ta);
+    inputs.append(box);
+  };
+  addInput("");
+  const progBox = el("div");
+  const err = el("div", { class:"error", hidden:"" });
+  const btn = el("button", { class:"btn primary", type:"button", style:"width:auto" }, "Generuj shortsy");
+  btn.onclick = async () => {
+    err.hidden = true;
+    const scenes = [...inputs.querySelectorAll("textarea")].map(t => t.value.split("\n").map(x => x.trim()).filter(Boolean)).filter(a => a.length);
+    const longCtx = { title: p.finalTitle || p.choice?.title || "", thumb: p.finalThumb || p.choice?.thumb || "", desc: stripFooter(p.desc ?? p.gen?.description ?? ""), existing: p.shorts.map(x => x.chosenTitle || (x.titles||[])[0]?.text).filter(Boolean) };
+    btn.disabled = true;
+    const prog = showProgress(progBox, [["shorts", "Shortsy", 1600 * Math.max(1, scenes.length || 2)]], "Shortsy powstają na podstawie wybranego tytułu i opisu tego filmu.");
+    try{
+      const d = await callGemini([{ text: buildShortsPrompt(p.input || {}, scenes, p.id, longCtx) }], true, undefined, u => prog.update("shorts", u));
+      prog.stop();
+      const added = (d.shorts||[]).map(x => ({ ...x, scenes: x.scenes||[] }));
+      if(!added.length) throw new Error("AI nie zwróciło żadnego shorta. Spróbuj jeszcze raz.");
+      const first = p.shorts.length;
+      p.shorts.push(...added); saveProject(p, true); render(p);
+      const cards = document.querySelectorAll("#output .short-card");
+      if(cards[first]) cards[first].scrollIntoView({ behavior:"smooth", block:"start" });
+      toast("Dodano shortsy: " + added.length);
+    }catch(e){ prog.stop(); progBox.innerHTML = ""; err.textContent = e.message; err.hidden = false; btn.disabled = false; }
+  };
+  return el("div", { class:"block", id:"addShorts" },
+    el("div", { class:"block-head" }, el("h3", null, p.shorts.length ? "Dodaj kolejne shortsy" : "Wygeneruj shortsy do tego filmu")),
+    el("p", { class:"note", style:"margin-top:0" }, "Wpisz kolejność ujęć dla każdego shorta albo zostaw puste – AI zaproponuje 2 shortsy z najciekawszych momentów. Pod uwagę bierze wybrany tytuł i opis filmu" + (p.shorts.length ? " i nie powtarza istniejących shortsów." : ".")),
+    inputs,
+    el("div", { class:"inline", style:"margin-top:10px" }, el("button", { class:"btn small", type:"button", onclick: () => addInput("") }, "+ Dodaj shorta"), btn),
+    err, progBox);
+}
+
 function renderShort(p, s, idx){
   const titles = (s.titles||[]).map(t => t.text);
   if(s.descEdited === undefined) s.descEdited = (s.description||"").trim() + "\n\n" + (s.hashtags||[]).map(h => h.startsWith("#") ? h : "#" + h).join(" ");
   const card = el("div", { class:"block short-card" });
+  card.id = "short-" + idx;
   card.append(el("div", { class:"block-head" }, el("h3", null, "Short " + (idx+1)), el("span", { class:"pill short" }, (s.scenes||[]).length + " ujęć")));
-  card.append(el("label", null, "Tytuł"));
-  card.append(pickList(s.titles||[], t => t.text === s.chosenTitle, t => { s.chosenTitle = t.text; recordChoice("shortTitles", t.text, titles); saveProject(p); s._drawSt && s._drawSt(); toast(s.excluded ? "Zapamiętano wybór" : "Zapamiętano – short trafia do wzorów"); }));
+  const rgST = regenRow("Więcej tytułów", (h, u) => regenShort(p, s, idx, "titles", h, u));
+  const judgeS = recHeader(s.recommendedTitle, async () => { const r = await judge("shortTitle", (s.titles||[]).map(t => t.text), projectLabel(p) + "\nNapisy: " + (s.scenes||[]).map(x => x.text).join(" / ")); s.recommendedTitle = r.text; s.recommendedWhy = r.why; saveProject(p, true); render(p); $("short-" + idx)?.scrollIntoView({ block:"start" }); });
+  card.append(el("div", { class:"inline", style:"justify-content:space-between;margin-top:14px" }, el("strong", { style:"font-size:14px" }, "Tytuł"), el("div", { class:"inline" }, judgeS, rgST.btn)), rgST.panel);
+  card.append(pickList(s.titles||[], t => t.text === s.chosenTitle, t => { s.chosenTitle = t.text; recordChoice("shortTitles", t.text, titles); saveProject(p); s._drawSt && s._drawSt(); toast(s.excluded ? "Zapamiętano wybór" : "Zapamiętano – short trafia do wzorów"); }, null, { rec: s.recommendedTitle, recWhy: s.recommendedWhy, lintKind:"shortTitle" }));
 
   card.append(el("label", null, "Napisy do scen"));
   const ul = el("ul", { class:"scenes" });
   (s.scenes||[]).forEach((sc, k) => {
     const inp = el("input", { type:"text", "aria-label":"Napis do ujęcia " + (k+1) }); inp.value = sc.text || "";
     inp.oninput = () => { sc.text = inp.value; saveProject(p); };
+    const sLint = liveLint(inp, "scene", () => inp.value);
     const alts = el("div", { class:"alts" });
     const altBtn = el("button", { class:"btn small", type:"button" }, "Inne wersje");
     altBtn.onclick = async () => {
@@ -987,18 +1548,48 @@ function renderShort(p, s, idx){
       altBtn.disabled = false; altBtn.textContent = "Inne wersje";
     };
     ul.append(el("li", { class:"scene" }, el("span", { class:"num" }, String(k+1)),
-      el("div", null, el("div", { class:"what" }, sc.scene || ""), el("div", { class:"inline" }, inp, altBtn), alts)));
+      el("div", null, el("div", { class:"what" }, sc.scene || ""), el("div", { class:"inline" }, inp, altBtn), sLint, alts)));
   });
   card.append(ul);
+  card.append(liveLint(ul, "scenes", () => "x", () => ({ texts: (s.scenes||[]).map(x => x.text) })));
   card.append(el("div", { class:"inline", style:"margin-top:10px" }, copyBtn(() => s.scenes.map(x => x.text).join("\n"), "Kopiuj wszystkie napisy")));
 
-  card.append(el("label", null, "Opis z hashtagami"));
+  const rgSD = regenRow("Nowy opis", (h, u) => regenShort(p, s, idx, "desc", h, u));
+  const undoSD = (s.descHistory||[]).length ? el("button", { class:"btn small", type:"button", onclick: () => { s.descEdited = s.descHistory.pop(); saveProject(p, true); render(p); document.querySelectorAll("#output .short-card")[idx]?.scrollIntoView({ block:"start" }); } }, "Przywróć poprzedni") : null;
+  card.append(el("div", { class:"inline", style:"justify-content:space-between;margin-top:14px" }, el("strong", { style:"font-size:14px" }, "Opis z hashtagami"), el("div", { class:"inline" }, undoSD, rgSD.btn)), rgSD.panel);
   const ta = el("textarea", { style:"min-height:150px" }); ta.value = s.descEdited;
   ta.oninput = () => { s.descEdited = ta.value; saveProject(p); };
   const hc = el("span", { class:"count" });
   const updHc = () => { const n = (ta.value.match(/#[\p{L}\p{N}_]+/gu)||[]).length; hc.textContent = n + " hashtagów" + (n !== 5 ? " (powinno być 5)" : ""); hc.classList.toggle("over", n !== 5); };
   ta.addEventListener("input", updHc); updHc();
-  card.append(ta, el("div", { class:"inline", style:"margin-top:8px;justify-content:space-between" }, hc, copyBtn(() => ta.value)));
+  card.append(ta, liveLint(ta, "shortDesc", () => ta.value), el("div", { class:"inline", style:"margin-top:8px;justify-content:space-between" }, hc, copyBtn(() => ta.value)));
+
+  // Instagram & TikTok
+  const socBox = el("div", { style:"margin-top:16px" });
+  const drawSoc = () => {
+    socBox.innerHTML = "";
+    const st2 = el("span", { class:"count" });
+    const b = el("button", { class:"btn small", type:"button" }, s.social ? "Wygeneruj ponownie" : "Opisy na Instagram i TikTok");
+    b.onclick = async () => {
+      b.disabled = true; const t0 = Date.now(); let got = false;
+      const iv = setInterval(() => { if(!got) st2.textContent = "AI się zastanawia… " + Math.round((Date.now() - t0) / 1000) + " s"; }, 500);
+      try{
+        const prompt = `${$("shortsGuide").value.trim()}\n\nTen sam pionowy film publikujemy też jako rolkę na Instagramie i na TikToku.\nDługi vlog: ${projectLabel(p)}\n${projectCtx(p)}Tytuł shorta na YouTube: ${s.chosenTitle || (s.titles||[])[0]?.text || ""}\nOpis shorta na YouTube:\n${s.descEdited || ""}\nNapisy na ekranie:\n${(s.scenes||[]).map((x,n) => (n+1) + ". " + x.text).join("\n")}\n\nPrzygotuj opisy w stylu kanału (po polsku, naturalnie, bez cringe'u i bez marketingowego języka):\n- Instagram (Reels): pierwsza linijka to hook – tylko ona jest widoczna przed „więcej”. Potem 2–4 krótkie zdania małej opowieści, zaproszenie na pełny vlog na YouTube (link w bio) i proste pytanie do komentarzy. 2–3 emotki. 6–10 hashtagów małymi literami: lokalizacja, kraj, konkretna atrakcja, kilka popularnych polskich podróżniczych.\n- TikTok: maks. 2 krótkie zdania – hook i pytanie albo zaproszenie na kanał. 3–5 trafnych hashtagów (lokalizacja, temat, podróże), bez spamu.\nNie kopiuj opisu z YouTube słowo w słowo.\nZwróć WYŁĄCZNIE JSON: {"instagram":{"caption":"","hashtags":["#..."]},"tiktok":{"caption":"","hashtags":["#..."]}}`;
+        const d = await callGemini([{ text: prompt }], true, 0.9, u => { if(u.text){ got = true; st2.textContent = "Piszę… " + u.text.length + " zn."; } });
+        const tags = a => (a||[]).map(x => x.startsWith("#") ? x : "#" + x).join(" ");
+        s.social = { ig: (d.instagram?.caption || "").trim() + "\n\n" + tags(d.instagram?.hashtags), tt: (d.tiktok?.caption || "").trim() + "\n\n" + tags(d.tiktok?.hashtags) };
+        saveProject(p, true); drawSoc();
+      }catch(e){ st2.textContent = e.message; st2.style.color = "var(--rec)"; b.disabled = false; }
+      finally{ clearInterval(iv); }
+    };
+    socBox.append(el("div", { class:"inline", style:"justify-content:space-between" }, el("strong", { style:"font-size:14px" }, "Instagram i TikTok"), el("div", { class:"inline" }, st2, b)));
+    if(s.social){
+      const mk = (key, label) => { const t = el("textarea", { "aria-label": label }); t.value = s.social[key] || ""; t.oninput = () => { s.social[key] = t.value; saveProject(p); }; return el("div", null, el("div", { class:"inline", style:"justify-content:space-between;margin-bottom:6px" }, el("span", { class:"pill" }, label), copyBtn(() => t.value)), t); };
+      socBox.append(el("div", { class:"social" }, mk("ig", "Instagram"), mk("tt", "TikTok")));
+    }
+  };
+  drawSoc();
+  card.append(socBox);
 
   const st = el("p", { class:"note" });
   const tg = el("button", { class:"btn small", type:"button", style:"margin-top:8px" });
@@ -1029,6 +1620,7 @@ function drawHistory(){
     const title = p.finalTitle || p.choice?.title;
     const shortsChosen = (p.shorts||[]).filter(s => s.chosenTitle);
     const open = el("button", { class:"btn small", type:"button", onclick: () => { fillInput(p.input||{}); render(p); showTab("gen"); window.scrollTo({ top:0 }); } }, "Otwórz");
+    const shBtn = el("button", { class:"btn small", type:"button", onclick: () => { fillInput(p.input||{}); render(p); showTab("gen"); setTimeout(() => { const a = $("addShorts"); if(a){ a.scrollIntoView({ behavior:"smooth", block:"start" }); const t = a.querySelector("textarea"); if(t) t.focus({ preventScroll:true }); } }, 50); } }, (p.shorts||[]).length ? "Więcej shortsów" : "Generuj shortsy");
     const del = el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten projekt z historii?")){ store.setJ("vg_projects", getProjects().filter(x => x.id !== p.id)); drawHistory(); } } }, "Usuń");
     ul.append(el("li", { class:"ex hist-item" },
       el("div", null,
@@ -1040,7 +1632,7 @@ function drawHistory(){
         el("div", { class:"pills" },
           p.saved ? el("span", { class:"pill ok" }, "Zapisany jako wzór") : null,
           (p.shorts||[]).length ? el("span", { class:"pill short" }, (p.shorts||[]).length + " shorts") : null)),
-      el("div", { class:"ex-actions", style:"margin:0" }, open, del)));
+      el("div", { class:"ex-actions", style:"margin:0;flex-direction:column;align-items:stretch" }, open, p.gen ? shBtn : null, del)));
   });
 }
 drawHistory();
@@ -1176,14 +1768,613 @@ $("reviewBtn").onclick = async () => {
   finally{ btn.disabled = false; btn.textContent = "Oceń"; }
 };
 
+// ---------- stats / results ----------
+const getStats = () => store.getJ("vg_stats", []);
+const getReports = () => store.getJ("vg_reports", []);
+const normT = t => (t||"").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g,"").replace(/[^\p{L}\p{N} ]/gu," ").replace(/\s+/g," ").trim();
+function parseNum(v){
+  if(v === undefined || v === null) return null;
+  let t = String(v).trim().replace(/\s|\u00a0/g,"").replace("%","");
+  if(!t || t === "—" || t === "-") return null;
+  if(/^\d+:\d{1,2}(:\d{1,2})?$/.test(t)){ return t.split(":").reduce((a,x) => a*60 + (+x), 0); }
+  if(/^\d{1,3}(,\d{3})+(\.\d+)?$/.test(t)) t = t.replace(/,/g,"");
+  else if(/,/.test(t) && !/\./.test(t)) t = t.replace(",", ".");
+  t = t.replace(/,/g,"");
+  const n = parseFloat(t); return isNaN(n) ? null : n;
+}
+const fmtInt = n => n === null || n === undefined ? "–" : Math.round(n).toLocaleString("pl-PL");
+const fmtPct = n => n === null || n === undefined ? "–" : n.toLocaleString("pl-PL", { maximumFractionDigits:1 }) + "%";
+const fmtDur = n => { if(n === null || n === undefined) return "–"; n = Math.round(n); return Math.floor(n/60) + ":" + String(n%60).padStart(2,"0"); };
+
+function linkProject(title){
+  const n = normT(title); if(!n) return null;
+  const match = t => { const m = normT(t); return m && (m === n || m.startsWith(n) || n.startsWith(m)); };
+  for(const p of getProjects()){
+    const t = p.finalTitle || p.choice?.title;
+    if(t && match(t)) return { projectId: p.id, kind:"film", thumb: p.finalThumb || p.choice?.thumb || "" };
+    for(const s of (p.shorts||[])) if(s.chosenTitle && match(s.chosenTitle)) return { projectId: p.id, kind:"short", texts: (s.scenes||[]).map(x => x.text) };
+  }
+  const ex = getExamples().find(e => match(e.title)); if(ex) return { kind:"film", thumb: ex.thumb || "" };
+  const sh = getShortPatterns().find(e => match(e.title)); if(sh) return { kind:"short", texts: sh.texts || [] };
+  return null;
+}
+
+// CSV
+function parseCSV(text){
+  text = text.replace(/^\uFEFF/, "");
+  const first = text.split("\n")[0]; const sep = (first.match(/;/g)||[]).length > (first.match(/,/g)||[]).length ? ";" : ",";
+  const rows = []; let row = [], cur = "", q = false;
+  for(let i = 0; i < text.length; i++){
+    const c = text[i];
+    if(q){ if(c === '"'){ if(text[i+1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
+    else if(c === '"') q = true;
+    else if(c === sep){ row.push(cur); cur = ""; }
+    else if(c === "\n"){ row.push(cur); rows.push(row); row = []; cur = ""; }
+    else if(c !== "\r") cur += c;
+  }
+  if(cur || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r => r.some(x => x.trim()));
+}
+const FIELDS = [
+  ["title","Tytuł filmu",[/video title/i,/tytu/i,/^title$/i]],
+  ["published","Data publikacji",[/publish/i,/publikac/i]],
+  ["duration","Długość filmu",[/^duration$/i,/czas trwania/i,/^długość/i]],
+  ["views","Wyświetlenia",[/^views$/i,/^wyświetlenia$/i,/^wyswietlenia$/i]],
+  ["impressions","Wyświetlenia miniatur (impresje)",[/^impressions$/i,/miniatur/i,/impres/i]],
+  ["ctr","CTR (%)",[/click.?through/i,/ctr/i,/klikaln/i]],
+  ["avgDur","Średni czas oglądania",[/average view duration/i,/średni czas ogl/i,/sredni czas ogl/i]],
+  ["avgPct","Średni odsetek obejrzenia (%)",[/average percentage/i,/odsetek/i,/średni procent/i]],
+  ["subs","Subskrybenci",[/^subscribers/i,/subskryb/i]],
+];
+let csvRows = null;
+$("stImportBtn").onclick = () => $("stFile").click();
+$("stFile").onchange = async e => {
+  const f = e.target.files[0]; if(!f) return; e.target.value = "";
+  const rows = parseCSV(await f.text());
+  if(rows.length < 2){ alert("Ten plik nie wygląda na tabelę z YouTube Studio."); return; }
+  csvRows = rows; showMapping();
+};
+function showMapping(){
+  const head = csvRows[0], box = $("stMap"); box.innerHTML = ""; box.hidden = false;
+  const sels = {};
+  const grid = el("div", { class:"mapgrid" });
+  FIELDS.forEach(([key, label, pats]) => {
+    const sel = el("select", { id:"map-" + key });
+    sel.append(el("option", { value:"" }, "— brak —"));
+    head.forEach((h, i) => sel.append(el("option", { value: String(i) }, h)));
+    const guess = head.findIndex(h => pats.some(r => r.test(h.trim())));
+    if(key === "views"){ const g2 = head.findIndex(h => /^(views|wyświetlenia|wyswietlenia)$/i.test(h.trim())); sel.value = g2 >= 0 ? String(g2) : ""; }
+    else if(guess >= 0) sel.value = String(guess);
+    sels[key] = sel; grid.append(el("div", null, el("label", { for:"map-" + key }, label), sel));
+  });
+  const n = csvRows.length - 1;
+  box.append(el("div", { class:"block", style:"margin-top:14px" },
+    el("div", { class:"block-head" }, el("h3", null, "Sprawdź dopasowanie kolumn"), el("span", { class:"pill" }, n + " wierszy")),
+    el("p", { class:"note", style:"margin-top:0" }, "Aplikacja sama dopasowała kolumny z pliku. Popraw, jeśli coś się nie zgadza – najważniejsze są tytuł i wyświetlenia."),
+    grid,
+    el("div", { class:"inline", style:"margin-top:14px" },
+      el("button", { class:"btn primary", type:"button", style:"width:auto", onclick: () => importMapped(sels) }, "Importuj"),
+      el("button", { class:"btn", type:"button", onclick: () => { box.hidden = true; box.innerHTML = ""; } }, "Anuluj"))));
+}
+function importMapped(sels){
+  const ix = {}; Object.entries(sels).forEach(([k, s]) => ix[k] = s.value === "" ? null : +s.value);
+  if(ix.title === null){ alert("Wskaż kolumnę z tytułem filmu."); return; }
+  const stats = getStats(); let added = 0, updated = 0;
+  csvRows.slice(1).forEach(r => {
+    const title = (r[ix.title]||"").trim();
+    if(!title || /^(total|łącznie|razem|suma)$/i.test(title)) return;
+    const val = k => ix[k] === null ? null : parseNum(r[ix[k]]);
+    let ctr = val("ctr"); if(ctr !== null && ctr > 0 && ctr < 1 && !/%/.test(r[ix.ctr]||"")) ctr = ctr * 100;
+    const duration = val("duration");
+    const rec = { title, published: ix.published === null ? "" : (r[ix.published]||"").trim(), duration, views: val("views"), impressions: val("impressions"), ctr, avgDur: val("avgDur"), avgPct: val("avgPct"), subs: val("subs") };
+    const link = linkProject(title);
+    rec.type = link?.kind || (duration !== null && duration <= 180 ? "short" : "film");
+    const ex = stats.find(s => normT(s.title) === normT(title));
+    if(ex){ Object.assign(ex, Object.fromEntries(Object.entries(rec).filter(([,v]) => v !== null && v !== ""))); ex.updatedAt = Date.now(); updated++; }
+    else { stats.push({ id: Date.now() + Math.floor(Math.random()*100000), ...rec, updatedAt: Date.now() }); added++; }
+  });
+  store.setJ("vg_stats", stats);
+  $("stMap").hidden = true; $("stMap").innerHTML = ""; csvRows = null;
+  toast(`Dodano ${added}, zaktualizowano ${updated}`); drawStats();
+}
+
+// manual form
+$("stAddBtn").onclick = () => openStatForm(null);
+function openStatForm(rec){
+  const box = $("stForm"); box.innerHTML = ""; box.hidden = false;
+  const titles = [...new Set([...getProjects().flatMap(p => [p.finalTitle || p.choice?.title, ...(p.shorts||[]).map(s => s.chosenTitle)]), ...getExamples().map(e => e.title)].filter(Boolean))];
+  const dl = el("datalist", { id:"stTitles" }, titles.map(t => el("option", { value:t })));
+  const f = {};
+  const inp = (key, label, ph) => { f[key] = el("input", { type:"text", id:"sf-" + key, placeholder: ph || "" }); if(rec && rec[key] !== null && rec[key] !== undefined) f[key].value = key === "avgDur" ? fmtDur(rec[key]) : String(rec[key]).replace(".", ","); return el("div", null, el("label", { for:"sf-" + key }, label), f[key]); };
+  f.title = el("input", { type:"text", id:"sf-title", list:"stTitles", placeholder:"Zacznij pisać – podpowie tytuły z historii" }); if(rec) f.title.value = rec.title;
+  f.type = el("select", { id:"sf-type" }, el("option", { value:"film" }, "Film"), el("option", { value:"short" }, "Short")); if(rec) f.type.value = rec.type || "film";
+  box.append(el("div", { class:"block", style:"margin-top:14px" },
+    el("div", { class:"block-head" }, el("h3", null, rec ? "Edytuj wyniki" : "Dodaj wyniki filmu")),
+    el("label", { for:"sf-title" }, "Tytuł"), f.title, dl,
+    el("div", { class:"mapgrid" },
+      el("div", null, el("label", { for:"sf-type" }, "Rodzaj"), f.type),
+      inp("published", "Data publikacji", "np. 2026-05-04"),
+      inp("views", "Wyświetlenia"), inp("impressions", "Wyświetlenia miniatur", "impresje"),
+      inp("ctr", "CTR %", "np. 5,4"), inp("avgDur", "Średni czas oglądania", "mm:ss"),
+      inp("avgPct", "Średni odsetek obejrzenia %", "np. 42"), inp("subs", "Nowi subskrybenci")),
+    el("p", { class:"note" }, "Dla shortsów zamiast CTR możesz wpisać odsetek widzów, którzy obejrzeli zamiast przesunąć dalej – wpisz go w polu CTR."),
+    el("div", { class:"inline", style:"margin-top:12px" },
+      el("button", { class:"btn primary", type:"button", style:"width:auto", onclick: () => {
+        const title = f.title.value.trim(); if(!title){ alert("Wpisz tytuł."); return; }
+        const r = { title, type: f.type.value, published: f.published.value.trim() };
+        ["views","impressions","ctr","avgDur","avgPct","subs"].forEach(k => r[k] = parseNum(f[k].value));
+        let stats = getStats();
+        if(rec) stats = stats.map(s => s.id === rec.id ? { ...s, ...r, updatedAt: Date.now() } : s);
+        else stats.push({ id: Date.now(), ...r, updatedAt: Date.now() });
+        store.setJ("vg_stats", stats); box.hidden = true; box.innerHTML = ""; drawStats(); toast("Zapisano");
+      } }, "Zapisz"),
+      el("button", { class:"btn", type:"button", onclick: () => { box.hidden = true; box.innerHTML = ""; } }, "Anuluj"))));
+  f.title.focus();
+}
+
+// dashboard
+let stSort = { key:"published", dir:-1 }, stFilter = "all";
+const median = a => { const b = a.filter(x => x !== null && x !== undefined).sort((x,y) => x - y); if(!b.length) return null; const m = Math.floor(b.length/2); return b.length % 2 ? b[m] : (b[m-1] + b[m]) / 2; };
+const avg = a => { const b = a.filter(x => x !== null && x !== undefined); return b.length ? b.reduce((x,y) => x + y, 0) / b.length : null; };
+function drawStats(){
+  const box = $("stDash"); box.innerHTML = "";
+  const all = getStats();
+  if(!all.length){ box.append(el("div", { class:"empty" }, el("strong", null, "Nie ma jeszcze wyników"), "Wczytaj plik CSV z YouTube Studio albo dodaj wyniki kilku filmów ręcznie. Wystarczą wyświetlenia i CTR, a najlepiej jeszcze średni odsetek obejrzenia.")); return; }
+  const list = all.filter(s => stFilter === "all" || (s.type||"film") === stFilter);
+  const films = all.filter(s => (s.type||"film") === "film"), shorts = all.filter(s => s.type === "short");
+  const best = [...list].sort((a,b) => (b.views||0) - (a.views||0))[0];
+  const bestCtr = [...list].filter(s => s.ctr !== null && s.ctr !== undefined && (s.impressions||0) >= 300).sort((a,b) => b.ctr - a.ctr)[0];
+  const kpi = (l, v, sub) => el("div", { class:"kpi" }, el("div", { class:"l" }, l), el("div", { class:"v" }, v), sub ? el("div", { class:"s", title: sub }, sub) : null);
+  box.append(el("div", { class:"inline", style:"margin-bottom:12px" },
+    ...[["all","Wszystko (" + all.length + ")"],["film","Filmy (" + films.length + ")"],["short","Shortsy (" + shorts.length + ")"]].map(([k, l]) =>
+      el("button", { class:"btn small" + (stFilter === k ? " picked" : ""), type:"button", onclick: () => { stFilter = k; drawStats(); } }, l))));
+  box.append(el("div", { class:"kpis" },
+    kpi("Wyświetlenia łącznie", fmtInt(list.reduce((a,s) => a + (s.views||0), 0))),
+    kpi("Mediana wyświetleń", fmtInt(median(list.map(s => s.views)))),
+    kpi("Średni CTR", fmtPct(avg(list.map(s => s.ctr))), "typowo 2–10%"),
+    kpi("Średni odsetek obejrzenia", fmtPct(avg(list.map(s => s.avgPct)))),
+    best ? kpi("Najwięcej wyświetleń", fmtInt(best.views), best.title) : null,
+    bestCtr ? kpi("Najlepszy CTR", fmtPct(bestCtr.ctr), bestCtr.title) : null));
+
+  // charts
+  const charts = el("div", { class:"charts", style:"margin-top:18px" });
+  const byViews = [...list].filter(s => s.views !== null && s.views !== undefined).sort((a,b) => b.views - a.views).slice(0, 10);
+  if(byViews.length){
+    const W = 520, rowH = 30, H = byViews.length * rowH + 20, max = byViews[0].views || 1, lw = 210;
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Wyświetlenia najpopularniejszych filmów">`;
+    byViews.forEach((s, i) => {
+      const y = 10 + i * rowH, w = Math.max(2, (s.views / max) * (W - lw - 70));
+      const t = s.title.length > 34 ? s.title.slice(0, 33) + "…" : s.title;
+      svg += `<text class="lbl" x="0" y="${y + 18}">${esc(t)}</text><rect x="${lw}" y="${y + 5}" width="${w}" height="18" rx="4" fill="${s.type === "short" ? "var(--short)" : "var(--rec)"}"><title>${esc(s.title)}: ${fmtInt(s.views)}</title></rect><text x="${lw + w + 6}" y="${y + 18}">${fmtInt(s.views)}</text>`;
+    });
+    svg += `</svg>`;
+    const c = el("div", { class:"block chart" }, el("div", { class:"block-head" }, el("h3", null, "Najwięcej wyświetleń"), el("span", { class:"hint" }, "czerwone – filmy, fioletowe – shortsy")));
+    const d = el("div"); d.innerHTML = svg; c.append(d); charts.append(c);
+  }
+  const sc = list.filter(s => s.ctr !== null && s.ctr !== undefined && s.avgPct !== null && s.avgPct !== undefined && (s.type||"film") === "film");
+  if(sc.length >= 2){
+    const W = 520, H = 340, L = 44, B = 36, T = 14, R = 14;
+    const xMax = Math.max(...sc.map(s => s.ctr)) * 1.15, yMax = Math.min(100, Math.max(...sc.map(s => s.avgPct)) * 1.15);
+    const X = v => L + (v / xMax) * (W - L - R), Y = v => H - B - (v / yMax) * (H - B - T);
+    const mx = median(sc.map(s => s.ctr)), my = median(sc.map(s => s.avgPct));
+    const vmax = Math.max(...sc.map(s => s.views || 1));
+    let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="CTR a odsetek obejrzenia">`;
+    svg += `<line class="ax" x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}"/><line class="ax" x1="${L}" y1="${T}" x2="${L}" y2="${H-B}"/>`;
+    svg += `<line class="ax" stroke-dasharray="4 4" x1="${X(mx)}" y1="${T}" x2="${X(mx)}" y2="${H-B}"/><line class="ax" stroke-dasharray="4 4" x1="${L}" y1="${Y(my)}" x2="${W-R}" y2="${Y(my)}"/>`;
+    svg += `<text class="q" x="${W-R-4}" y="${T+12}" text-anchor="end">klikają i oglądają ✓</text><text class="q" x="${L+6}" y="${T+12}">mało klików, ale oglądają</text><text class="q" x="${W-R-4}" y="${H-B-8}" text-anchor="end">klikają, ale szybko wychodzą</text><text class="q" x="${L+6}" y="${H-B-8}">do poprawy</text>`;
+    svg += `<text x="${(W+L)/2}" y="${H-6}" text-anchor="middle">CTR miniatury i tytułu (%)</text><text x="12" y="${(H-B+T)/2}" text-anchor="middle" transform="rotate(-90 12 ${(H-B+T)/2})">obejrzane (%)</text>`;
+    sc.forEach(s => {
+      const r = 5 + 9 * Math.sqrt((s.views || 1) / vmax);
+      svg += `<circle cx="${X(s.ctr)}" cy="${Y(s.avgPct)}" r="${r}" fill="var(--rec)" fill-opacity=".55" stroke="var(--rec)"><title>${esc(s.title)}\nCTR ${fmtPct(s.ctr)} · obejrzane ${fmtPct(s.avgPct)} · ${fmtInt(s.views)} wyśw.</title></circle>`;
+    });
+    svg += `</svg>`;
+    const c = el("div", { class:"block chart" }, el("div", { class:"block-head" }, el("h3", null, "Miniatura a utrzymanie widza"), el("span", { class:"hint" }, "najedź na kropkę, żeby zobaczyć film")));
+    const d = el("div"); d.innerHTML = svg; c.append(d);
+    c.append(el("p", { class:"note" }, "Wysoki CTR to dobra miniatura i tytuł. Wysoki odsetek obejrzenia to film, który trzyma widza. Linie przerywane to Wasza mediana – liczy się porównanie z własnymi filmami, nie z innymi kanałami."));
+    charts.append(c);
+  }
+  if(charts.children.length) box.append(charts);
+
+  // table
+  const cols = [["title","Tytuł"],["published","Publikacja"],["views","Wyświetlenia"],["impressions","Impresje"],["ctr","CTR"],["avgDur","Śr. czas"],["avgPct","Obejrzane"],["subs","Suby"]];
+  const mCtr = median(list.map(s => s.ctr)), mPct = median(list.map(s => s.avgPct));
+  const sorted = [...list].sort((a,b) => { const k = stSort.key; const x = a[k], y = b[k]; if(x === y) return 0; if(x === null || x === undefined || x === "") return 1; if(y === null || y === undefined || y === "") return -1; return (x > y ? 1 : -1) * stSort.dir; });
+  const tb = el("tbody");
+  sorted.forEach(s => {
+    const cls = (v, m) => v === null || v === undefined || m === null ? "" : v >= m * 1.2 ? "good" : v <= m * 0.8 ? "bad" : "";
+    const linked = linkProject(s.title);
+    tb.append(el("tr", null,
+      el("td", null, el("div", { style:"font-weight:600" }, s.title), el("div", { class:"inline", style:"margin-top:4px" },
+        el("span", { class:"pill" + (s.type === "short" ? " short" : "") }, s.type === "short" ? "Short" : "Film"),
+        linked ? el("span", { class:"pill ok", title:"Połączono z historią lub wzorami – AI zna tytuł, miniaturkę i napisy" }, "z aplikacji") : null,
+        el("button", { class:"btn small", type:"button", onclick: () => openStatForm(s) }, "Edytuj"),
+        el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć wyniki tego filmu?")){ store.setJ("vg_stats", getStats().filter(x => x.id !== s.id)); drawStats(); } } }, "Usuń"))),
+      el("td", null, s.published || "–"), el("td", null, fmtInt(s.views)), el("td", null, fmtInt(s.impressions)),
+      el("td", { class: cls(s.ctr, mCtr) }, fmtPct(s.ctr)), el("td", null, fmtDur(s.avgDur)),
+      el("td", { class: cls(s.avgPct, mPct) }, fmtPct(s.avgPct)), el("td", null, fmtInt(s.subs))));
+  });
+  const thead = el("thead", null, el("tr", null, cols.map(([k, l]) => el("th", { onclick: () => { stSort = { key:k, dir: stSort.key === k ? -stSort.dir : (k === "title" ? 1 : -1) }; drawStats(); } }, l + (stSort.key === k ? (stSort.dir > 0 ? " ↑" : " ↓") : "")))));
+  box.append(el("div", { class:"block", style:"margin-top:18px" }, el("div", { class:"block-head" }, el("h3", null, "Wszystkie filmy"), el("span", { class:"hint" }, "zielone – wyraźnie powyżej Waszej mediany, czerwone – wyraźnie poniżej")),
+    el("div", { class:"tablewrap" }, el("table", { class:"st" }, thead, tb))));
+}
+function esc(t){ return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+// data lines for prompts
+function statLine(s){
+  const l = linkProject(s.title);
+  return `- [${s.type === "short" ? "SHORT" : "FILM"}] ${s.title}${s.published ? " (" + s.published + ")" : ""} | wyświetlenia ${fmtInt(s.views)} | impresje ${fmtInt(s.impressions)} | CTR ${fmtPct(s.ctr)} | śr. czas ${fmtDur(s.avgDur)}${s.duration ? " z " + fmtDur(s.duration) : ""} | obejrzane ${fmtPct(s.avgPct)} | suby ${fmtInt(s.subs)}${l?.thumb ? " | miniaturka: " + l.thumb : ""}${l?.texts?.length ? " | napisy: " + l.texts.slice(0,3).join(" / ") : ""}`;
+}
+function statsForPrompt(kind){
+  const st = getStats().filter(s => (s.type||"film") === kind && s.views !== null && s.views !== undefined);
+  if(st.length < 3) return "";
+  const key = kind === "film" ? (s => (s.impressions||0) >= 300 && s.ctr !== null && s.ctr !== undefined ? s.ctr : null) : (s => s.views);
+  const ranked = st.filter(s => key(s) !== null).sort((a,b) => key(b) - key(a));
+  if(ranked.length < 3) return "";
+  const top = ranked.slice(0, 3), low = ranked.slice(-2);
+  const lbl = kind === "film" ? "CTR" : "wyświetleń";
+  return `\n=== CO DZIAŁA U WIDZÓW (prawdziwe dane z YouTube Studio) ===\nNajlepsze ${kind === "film" ? "tytuły (najwyższy CTR)" : "shortsy (najwięcej wyświetleń)"}:\n${top.map(s => `- ${s.title} (${kind === "film" ? fmtPct(s.ctr) : fmtInt(s.views)} ${kind === "film" ? "CTR" : "wyśw."})`).join("\n")}\nNajsłabsze:\n${low.map(s => `- ${s.title} (${kind === "film" ? fmtPct(s.ctr) : fmtInt(s.views)} ${kind === "film" ? "CTR" : "wyśw."})`).join("\n")}\nWyciągnij z tego wnioski: zbliżaj się do cech najlepszych, unikaj cech najsłabszych (to słaby sygnał przy małych liczbach – nie przesadzaj, ${lbl} zależy też od tematu).\n`;
+}
+
+// AI analysis
+$("stAnalyze").onclick = async () => {
+  const st = getStats();
+  const out = $("stAiOut");
+  if(st.length < 2){ out.innerHTML = ""; out.append(el("div", { class:"error" }, "Dodaj wyniki co najmniej 2–3 filmów, żeby było co porównywać.")); return; }
+  const btn = $("stAnalyze"); btn.disabled = true;
+  const q = $("stQuestion").value.trim();
+  const lines = [...st].sort((a,b) => (b.views||0) - (a.views||0)).slice(0, 60).map(statLine).join("\n");
+  const prev = getReports()[0];
+  const prompt = `Jesteś analitykiem YouTube i kreatywnym partnerem małego kanału podróżniczego. Przeanalizuj wyniki filmów i shortsów kanału.
+
+=== PRZEWODNIK STYLU KANAŁU ===
+${$("styleGuide").value.trim()}
+
+=== WYNIKI Z YOUTUBE STUDIO ===
+${lines}
+${prev ? `\n=== POPRZEDNIA ANALIZA (${new Date(prev.at).toLocaleDateString("pl-PL")}) – sprawdź, co się zmieniło ===\n${prev.data.summary || ""}\n` : ""}
+${q ? `\nPytanie autorów (odpowiedz na nie wprost): ${q}\n` : ""}
+Zasady analizy:
+- Porównuj filmy kanału między sobą (mediana kanału), nie z wielkimi kanałami. Typowy CTR to 2–10%, zależy od źródła ruchu.
+- Mały kanał = małe liczby. Gdy impresji jest mniej niż ok. 1000 albo filmów jest mało, zaznacz, że to słaby sygnał. Nie wyciągaj mocnych wniosków z jednego filmu.
+- CTR mówi o tytule i miniaturce, odsetek obejrzenia i średni czas – o samym filmie (wstęp, tempo, długość). Shortsy oceniaj osobno.
+- Szukaj wzorców w tytułach, tekstach miniatur i napisach shortsów: co mają wspólnego najlepsze, a co najsłabsze. Podawaj konkretne przykłady tytułów.
+- Szczerze i konkretnie, po polsku, bez lania wody i bez chwalenia na siłę.
+- styleRules to krótkie, konkretne zasady do dopisania do przewodnika stylu, wynikające z danych (np. „W tytułach serii podawaj nazwę konkretnej atrakcji zamiast ogólników – takie mają ok. 2x wyższy CTR”). Maks. 4, tylko jeśli dane je uzasadniają.
+
+Zwróć WYŁĄCZNIE JSON:
+{"summary":"2–4 zdania najważniejszych wniosków","answer":"odpowiedź na pytanie autorów albo pusty tekst","works":["co działa – konkretnie z przykładami"],"doesnt":["co nie działa – konkretnie z przykładami"],"titles":"wnioski o tytułach i miniaturkach","retention":"wnioski o utrzymaniu widza","shorts":"wnioski o shortsach albo pusty tekst","videos":[{"title":"","verdict":"krótka ocena","tip":"co zrobić inaczej przy podobnym filmie"}],"actions":["konkretne działania na najbliższe filmy"],"styleRules":["zasada do przewodnika"],"confidence":"jak pewne są wnioski i dlaczego (1–2 zdania)"}`;
+  const prog = showProgress(out, [["report", "Analiza wyników", 3500]], "AI porównuje Wasze filmy, tytuły i miniaturki. Zwykle trwa to do minuty.");
+  try{
+    const d = await callGemini([{ text: prompt }], true, 0.6, u => prog.update("report", u));
+    prog.stop();
+    const rep = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), question: q, count: st.length, data: d, done: [] };
+    store._noUndo = true; store.setJ("vg_reports", [rep, ...getReports()].slice(0, 30)); store._noUndo = false;
+    renderReport(rep); drawReports();
+  }catch(e){ prog.stop(); out.innerHTML = ""; out.append(el("div", { class:"error" }, e.message)); }
+  finally{ btn.disabled = false; }
+};
+function stageReport(b){ return lastKey(b, [["summary","Podsumowuję…"],["works","Szukam tego, co działa…"],["doesnt","Szukam słabych punktów…"],["titles","Analizuję tytuły i miniaturki…"],["retention","Analizuję utrzymanie widza…"],["shorts","Analizuję shortsy…"],["videos","Oceniam poszczególne filmy…"],["actions","Układam plan działania…"],["styleRules","Formułuję zasady do przewodnika…"]]) || "Zaczynam…"; }
+function renderReport(rep){
+  const d = rep.data || {}, out = $("stAiOut"); out.innerHTML = "";
+  const saveRep = () => { const all = getReports().map(r => r.id === rep.id ? { ...rep, updatedAt: Date.now() } : r); store.setJ("vg_reports", all); };
+  const list = a => el("ul", null, (a||[]).map(x => el("li", null, x)));
+  const wrap = el("div", { class:"stack" });
+  wrap.append(el("div", { class:"viewing" }, el("span", null, el("strong", null, "Analiza z " + fmtDate(rep.at)), " · " + rep.count + " filmów"), rep.question ? el("span", { class:"hint" }, "Pytanie: " + rep.question) : null));
+  wrap.append(el("div", { class:"block" }, el("h3", { style:"margin-bottom:8px" }, "Najważniejsze"), el("p", { style:"margin:0" }, d.summary || ""),
+    d.answer ? el("p", { style:"margin:10px 0 0" }, el("strong", null, "Odpowiedź na pytanie: "), d.answer) : null,
+    d.confidence ? el("p", { class:"note" }, "Pewność wniosków: " + d.confidence) : null));
+  wrap.append(el("div", { class:"rep-grid" },
+    el("div", { class:"rep-card ok" }, el("h4", null, "Co działa"), list(d.works)),
+    el("div", { class:"rep-card no" }, el("h4", null, "Co nie działa"), list(d.doesnt))));
+  const parts = [["Tytuły i miniaturki", d.titles], ["Utrzymanie widza", d.retention], ["Shortsy", d.shorts]].filter(x => x[1]);
+  if(parts.length) wrap.append(el("div", { class:"rep-grid" }, parts.map(([h, t]) => el("div", { class:"rep-card" }, el("h4", null, h), el("p", { style:"margin:0" }, t)))));
+  if((d.actions||[]).length){
+    rep.done = rep.done || [];
+    const box = el("div", { class:"block" }, el("h3", { style:"margin-bottom:6px" }, "Plan na kolejne filmy"));
+    d.actions.forEach((a, i) => {
+      const cb = el("input", { type:"checkbox", "aria-label":"Zrobione" }); cb.checked = rep.done.includes(i);
+      const row = el("label", { class:"action" + (cb.checked ? " done" : ""), style:"font-weight:400;margin:0" }, cb, el("span", null, a));
+      cb.onchange = () => { rep.done = cb.checked ? [...rep.done, i] : rep.done.filter(x => x !== i); row.classList.toggle("done", cb.checked); saveRep(); };
+      box.append(row);
+    });
+    wrap.append(box);
+  }
+  if((d.styleRules||[]).length){
+    const box = el("div", { class:"block save-block" }, el("h3", { style:"margin-bottom:4px" }, "Wnioski do przewodnika stylu"),
+      el("p", { class:"note", style:"margin-top:0" }, "Dopisz te, z którymi się zgadzasz – AI zacznie je stosować przy generowaniu."));
+    d.styleRules.forEach(r => {
+      const has = $("styleGuide").value.includes(r);
+      const b = el("button", { class:"btn small" + (has ? " picked" : ""), type:"button" }, has ? "Dodano" : "Dodaj do przewodnika");
+      b.onclick = () => {
+        if($("styleGuide").value.includes(r)) return;
+        let g = $("styleGuide").value.trimEnd();
+        if(!g.includes("WNIOSKI Z WYNIKÓW:")) g += "\n\nWNIOSKI Z WYNIKÓW:";
+        g += "\n- " + r;
+        $("styleGuide").value = g; store.set("vg_style", g);
+        b.classList.add("picked"); b.textContent = "Dodano"; toast("Dopisano do przewodnika stylu");
+      };
+      box.append(el("div", { class:"rule" }, el("span", null, r), b));
+    });
+    wrap.append(box);
+  }
+  if((d.videos||[]).length){
+    const box = el("div", { class:"block" }, el("h3", { style:"margin-bottom:8px" }, "Film po filmie"));
+    const ul = el("ul", { class:"list" });
+    d.videos.forEach(v => ul.append(el("li", { class:"ex" }, el("div", { class:"t" }, v.title), el("div", { class:"meta" }, v.verdict || ""), v.tip ? el("div", { class:"meta" }, "→ " + v.tip) : null)));
+    box.append(ul); wrap.append(box);
+  }
+  wrap.append(el("div", { class:"inline" },
+    el("button", { class:"btn", type:"button", onclick: () => {
+      openChat(null); showTab("chat");
+      $("chatInput").value = `Omówmy analizę wyników z ${new Date(rep.at).toLocaleDateString("pl-PL")}. Najważniejsze wnioski: ${d.summary || ""}\n\nMoje pytanie: `;
+      $("chatInput").focus();
+    } }, "Omów w czacie"),
+    copyBtn(() => [d.summary, "", "Co działa:", ...(d.works||[]).map(x => "- " + x), "", "Co nie działa:", ...(d.doesnt||[]).map(x => "- " + x), "", "Plan:", ...(d.actions||[]).map(x => "- " + x)].join("\n"), "Kopiuj podsumowanie")));
+  out.append(wrap);
+}
+function drawReports(){
+  const box = $("stReports"); box.innerHTML = "";
+  const reps = getReports(); if(!reps.length) return;
+  box.append(el("h3", { style:"font-size:16px;margin-bottom:8px" }, "Poprzednie analizy"));
+  const ul = el("ul", { class:"list", style:"gap:6px" });
+  reps.forEach(r => ul.append(el("li", { class:"ex hist-item" },
+    el("div", null, el("div", { class:"t" }, fmtDate(r.at) + " · " + r.count + " filmów"), el("div", { class:"meta" }, (r.data?.summary || "").slice(0, 160) + ((r.data?.summary||"").length > 160 ? "…" : ""))),
+    el("div", { class:"ex-actions", style:"margin:0" },
+      el("button", { class:"btn small", type:"button", onclick: () => { renderReport(r); $("stAiOut").scrollIntoView({ behavior:"smooth", block:"start" }); } }, "Otwórz"),
+      el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć tę analizę?")){ store.setJ("vg_reports", getReports().filter(x => x.id !== r.id)); drawReports(); } } }, "Usuń")))));
+  box.append(ul);
+}
+drawStats(); drawReports();
+
+// ---------- trips (W trasie) ----------
+const getTrips = () => store.getJ("vg_trips", []);
+const CATS = { hook:"Hook", miniatura:"Miniatura", short:"Short", przebitka:"Przebitka", jedzenie:"Jedzenie", opowiesc:"Do kamery", zakonczenie:"Zakończenie", inne:"Inne" };
+const catKey = c => { const k = normT(c).replace(/ /g,""); return CATS[k] ? k : (k.startsWith("opow") || k.includes("kamer") ? "opowiesc" : k.startsWith("zako") ? "zakonczenie" : k.startsWith("minia") ? "miniatura" : k.startsWith("przeb") || k.includes("broll") ? "przebitka" : "inne"); };
+let tripId = store.get("vg_trip_active", null);
+let tripSaveT;
+function saveTrip(t, now){
+  t.updatedAt = Date.now();
+  const w = () => { const all = getTrips().filter(x => x.id !== t.id); all.unshift(t); all.sort((a,b) => b.updatedAt - a.updatedAt); store.setJ("vg_trips", all.slice(0, 60)); };
+  clearTimeout(tripSaveT); if(now) w(); else tripSaveT = setTimeout(w, 400);
+}
+function currentTrip(){ const all = getTrips(); return all.find(t => String(t.id) === String(tripId)) || all[0] || null; }
+function newTrip(){
+  const t = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), name: "", format: "weekend", place: "", days: 2, plan: "", shots: [], notes: [] };
+  saveTrip(t, true); tripId = t.id; store.set("vg_trip_active", String(t.id)); drawTrip();
+  setTimeout(() => $("tName")?.focus(), 50);
+}
+$("tripNew").onclick = newTrip;
+$("tripSel").onchange = () => { tripId = $("tripSel").value; store.set("vg_trip_active", String(tripId)); drawTrip(); };
+function tripLabel(t){ return t.name || (t.format === "weekend" ? "Weekend w " + (t.place || "…") : t.place || "Nowy wyjazd"); }
+
+function drawTrip(){
+  const all = getTrips(), sel = $("tripSel"); sel.innerHTML = "";
+  if(!all.length){
+    sel.append(el("option", { value:"" }, "Brak wyjazdów"));
+    $("tripForm").innerHTML = ""; $("tripForm").append(el("div", { class:"empty", style:"margin-top:14px;padding:24px" }, el("strong", null, "Planujecie wyjazd?"), "Kliknij „+ Nowy wyjazd”, wpisz plan, a AI przygotuje listę ujęć do nagrania."));
+    $("tripShots").innerHTML = ""; $("tripNotes").innerHTML = ""; return;
+  }
+  all.forEach(t => sel.append(el("option", { value: String(t.id) }, tripLabel(t))));
+  const t = currentTrip(); sel.value = String(t.id); tripId = t.id;
+
+  // form
+  const f = $("tripForm"); f.innerHTML = "";
+  const inp = (id, val, ph, on) => { const i = el("input", { type:"text", id, placeholder: ph }); i.value = val || ""; i.oninput = () => { on(i.value); saveTrip(t); }; return i; };
+  const fmt = el("select", { id:"tFormat" }, el("option", { value:"weekend" }, "Weekendowy wypad"), el("option", { value:"series" }, "Seria (kilka odcinków)"), el("option", { value:"other" }, "Inny"));
+  fmt.value = t.format || "weekend"; fmt.onchange = () => { t.format = fmt.value; saveTrip(t); };
+  const days = el("input", { type:"number", id:"tDays", min:"1", max:"14" }); days.value = t.days || 1; days.oninput = () => { t.days = Math.max(1, +days.value || 1); saveTrip(t); };
+  const plan = el("textarea", { id:"tPlan", placeholder:"Dzień 1: Brenna, wejście na Błatnią, burgery w Ustroniu, nocleg w aucie\nDzień 2: …" }); plan.value = t.plan || ""; plan.oninput = () => { t.plan = plan.value; saveTrip(t); };
+  const gen = el("button", { class:"btn primary", type:"button" }, t.shots.length ? "Dodaj więcej ujęć" : "Zrób listę ujęć");
+  const prog = el("div"), err = el("div", { class:"error", hidden:"" });
+  gen.onclick = async () => {
+    if(!t.plan.trim() && !t.place.trim()){ err.textContent = "Wpisz miejsce albo plan wyjazdu."; err.hidden = false; return; }
+    err.hidden = true; gen.disabled = true;
+    const pr = showProgress(prog, [["shots", "Lista ujęć", 3000]], "AI układa ujęcia pod hook, miniaturkę, shortsy i przebitki.");
+    try{
+      const existing = t.shots.map(x => "- " + x.text).join("\n");
+      const prompt = `Jesteś doświadczonym vlogerem podróżniczym i pomagasz zaplanować nagrania na wyjazd, tak żeby po powrocie był materiał na dobry film i shortsy.
+
+=== STYL KANAŁU ===
+${$("styleGuide").value.trim().split("\n\n").slice(0,3).join("\n\n")}
+
+=== ZASADY SHORTSÓW (skrót) ===
+${$("shortsGuide").value.trim().split("\n\n").slice(0,2).join("\n\n")}
+
+=== WYJAZD ===
+Nazwa: ${tripLabel(t)}
+Format: ${t.format === "weekend" ? "weekendowy wypad (jeden film)" : t.format === "series" ? "seria – osobny odcinek na każdy dzień" : "inny"}
+Miejsce: ${t.place || "(nie podano)"}
+Liczba dni: ${t.days}
+Plan: ${t.plan || "(brak szczegółów)"}
+${existing ? "\nUjęcia, które już są na liście (nie powtarzaj ich, uzupełnij braki):\n" + existing + "\n" : ""}
+Przygotuj listę ujęć do nagrania, pogrupowaną po dniach (pole "day" = numer dnia). Kategorie (pole "cat"):
+- hook – mocne ujęcie na pierwsze 3 sekundy filmu albo shorta (efektowny widok, zaskoczenie, reakcja)
+- miniatura – kadr pod miniaturkę: jasne tło, charakterystyczne miejsce, twarze z emocją, wolne miejsce na napis
+- short – moment, który sam w sobie jest ciekawostką; nagraj też w pionie
+- przebitka – b-roll: detale, ruch, otoczenie, dojazd, ludzie
+- jedzenie – jedzenie i reakcja na nie
+- opowiesc – co powiedzieć do kamery (konkretna kwestia albo pytanie, na które odpowiedzieć)
+- zakonczenie – ujęcie lub kwestia na koniec dnia
+Na każdy dzień: 1 hook, 1–2 miniatura, 1–2 short, 3–5 przebitek, 1–2 opowiesc, 1 zakonczenie (plus jedzenie, jeśli jest w planie). Maks. 14 ujęć na dzień.
+Każde ujęcie: konkretne, do zrobienia telefonem lub kamerą, maks. 12 słów. Do tego krótka wskazówka "tip", jak je nagrać (kadr, ruch, światło, pora).
+Nie wymyślaj atrakcji spoza planu – możesz dodać ogólne ujęcia (dojazd, nocleg, pogoda, jedzenie).
+
+Zwróć WYŁĄCZNIE JSON: {"shots":[{"day":1,"cat":"hook","text":"","tip":""}]}`;
+      const d = await callGemini([{ text: prompt }], true, 0.8, u => pr.update("shots", u));
+      pr.stop();
+      const add = (d.shots||[]).filter(x => x.text).map((x, i) => ({ id: Date.now() + i, day: Math.min(t.days, Math.max(1, +x.day || 1)), cat: catKey(x.cat || ""), text: x.text, tip: x.tip || "", done: false }));
+      if(!add.length) throw new Error("AI nie zwróciło ujęć. Spróbuj jeszcze raz.");
+      t.shots.push(...add); saveTrip(t, true); drawTrip(); toast("Dodano ujęcia: " + add.length);
+    }catch(e){ pr.stop(); prog.innerHTML = ""; err.textContent = e.message; err.hidden = false; }
+    finally{ gen.disabled = false; }
+  };
+  const del = el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten wyjazd razem z listą ujęć i notatkami?")){ store.setJ("vg_trips", getTrips().filter(x => x.id !== t.id)); tripId = null; drawTrip(); } } }, "Usuń wyjazd");
+  f.append(
+    el("label", { for:"tName" }, "Nazwa wyjazdu"), inp("tName", t.name, "np. Majówka w Berlinie", v => { t.name = v; }),
+    el("div", { class:"row" }, el("div", null, el("label", { for:"tFormat" }, "Format"), fmt), el("div", null, el("label", { for:"tDays" }, "Liczba dni"), days)),
+    el("label", { for:"tPlace" }, "Miejsce ", el("span", { class:"hint" }, "(jak w tytule: „Beskidach” albo „Berlin”)")), inp("tPlace", t.place, "np. Beskidach", v => { t.place = v; }),
+    el("label", { for:"tPlan" }, "Plan wyjazdu ", el("span", { class:"hint" }, "(co chcecie zobaczyć, po dniach)")), plan,
+    el("div", { style:"margin-top:14px" }, gen), err, prog,
+    el("div", { style:"margin-top:18px" }, del));
+
+  // shots
+  const sb = $("tripShots"); sb.innerHTML = "";
+  const done = t.shots.filter(x => x.done).length;
+  const card = el("div", { class:"block" });
+  card.append(el("div", { class:"block-head" }, el("h3", null, "Lista ujęć"), el("span", { class:"count" }, t.shots.length ? `${done}/${t.shots.length} nagrane` : "")));
+  if(t.shots.length) card.append(el("div", { class:"progress-line" }, el("span", { style:`width:${t.shots.length ? done / t.shots.length * 100 : 0}%` })));
+  if(!t.shots.length) card.append(el("p", { class:"note" }, "Wpisz plan po lewej i kliknij „Zrób listę ujęć”. Możesz też dodawać własne ujęcia poniżej."));
+  for(let day = 1; day <= Math.max(t.days, ...t.shots.map(x => x.day || 1)); day++){
+    const items = t.shots.filter(x => (x.day || 1) === day); if(!items.length) continue;
+    if(t.days > 1) card.append(el("div", { class:"day-h" }, "Dzień " + day));
+    const ul = el("div", { style:"display:grid;gap:8px" });
+    items.forEach(x => {
+      const cb = el("input", { type:"checkbox", "aria-label":"Nagrane" }); cb.checked = !!x.done;
+      const row = el("label", { class:"shot" + (x.done ? " done" : ""), style:"font-weight:400;margin:0" }, cb,
+        el("div", null, el("div", { class:"stx" }, el("span", { class:"cat cat-" + x.cat }, CATS[x.cat] || "Inne"), x.text), x.tip ? el("div", { class:"tip" }, x.tip) : null),
+        el("button", { class:"x", type:"button", "aria-label":"Usuń ujęcie", onclick: e => { e.preventDefault(); const before = rawGet("vg_trips"); t.shots = t.shots.filter(y => y.id !== x.id); saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } }, "×"));
+      cb.onchange = () => { x.done = cb.checked; row.classList.toggle("done", x.done); saveTrip(t); const d2 = t.shots.filter(y => y.done).length; card.querySelector(".count").textContent = `${d2}/${t.shots.length} nagrane`; const pl = card.querySelector(".progress-line span"); if(pl) pl.style.width = (d2 / t.shots.length * 100) + "%"; };
+      ul.append(row);
+    });
+    card.append(ul);
+  }
+  // add own shot
+  const own = el("input", { type:"text", placeholder:"Własne ujęcie, np. zachód słońca z parkingu", "aria-label":"Nowe ujęcie" });
+  const ownCat = el("select", { "aria-label":"Kategoria" }, Object.entries(CATS).map(([k, v]) => el("option", { value:k }, v)));
+  const ownDay = el("select", { "aria-label":"Dzień" }, Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
+  const addOwn = () => { const v = own.value.trim(); if(!v) return; t.shots.push({ id: Date.now(), day: +ownDay.value, cat: ownCat.value, text: v, tip: "", done: false }); saveTrip(t, true); drawTrip(); };
+  own.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); addOwn(); } });
+  card.append(el("div", { class:"inline", style:"margin-top:14px" }, own, ownCat, t.days > 1 ? ownDay : null, el("button", { class:"btn small", type:"button", onclick: addOwn }, "Dodaj")));
+  sb.append(card);
+
+  // notes
+  const nb = $("tripNotes"); nb.innerHTML = "";
+  const nc = el("div", { class:"block" });
+  const ta = el("textarea", { placeholder:"Co się dzieje? Gdzie jesteście, co jecie, co was zaskoczyło…", "aria-label":"Notatka", style:"min-height:80px" });
+  const nDay = el("select", { "aria-label":"Dzień notatki" }, Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
+  nDay.value = String(Math.min(t.days, t.lastDay || 1));
+  const addNote = () => { const v = ta.value.trim(); if(!v) return; t.lastDay = +nDay.value; t.notes.push({ id: Date.now(), at: Date.now(), day: +nDay.value, text: v }); saveTrip(t, true); drawTrip(); toast("Notatka zapisana"); };
+  nc.append(el("div", { class:"block-head" }, el("h3", null, "Notatki z trasy")),
+    el("p", { class:"note", style:"margin-top:0" }, "Na telefonie stuknij ikonę mikrofonu na klawiaturze i po prostu mów – szybciej niż pisanie."),
+    ta, el("div", { class:"inline", style:"margin-top:8px" }, t.days > 1 ? nDay : null, el("button", { class:"btn", type:"button", onclick: addNote }, "Dodaj notatkę")));
+  const sorted = [...t.notes].sort((a,b) => (a.day - b.day) || (a.at - b.at));
+  if(sorted.length){
+    const list = el("div", { style:"display:grid;gap:8px;margin-top:14px" });
+    sorted.forEach(n => list.append(el("div", { class:"note-item" },
+      el("time", null, (t.days > 1 ? "Dzień " + n.day + " · " : "") + new Date(n.at).toLocaleString("pl-PL", { weekday:"short", hour:"2-digit", minute:"2-digit" })), n.text,
+      el("div", { style:"margin-top:6px" }, el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć notatkę?")){ const before = rawGet("vg_trips"); t.notes = t.notes.filter(x => x.id !== n.id); saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } } }, "Usuń")))));
+    nc.append(list);
+  }
+  // transfer
+  const which = el("select", { "aria-label":"Który dzień" }, el("option", { value:"all" }, "Cały wyjazd"), Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
+  if(t.format === "series" && t.days > 1) which.value = "1";
+  const transfer = () => {
+    const d = which.value === "all" ? null : +which.value;
+    const notes = sorted.filter(n => !d || n.day === d).map(n => n.text);
+    const shots = t.shots.filter(x => x.done && (!d || x.day === d) && x.cat !== "przebitka").map(x => x.text);
+    const details = [...notes, ...(shots.length ? ["", "Nagrane ujęcia: " + shots.join("; ")] : [])].join("\n").trim();
+    if(!details){ alert("Brak notatek i odhaczonych ujęć dla tego wyboru."); return; }
+    fillInput({ format: t.format, place: t.place, episode: d || 1, details, chapters:"", keywords:"", shortScenes:[""] });
+    $("output").innerHTML = ""; $("output").append(el("div", { class:"empty" }, el("strong", null, "Przeniesiono z „" + tripLabel(t) + "”"), "Sprawdź opis po lewej, popraw, jeśli trzeba, i kliknij „Generuj”."));
+    showTab("gen"); window.scrollTo({ top:0 }); toast("Przeniesiono do nowego filmu");
+  };
+  nc.append(el("div", { class:"block save-block", style:"margin-top:16px" },
+    el("h3", { style:"margin-bottom:6px" }, "Po powrocie"),
+    el("p", { class:"note", style:"margin-top:0" }, "Przenosi notatki i odhaczone ujęcia do formularza „Nowy film”." + (t.format === "series" ? " Przy serii wybierz dzień – każdy to osobny odcinek." : "")),
+    el("div", { class:"inline" }, which, el("button", { class:"btn primary", type:"button", style:"width:auto", onclick: transfer }, "Przenieś do nowego filmu"))));
+  nb.append(nc);
+}
+drawTrip();
+
+// ---------- thumbnail preview ----------
+let tpImg = null;
+const tpInputs = ["tpL1","tpL2","tpL3","tpLayout","tpColor","tpSize","tpShade"];
+tpInputs.forEach(id => $(id).addEventListener("input", drawThumbPrev));
+$("tpLayout").onchange = drawThumbPrev; $("tpColor").onchange = drawThumbPrev; $("tpShade").onchange = drawThumbPrev;
+$("tpFile").onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const img = new Image(); img.onload = () => { tpImg = img; drawThumbPrev(); }; img.src = URL.createObjectURL(f);
+};
+$("tpFromProject").onclick = () => {
+  const p = (current && (current.finalThumb || current.choice?.thumb)) ? current : getProjects().find(x => x.finalThumb || x.choice?.thumb);
+  if(!p){ alert("W historii nie ma jeszcze filmu z wybranym tekstem miniaturki."); return; }
+  const parts = (p.finalThumb || p.choice.thumb).split(/\s*\/\s*|\n/).map(x => x.trim()).filter(Boolean);
+  $("tpL1").value = parts[0] || ""; $("tpL2").value = parts[1] || ""; $("tpL3").value = parts.slice(2).join(" ");
+  if(parts.length === 1){ $("tpL2").value = parts[0]; $("tpL1").value = ""; }
+  const title = p.finalTitle || p.choice?.title; if(title){ $("tpTitle1").textContent = title; $("tpTitle2").textContent = title; }
+  drawThumbPrev();
+};
+function wrapLines(ctx, text, maxW){
+  const words = text.split(/\s+/).filter(Boolean), out = []; let line = "";
+  words.forEach(w => { const t = line ? line + " " + w : w; if(ctx.measureText(t).width > maxW && line){ out.push(line); line = w; } else line = t; });
+  if(line) out.push(line); return out;
+}
+async function drawThumbPrev(){
+  const c = $("tpCanvas"), ctx = c.getContext("2d"), W = c.width, H = c.height;
+  try{ await document.fonts.load('800 100px "Bricolage Grotesque"'); }catch(e){}
+  ctx.clearRect(0,0,W,H);
+  if(tpImg){
+    const r = Math.max(W / tpImg.width, H / tpImg.height), iw = tpImg.width * r, ih = tpImg.height * r;
+    ctx.drawImage(tpImg, (W - iw) / 2, (H - ih) / 2, iw, ih);
+  } else { const g = ctx.createLinearGradient(0,0,W,H); g.addColorStop(0,"#3a6b8c"); g.addColorStop(1,"#c98b4a"); ctx.fillStyle = g; ctx.fillRect(0,0,W,H); ctx.fillStyle = "rgba(255,255,255,.7)"; ctx.font = '500 34px "Instrument Sans", sans-serif'; ctx.textAlign = "center"; ctx.fillText("Wrzuć zdjęcie, żeby zobaczyć prawdziwy podgląd", W/2, H - 40); }
+  const layout = $("tpLayout").value, size = +$("tpSize").value, accent = $("tpColor").value;
+  if($("tpShade").checked){
+    let g;
+    if(layout === "left"){ g = ctx.createLinearGradient(0,0,W*0.75,0); g.addColorStop(0,"rgba(0,0,0,.65)"); g.addColorStop(1,"rgba(0,0,0,0)"); }
+    else if(layout === "right"){ g = ctx.createLinearGradient(W,0,W*0.25,0); g.addColorStop(0,"rgba(0,0,0,.65)"); g.addColorStop(1,"rgba(0,0,0,0)"); }
+    else if(layout === "bottom"){ g = ctx.createLinearGradient(0,H,0,H*0.35); g.addColorStop(0,"rgba(0,0,0,.7)"); g.addColorStop(1,"rgba(0,0,0,0)"); }
+    else { g = ctx.createRadialGradient(W/2,H/2,50,W/2,H/2,W*0.6); g.addColorStop(0,"rgba(0,0,0,.5)"); g.addColorStop(1,"rgba(0,0,0,.1)"); }
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  }
+  const lines = [[$("tpL1").value.trim(), size*0.72, "#FFFFFF"], [$("tpL2").value.trim(), size, accent], [$("tpL3").value.trim(), size*0.48, "#FFFFFF"]].filter(l => l[0]);
+  const maxW = layout === "left" || layout === "right" ? W*0.58 : W*0.9;
+  const font = s => `800 ${s}px "Bricolage Grotesque", "Arial Black", Impact, sans-serif`;
+  const blocks = lines.map(([t, s, col]) => { ctx.font = font(s); return { rows: wrapLines(ctx, t, maxW), s, col }; });
+  const total = blocks.reduce((a, b) => a + b.rows.length * b.s * 1.02, 0) + (blocks.length - 1) * size * 0.12;
+  let y = layout === "bottom" ? H - 50 - total : (H - total) / 2;
+  const x = layout === "left" ? 60 : layout === "right" ? W - 60 : W/2;
+  ctx.textAlign = layout === "left" ? "left" : layout === "right" ? "right" : "center"; ctx.textBaseline = "top";
+  blocks.forEach(b => {
+    ctx.font = font(b.s);
+    b.rows.forEach(r => {
+      ctx.lineJoin = "round"; ctx.lineWidth = b.s * 0.14; ctx.strokeStyle = "rgba(0,0,0,.85)"; ctx.shadowColor = "rgba(0,0,0,.5)"; ctx.shadowBlur = b.s * 0.15; ctx.shadowOffsetY = b.s * 0.04;
+      ctx.strokeText(r, x, y); ctx.shadowColor = "transparent"; ctx.fillStyle = b.col; ctx.fillText(r, x, y);
+      y += b.s * 1.02;
+    });
+    y += size * 0.12;
+  });
+  ["tpFeed","tpSmall"].forEach(id => { const m = $(id), mc = m.getContext("2d"); mc.imageSmoothingQuality = "high"; mc.drawImage(c, 0, 0, m.width, m.height); });
+}
+$("tpDownload").onclick = () => { $("tpCanvas").toBlob(b => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "miniaturka-podglad.png"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }, "image/png"); };
+$("tpReview").onclick = () => {
+  if(!tpImg){ alert("Najpierw wrzuć zdjęcie."); return; }
+  const url = $("tpCanvas").toDataURL("image/jpeg", 0.9);
+  thumbData = { mime:"image/jpeg", b64: url.split(",")[1] }; $("thumbPreview").src = url; $("thumbPreview").hidden = false;
+  $("thumbPreview").scrollIntoView({ behavior:"smooth", block:"center" }); $("reviewBtn").click();
+};
+drawThumbPrev();
+
+// ---------- storage info ----------
+(async () => {
+  const box = $("storageInfo"); if(!box) return;
+  let txt = __db ? "Dane zapisane w pojemnej pamięci aplikacji (IndexedDB)." : "Tryb awaryjny: przeglądarka nie udostępnia pojemnej pamięci – limit ok. 5 MB.";
+  try{ if(navigator.storage?.estimate){ const e = await navigator.storage.estimate(); txt += ` Zajęte: ${(e.usage/1048576).toFixed(1)} MB z dostępnych ${(e.quota/1073741824).toFixed(1)} GB.`; } }catch(e){}
+  box.textContent = txt;
+})();
+
 // ---------- chat ----------
 const getChats = () => store.getJ("vg_chats", []);
 const saveChats = c => store.setJ("vg_chats", c.slice(0,100));
 let activeChat = null, chatBusy = false;
 const STARTERS = ["Jakie filmy warto nagrać, kiedy nie mamy żadnego wyjazdu?", "Jak zaplanować serię z kilkudniowego wyjazdu, żeby każdy odcinek był ciekawy?", "Jak często publikować przy naszym tempie wyjazdów?", "Co zmienić w shortsach, żeby więcej osób przechodziło na kanał?"];
 
-function chatContext(){
-  const ex = getExamples(), pls = getPlaylists(), sh = getShortPatterns().slice(0,6), pr = getProjects().slice(0,15);
+function chatContext(q){
+  q = normT(q || "");
+  const wantStats = /wynik|statyst|wyswietl|ctr|klik|analiz|oglad|sub|zasieg|algorytm|ruch/.test(q);
+  const wantDesc = /opis|tekst|styl|cta|hasztag|hashtag/.test(q);
+  const wantShorts = /short|rolk|tiktok|insta|pion/.test(q);
+  const wantTrips = /wyjazd|tras|ujec|nagr|plan/.test(q);
+  const ex = getExamples(), pls = getPlaylists(), sh = getShortPatterns().slice(0, wantShorts ? 6 : 3), pr = getProjects().slice(0, 10);
   let s = `Jesteś asystentem i kreatywnym partnerem kanału YouTube opisanego w przewodniku stylu poniżej. Rozmawiasz z autorem kanału w aplikacji, w której przygotowują tytuły, opisy, tagi, miniaturki, shortsy i playlisty. Poniżej masz cały kontekst z tej aplikacji – korzystaj z niego, odnoś się do konkretnych filmów i ustaleń, gdy to pomaga.
 Zasady rozmowy:
 - Odpowiadaj po polsku, luźno i konkretnie, jak doświadczony znajomy, który zna się na YouTube.
@@ -1197,12 +2388,19 @@ Dzisiejsza data: ${new Date().toLocaleDateString("pl-PL")}.
 ${$("styleGuide").value.trim()}
 
 === PRZEWODNIK STYLU SHORTSÓW ===
-${$("shortsGuide").value.trim()}
+${wantShorts ? $("shortsGuide").value.trim() : $("shortsGuide").value.trim().split("\n\n").slice(0,3).join("\n\n")}
 `;
-  if(ex.length){ s += `\n=== FILMY ZE WZORÓW (najnowsze pierwsze) ===\n`; ex.slice(0,12).forEach((e,i) => s += `- ${e.title}${e.thumb ? " | miniaturka: " + e.thumb : ""}${i < 3 && e.desc ? "\n  Opis: " + e.desc.replace(/\n+/g," ").slice(0,600) : ""}\n`); }
+  if(ex.length){ s += `\n=== FILMY ZE WZORÓW (najnowsze pierwsze) ===\n`; ex.slice(0,10).forEach((e,i) => s += `- ${e.title}${e.thumb ? " | miniaturka: " + e.thumb : ""}${i < (wantDesc ? 3 : 1) && e.desc ? "\n  Opis: " + e.desc.replace(/\n+/g," ").slice(0,600) : ""}\n`); }
   if(pls.length){ s += `\n=== PLAYLISTY ===\n`; pls.forEach(x => s += `- ${x.name}${x.desc ? ": " + x.desc.replace(/\n+/g," ").slice(0,250) : ""}\n`); }
   if(sh.length){ s += `\n=== SHORTSY ZE WZORÓW ===\n`; sh.forEach(x => s += `- ${x.title || x.label || "short"}: ${(x.texts||[]).join(" / ")}\n`); }
-  if(pr.length){ s += `\n=== OSTATNIE PROJEKTY W APLIKACJI ===\n`; pr.forEach(p => s += `- ${projectLabel(p)} (${new Date(p.at).toLocaleDateString("pl-PL")})${(p.finalTitle||p.choice?.title) ? " – tytuł: " + (p.finalTitle||p.choice.title) : ""}${(p.shorts||[]).filter(x => x.chosenTitle).length ? " – shortsy: " + p.shorts.filter(x => x.chosenTitle).map(x => x.chosenTitle).join("; ") : ""}${p.input?.details ? "\n  Treść: " + p.input.details.replace(/\n+/g," ").slice(0,200) : ""}\n`); }
+  const stt = getStats();
+  if(stt.length){
+    if(wantStats) s += `\n=== WYNIKI FILMÓW Z YOUTUBE STUDIO ===\n${[...stt].sort((a,b) => (b.views||0) - (a.views||0)).slice(0,30).map(statLine).join("\n")}\n`;
+    else { const srt = [...stt].sort((a,b) => (b.views||0) - (a.views||0)); s += `\n=== WYNIKI (skrót – pełne dane są w aplikacji, zapytaj, jeśli potrzebujesz) ===\n${stt.length} filmów z danymi. Mediana wyświetleń: ${fmtInt(median(stt.map(x => x.views)))}, średni CTR: ${fmtPct(avg(stt.map(x => x.ctr)))}.\nNajlepsze: ${srt.slice(0,3).map(x => x.title + " (" + fmtInt(x.views) + ")").join("; ")}\n`; }
+  }
+  if(wantTrips){ const tr = getTrips().slice(0,3); if(tr.length) s += `\n=== WYJAZDY (tryb w trasie) ===\n${tr.map(t => `- ${tripLabel(t)}: ${t.days} dni, ujęcia ${t.shots.filter(x => x.done).length}/${t.shots.length} nagrane${t.plan ? "\n  Plan: " + t.plan.replace(/\n+/g," ").slice(0,300) : ""}${t.notes.length ? "\n  Notatki: " + t.notes.map(n => n.text).join(" / ").slice(0,400) : ""}`).join("\n")}\n`; }
+  const lr = getReports()[0]; if(lr){ s += `\n=== OSTATNIA ANALIZA WYNIKÓW (${new Date(lr.at).toLocaleDateString("pl-PL")}) ===\n${lr.data?.summary || ""}\nPlan: ${(lr.data?.actions||[]).join("; ")}\n`; }
+  if(pr.length){ s += `\n=== OSTATNIE PROJEKTY W APLIKACJI ===\n`; pr.forEach(p => s += `- ${projectLabel(p)} (${new Date(p.at).toLocaleDateString("pl-PL")})${(p.finalTitle||p.choice?.title) ? " – tytuł: " + (p.finalTitle||p.choice.title) : ""}${(p.shorts||[]).filter(x => x.chosenTitle).length ? " – shortsy: " + p.shorts.filter(x => x.chosenTitle).map(x => x.chosenTitle).join("; ") : ""}${p.input?.details ? "\n  Treść: " + p.input.details.replace(/\n+/g," ").slice(0,120) : ""}\n`); }
   return s;
 }
 
@@ -1224,23 +2422,31 @@ function md(text){
 
 function drawChatList(){
   const ul = $("chatList"); ul.innerHTML = "";
-  const chats = getChats();
-  if(!chats.length) ul.append(el("li", { class:"note" }, "Tu pojawią się Twoje rozmowy."));
+  const q = normT($("chatSearch").value);
+  const all = getChats();
+  const chats = q ? all.filter(c => normT(c.title).includes(q) || (c.messages||[]).some(m => normT(m.text).includes(q))) : all;
+  if(!all.length) ul.append(el("li", { class:"note" }, "Tu pojawią się Twoje rozmowy."));
+  else if(!chats.length) ul.append(el("li", { class:"note" }, "Nic nie znaleziono."));
   chats.forEach(c => {
+    let snip = null;
+    if(q){ const m = (c.messages||[]).find(m => normT(m.text).includes(q)); if(m){ const raw = m.text.replace(/\s+/g," "); const pos = Math.max(0, normT(raw).indexOf(q) - 30); snip = el("div", { class:"snip" }, (pos ? "…" : "") + raw.slice(pos, pos + 90)); } }
     const del = el("button", { type:"button", title:"Usuń czat", "aria-label":"Usuń czat", onclick: e => { e.stopPropagation(); if(confirm("Usunąć tę rozmowę?")){ saveChats(getChats().filter(x => x.id !== c.id)); if(activeChat?.id === c.id) openChat(null); drawChatList(); } } }, "×");
     ul.append(el("li", { class:"chat-item" + (activeChat?.id === c.id ? " active" : ""), tabindex:"0", onclick: () => openChat(c.id), onkeydown: e => { if(e.key === "Enter") openChat(c.id); } },
-      el("div", { style:"min-width:0" }, el("div", { class:"t" }, c.title || "Nowy czat"), el("time", null, fmtDate(c.updatedAt || c.at))), del));
+      el("div", { style:"min-width:0" }, el("div", { class:"t" }, c.title || "Nowy czat"), snip, el("time", null, fmtDate(c.updatedAt || c.at))), del));
   });
 }
 function openChat(id){
   activeChat = id ? getChats().find(c => c.id === id) || null : null;
   drawChatList(); drawMessages();
+  const q = normT($("chatSearch").value);
+  if(q && activeChat){ const hit = [...$("chatMsgs").querySelectorAll(".msg")].find(m => normT(m.textContent).includes(q)); if(hit){ hit.scrollIntoView({ block:"center" }); hit.style.outline = "2px solid var(--focus)"; setTimeout(() => hit.style.outline = "", 2500); } }
 }
+$("chatSearch").addEventListener("input", () => drawChatList());
 function drawMessages(pending, err){
   const box = $("chatMsgs"); box.innerHTML = "";
   const msgs = activeChat?.messages || [];
   if(!msgs.length && !pending){
-    box.append(el("div", { class:"empty" }, el("strong", null, "O co chcesz zapytać?"), "Czat zna styl Kemisów, Wasze wzory, playlisty i ostatnie projekty.",
+    box.append(el("div", { class:"empty" }, el("strong", null, "O co chcesz zapytać?"), "Czat zna Wasz styl, wzory, playlisty, wyniki i ostatnie projekty.",
       el("div", { class:"starters" }, STARTERS.map(t => el("button", { class:"chip", type:"button", onclick: () => { $("chatInput").value = t; $("chatInput").focus(); } }, t)))));
     return;
   }
@@ -1263,9 +2469,9 @@ async function sendChat(text){
   if(!activeChat || activeChat.messages.at(-1)?.role !== "user") return;
   chatBusy = true; $("chatSend").disabled = true; drawMessages(true);
   try{
-    const contents = activeChat.messages.slice(-30).map(m => ({ role: m.role === "user" ? "user" : "model", parts:[{ text: m.text }] }));
+    const contents = activeChat.messages.slice(-20).map(m => ({ role: m.role === "user" ? "user" : "model", parts:[{ text: m.text }] }));
     const pend = $("chatMsgs").querySelector(".pending");
-    const reply = await geminiStreamReq({ system_instruction:{ parts:[{ text: chatContext() }] }, contents, generationConfig:{ temperature: 0.8 } }, u => {
+    const reply = await geminiStreamReq({ system_instruction:{ parts:[{ text: chatContext(activeChat.messages.filter(m => m.role === "user").slice(-2).map(m => m.text).join(" ")) }] }, contents, generationConfig:{ temperature: 0.8 } }, u => {
       if(!pend) return;
       if(u.text){ pend.classList.remove("pending"); pend.innerHTML = md(u.text); }
       else if(u.thought){ pend.textContent = "💭 " + thoughtTitle(u.thought); }
@@ -1300,6 +2506,7 @@ function syncUi(){
   const on = !!syncTokenVal();
   $("syncNowBtn").hidden = !on; $("syncOff").hidden = !on; $("syncConnect").textContent = on ? "Zmień token" : "Połącz";
   if(!on) setSyncStatus("Synchronizacja wyłączona.");
+  try{ syncVersionsUi(); }catch(e){}
 }
 async function gh(path, opts){
   const r = await fetch("https://api.github.com" + path, { ...(opts||{}), headers:{ "Authorization":"Bearer " + syncTokenVal(), "Accept":"application/vnd.github+json", ...(opts?.body ? { "Content-Type":"application/json" } : {}) } });
@@ -1315,10 +2522,10 @@ async function gistRead(id){
   const txt = f.truncated ? await (await fetch(f.raw_url)).text() : f.content;
   return JSON.parse(txt);
 }
-function localData(){ const d = {}; SYNC_KEYS.forEach(k => d[k] = localStorage.getItem(k)); return d; }
+function localData(){ const d = {}; SYNC_KEYS.forEach(k => d[k] = rawGet(k)); return d; }
 function applyData(d){
   applyingRemote = true;
-  try{ SYNC_KEYS.forEach(k => { if(d[k] === null || d[k] === undefined) localStorage.removeItem(k); else localStorage.setItem(k, d[k]); }); }
+  try{ SYNC_KEYS.forEach(k => { if(d[k] === null || d[k] === undefined) rawRemove(k); else rawSet(k, d[k]); }); }
   finally{ applyingRemote = false; }
 }
 async function gistWrite(data, id){
@@ -1378,7 +2585,7 @@ async function syncNow(){
   }catch(e){ setSyncStatus("Błąd synchronizacji: " + e.message, true); }
   finally{
     syncing = false;
-    if(reload){ location.reload(); return; }
+    if(reload){ await flushStorage(); location.reload(); return; }
     if(syncAgain){ syncAgain = false; syncNow(); }
   }
 }
@@ -1393,7 +2600,7 @@ $("syncConnect").onclick = async () => {
       const remote = await gistRead(found.id);
       if(remote && confirm("Na koncie są już zsynchronizowane dane z innego urządzenia.\n\nOK – pobierz je i zastąp dane na tym urządzeniu (zalecane przy nowym urządzeniu).\nAnuluj – połącz dane z obu urządzeń.")){
         applyData(remote.data); localStorage.setItem("vg_sync_remote_at", String(remote.updatedAt)); localStorage.setItem("vg_sync_dirty", "0");
-        location.reload(); return;
+        await flushStorage(); location.reload(); return;
       }
       localStorage.setItem("vg_sync_remote_at", "0"); localStorage.setItem("vg_sync_dirty", "1");
     } else {
@@ -1410,14 +2617,87 @@ $("syncOff").onclick = () => {
 document.addEventListener("visibilitychange", () => { if(syncTokenVal()) syncNow(); });
 syncUi(); if(syncTokenVal()) syncNow();
 
+// ---------- error report ----------
+function drawErrInfo(){ let n = 0; try{ n = JSON.parse(localStorage.getItem("vg_errlog") || "[]").length; }catch(e){} $("errInfo").textContent = n ? `Zapisane błędy: ${n}` : "Brak zapisanych błędów."; }
+$("errCopy").onclick = () => {
+  let list = []; try{ list = JSON.parse(localStorage.getItem("vg_errlog") || "[]"); }catch(e){}
+  const lines = [
+    "RAPORT – Asystent kanału " + APP_VERSION,
+    "Data: " + new Date().toLocaleString("pl-PL"),
+    "Przeglądarka: " + navigator.userAgent,
+    "Tryb: " + (window.matchMedia("(display-mode: standalone)").matches ? "zainstalowana aplikacja" : "przeglądarka") + " | adres: " + location.protocol + "//" + location.host,
+    "Model: " + $("model").value + " | tryb: " + store.get("vg_speed","fast") + " | pamięć: " + (__db ? "IndexedDB" : "localStorage") + " | synchronizacja: " + (syncTokenVal() ? "tak" : "nie"),
+    "Dane: projekty " + getProjects().length + ", czaty " + getChats().length + ", wyniki " + getStats().length + ", wyjazdy " + getTrips().length,
+    "", "BŁĘDY (" + list.length + "):",
+    ...list.slice(-30).map(e => `[${new Date(e.t).toLocaleString("pl-PL")}] (${e.where}${e.tab ? ", zakładka " + e.tab : ""}) ${e.msg}${e.stack ? "\n    " + e.stack : ""}`)
+  ];
+  copy(lines.join("\n"));
+};
+$("errClear").onclick = () => { try{ localStorage.removeItem("vg_errlog"); }catch(e){} drawErrInfo(); toast("Wyczyszczono"); };
+drawErrInfo();
+
+// ---------- sync versions (gist history) ----------
+function syncVersionsUi(){ $("syncVersionsWrap").hidden = !(syncTokenVal() && localStorage.getItem("vg_sync_gist")); }
+$("syncVersions").onclick = async () => {
+  const box = $("syncVersionList"); box.innerHTML = ""; box.append(el("p", { class:"note" }, "Wczytuję listę wersji…"));
+  try{
+    const id = localStorage.getItem("vg_sync_gist");
+    const commits = await gh(`/gists/${id}/commits?per_page=40`);
+    box.innerHTML = "";
+    if(!commits.length){ box.append(el("p", { class:"note" }, "Brak zapisanych wersji.")); return; }
+    box.append(el("p", { class:"note", style:"margin-top:0" }, "Każda synchronizacja zapisuje wersję danych. Przywrócenie zastąpi obecne dane na wszystkich urządzeniach – obecna wersja też zostaje w historii, więc można wrócić."));
+    const ul = el("ul", { class:"list", style:"gap:6px" });
+    commits.forEach((c, i) => {
+      const when = new Date(c.committed_at);
+      const btn = el("button", { class:"btn small", type:"button" }, i === 0 ? "Obecna" : "Przywróć");
+      if(i === 0) btn.disabled = true;
+      btn.onclick = async () => {
+        if(!confirm(`Przywrócić dane z ${when.toLocaleString("pl-PL")}? Obecne dane zostaną zastąpione (ale zostaną w historii wersji).`)) return;
+        btn.disabled = true; btn.textContent = "Przywracam…";
+        try{
+          const j = await gh(`/gists/${id}/${c.version}`);
+          const f = j.files?.[GIST_FILE]; if(!f) throw new Error("ta wersja nie zawiera danych aplikacji");
+          const txt = f.truncated ? await (await fetch(f.raw_url)).text() : f.content;
+          const data = JSON.parse(txt).data;
+          applyData(data); localStorage.setItem("vg_sync_dirty", "1"); onLocalChange();
+          await gistWrite(localData(), id); await flushStorage(); location.reload();
+        }catch(e){ alert("Nie udało się przywrócić: " + e.message); btn.disabled = false; btn.textContent = "Przywróć"; }
+      };
+      const ch = c.change_status || {};
+      ul.append(el("li", { class:"ex hist-item" }, el("div", null, el("div", { class:"t" }, when.toLocaleString("pl-PL", { weekday:"short", day:"numeric", month:"short", hour:"2-digit", minute:"2-digit" })), el("div", { class:"meta" }, ch.total !== undefined ? `zmienione linie: +${ch.additions||0} / −${ch.deletions||0}` : "")), btn));
+    });
+    box.append(ul);
+  }catch(e){ box.innerHTML = ""; box.append(el("div", { class:"error" }, "Nie udało się wczytać wersji: " + e.message)); }
+};
+syncVersionsUi();
+
 // ---------- helpers ----------
 async function copy(t){
   try{ await navigator.clipboard.writeText(t); }
   catch(e){ const x = document.createElement("textarea"); x.value = t; document.body.append(x); x.select(); document.execCommand("copy"); x.remove(); }
   toast("Skopiowano");
 }
-var tt; function toast(m){ const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1600); }
-})();
+var tt; function toast(m, action){
+  const t = $("toast"); t.innerHTML = ""; t.append(document.createTextNode(m));
+  if(action){ const b = document.createElement("button"); b.type = "button"; b.textContent = action.label; b.onclick = () => { clearTimeout(tt); t.classList.remove("show"); action.run(); }; t.append(b); }
+  t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), action ? 7000 : 1600);
+}
+function offerUndo(key, prevRaw, goneIds){
+  setTimeout(() => toast("Usunięto", { label:"Cofnij", run: () => {
+    store._noUndo = true;
+    try{
+      if(prevRaw === null || prevRaw === undefined) rawRemove(key); else store.set(key, prevRaw);
+      const del = store.getJ("vg_deleted", []).filter(x => !goneIds.includes(x));
+      rawSet("vg_deleted", JSON.stringify(del)); onLocalChange();
+    }finally{ store._noUndo = false; }
+    redrawAll(); toast("Przywrócono");
+  } }), 0);
+}
+function redrawAll(){
+  [() => drawHistory(), () => drawExamples(), () => drawShortPatterns(), () => drawPlaylists(), () => { const c = activeChat && getChats().find(x => x.id === activeChat.id); if(activeChat && !c) activeChat = null; drawChatList(); drawMessages(); }, () => drawStats(), () => drawReports(), () => drawTrip()].forEach(f => { try{ f(); }catch(e){} });
+}
+};
+bootStorage().then(() => window.__startApp());
 </script>
 <script>
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
