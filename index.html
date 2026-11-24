@@ -156,7 +156,12 @@ details.settings summary::-webkit-details-marker{display:none}
 .prog-st{font-size:14px;color:var(--muted);margin-top:4px}
 .prog-bar{height:6px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:8px}
 .prog-bar span{display:block;height:100%;width:3%;background:var(--rec);border-radius:999px;transition:width .4s ease}
-.prog-row.ok .prog-bar span{background:var(--ok)}
+.prog-row.ok .prog-bar span{background:var(--ok);width:100% !important}
+.prog-row.wait .prog-bar span{width:0 !important}
+.prog-row.bad .prog-bar span{background:var(--rec);width:100% !important;opacity:.4}
+.prog-row.active .prog-bar span{width:35% !important;animation:indet 1.4s ease-in-out infinite}
+@keyframes indet{0%{transform:translateX(-100%)}100%{transform:translateX(290%)}}
+@media (prefers-reduced-motion:reduce){.prog-row.active .prog-bar span{animation:none;width:60% !important}}
 .prog-think{font-size:13px;color:var(--muted);font-style:italic;margin-top:6px;min-height:0}
 .prog-prev{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:4px}
 .prog-prev li{font-size:14px;background:var(--surface-2);border-radius:8px;padding:5px 10px;animation:fadein .3s ease}
@@ -249,6 +254,20 @@ table.st tr:hover td{background:var(--surface-2)}
 .subtab[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .subtab .n{font-size:12px;opacity:.8;margin-left:4px}
 .subview[hidden]{display:none}
+.trip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.trip-tile{display:grid;gap:4px;align-content:start;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;min-height:120px}
+.trip-tile:hover{border-color:var(--rec)}
+.trip-tile.add{border:2px dashed var(--line);background:none;align-content:center;justify-items:center;text-align:center;color:var(--muted)}
+.trip-tile.add:hover{border-color:var(--rec);color:var(--rec)}
+.trip-tile .plus{font-size:34px;line-height:1;font-weight:300}
+.trip-tile.done{opacity:.75}
+.tt-name{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:17px}
+.tt-meta{font-size:13px;color:var(--muted)}
+.day-card{margin-top:14px}
+.day-card summary{cursor:pointer;list-style:none;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.day-card summary::-webkit-details-marker{display:none}
+.day-card summary::before{content:"▸";color:var(--muted);transition:transform .15s}
+.day-card[open] summary::before{transform:rotate(90deg)}
 .viewing{background:var(--short-soft);border:1px solid var(--short);border-radius:12px;padding:10px 14px;font-size:14px;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
 </style>
 </head>
@@ -342,19 +361,7 @@ table.st tr:hover td{background:var(--surface-2)}
 
   <!-- TRIP -->
   <div class="view" id="view-trip" hidden>
-    <div class="grid">
-      <section class="panel">
-        <h2>W trasie</h2>
-        <p class="note" style="margin-top:0">Przed wyjazdem: plan i lista ujęć do nagrania. Na miejscu: odhaczanie i szybkie notatki. Po powrocie: jednym kliknięciem do nowego filmu.</p>
-        <label for="tripSel">Wyjazd</label>
-        <div class="inline"><select id="tripSel" aria-label="Wybierz wyjazd"></select><button class="btn small" id="tripNew" type="button">+ Nowy wyjazd</button></div>
-        <div id="tripForm"></div>
-      </section>
-      <div class="stack">
-        <section id="tripShots"></section>
-        <section id="tripNotes"></section>
-      </div>
-    </div>
+    <div id="tripRoot"></div>
   </div>
 
   <!-- HISTORY -->
@@ -479,7 +486,6 @@ table.st tr:hover td{background:var(--surface-2)}
       <option value="fast">Szybki (zalecany)</option>
       <option value="deep">Dokładny – wolniejszy, AI dłużej się zastanawia</option>
     </select>
-    <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="fallback"> Gdy wybrany model jest przeciążony lub wyczerpie limit, automatycznie spróbuj innych modeli</label>
     <label style="font-weight:400;display:flex;gap:8px;align-items:center"><input type="checkbox" id="lintToggle"> Podpowiedzi stylu (np. za dużo emotek, tytuł zostanie ucięty)</label>
     <label for="footer">Stała stopka opisu <span class="hint">(social media, sprzęt, muzyka – doklejana na końcu)</span></label>
     <textarea id="footer" placeholder="Instagram: @…&#10;Muzyka: …"></textarea>
@@ -643,7 +649,7 @@ table.st tr:hover td{background:var(--surface-2)}
 <div class="toast" id="toast"></div>
 <script>
 // ---------- error log ----------
-const APP_VERSION = "2026.11.23-c";
+const APP_VERSION = "2026.11.24-a";
 function logError(where, err){
   try{
     const list = JSON.parse(localStorage.getItem("vg_errlog") || "[]");
@@ -790,23 +796,11 @@ const savedModel = store.get("vg_model","gemini-flash-lite-latest"); ensureOptio
 function ensureOption(name){ const sel = $("model"); if(![...sel.options].some(o => o.value === name)){ const o = document.createElement("option"); o.value = o.textContent = name; sel.appendChild(o); } }
 function refreshKey(){ const has = !!$("apiKey").value.trim(); $("keyDot").classList.toggle("ok", has); $("keyStatus").textContent = has ? "Ustawienia aplikacji" : "Ustawienia aplikacji – dodaj klucz API Gemini"; $("keyBanner").hidden = has; }
 refreshKey();
-(async () => {
-  const key = $("apiKey").value.trim(); if(!key) return;
-  const at = +(localStorage.getItem("vg_models_at") || 0); if(Date.now() - at < 86400000) return;
-  try{
-    const r = await fetch(API + "/models?pageSize=200", { headers:{ "x-goog-api-key": key } }); if(!r.ok) return;
-    const j = await r.json();
-    const names = (j.models||[]).filter(m => (m.supportedGenerationMethods||[]).includes("generateContent") && /gemini/i.test(m.name)).map(m => m.name.replace(/^models\//,""));
-    if(names.length){ localStorage.setItem("vg_models_cache", JSON.stringify(names)); localStorage.setItem("vg_models_at", String(Date.now())); }
-  }catch(e){}
-})();
 $("keyBannerBtn").onclick = () => openSettings("app", "apiKey");
 $("saveKey").onclick = () => { store.set("vg_key", $("apiKey").value.trim()); refreshKey(); toast("Klucz zapisany"); };
 $("model").onchange = () => { store.set("vg_model", $("model").value); try{ localStorage.removeItem("vg_think_compat"); }catch(e){} };
 $("speed").value = store.get("vg_speed", "fast");
 $("speed").onchange = () => store.set("vg_speed", $("speed").value);
-$("fallback").checked = store.get("vg_fallback","1") === "1";
-$("fallback").onchange = () => store.set("vg_fallback", $("fallback").checked ? "1" : "0");
 $("lintToggle").checked = store.get("vg_lint", "1") === "1";
 $("lintToggle").onchange = () => { store.set("vg_lint", $("lintToggle").checked ? "1" : "0"); if(current) render(current); };
 $("saveFooter").onclick = () => { store.set("vg_footer", $("footer").value); toast("Stopka zapisana"); };
@@ -961,17 +955,17 @@ function buildPrompt(i, pid, task, focus){
   const allEx = getExamples();
   const sameFmt = e => i.format === "series" ? /dzie[nń] \d/i.test(e.title) : i.format === "weekend" ? /weekend w/i.test(e.title) : true;
   const ex = [...allEx.filter(sameFmt), ...allEx.filter(e => !sameFmt(e))].slice(0,5);
-  const fullN = focus === "all" ? 3 : focus === "desc" ? 2 : 0;
+  const fullN = focus === "all" ? 3 : (focus === "desc" || focus === "descTags") ? 2 : 0;
   let s = `Jesteś kreatywnym partnerem kanału YouTube. Trzymaj się ściśle przewodnika stylu i wzorów.\n\n=== PRZEWODNIK STYLU ===\n${$("styleGuide").value.trim()}\n`;
   if(ex.length){
     s += `\n=== WZORY: OPUBLIKOWANE MATERIAŁY AUTORÓW (naśladuj ton, długość, budowę i liczbę emotek; nie kopiuj treści; jeśli wzór łamie zasadę z przewodnika, ważniejszy jest przewodnik) ===\n`;
-    ex.forEach((e,n) => { s += `\n--- Wzór ${n+1} ---\nTytuł: ${e.title}\n${e.thumb ? "Tekst na miniaturce: " + e.thumb + "\n" : ""}${e.desc && n < fullN ? "Opis:\n" + e.desc.slice(0,1300) + "\n" : ""}${e.tags && (focus === "tags" || (focus === "all" && n < 2)) ? "Tagi: " + e.tags + "\n" : ""}`; });
+    ex.forEach((e,n) => { s += `\n--- Wzór ${n+1} ---\nTytuł: ${e.title}\n${e.thumb ? "Tekst na miniaturce: " + e.thumb + "\n" : ""}${e.desc && n < fullN ? "Opis:\n" + e.desc.slice(0,1300) + "\n" : ""}${e.tags && (focus === "tags" || ((focus === "all" || focus === "descTags") && n < 2)) ? "Tagi: " + e.tags + "\n" : ""}`; });
   }
-  const ch = [focus === "all" || focus === "titles" ? choicesBlock("titles","Tytuł", 6) : "", focus === "all" || focus === "thumbs" ? choicesBlock("thumbs","Miniaturka", 6) : ""].filter(Boolean).join("\n");
+  const ch = [["all","titles","titlesThumbs"].includes(focus) ? choicesBlock("titles","Tytuł", 6) : "", ["all","thumbs","titlesThumbs"].includes(focus) ? choicesBlock("thumbs","Miniaturka", 6) : ""].filter(Boolean).join("\n");
   if(ch) s += `\n=== WCZEŚNIEJSZE WYBORY AUTORÓW (wyciągnij wnioski, co im się podoba) ===\n${ch}\n`;
   const sib = seriesSiblings(i, pid).map(p => `Dzień ${p.input.episode}: ${p.finalTitle || p.choice?.title || ""}${p.finalThumb ? " | miniaturka: " + p.finalThumb : ""}`).filter(x => !/: $/.test(x));
   if(sib.length) s += `\n=== WCZEŚNIEJSZE ODCINKI TEJ SERII (zachowaj spójność, nie powtarzaj haczyków) ===\n${sib.join("\n")}\n`;
-  if(focus === "all" || focus === "titles" || focus === "thumbs") s += statsForPrompt("film");
+  if(["all","titles","thumbs","titlesThumbs"].includes(focus)) s += statsForPrompt("film");
   const fmt = i.format === "weekend" ? `Weekendowy wypad. Każdy tytuł w formacie „[haczyk] | Weekend w ${i.place || "[miejsce]"}”.`
     : i.format === "series" ? `Odcinek serii z wyjazdu „${i.place}”, dzień ${i.episode}. Każdy tytuł w formacie „[haczyk]! [flaga kraju, jeśli zagranica] [dopowiedzenie] | ${i.place} Dzień ${i.episode}”, jak we wzorach. Miniaturka spójna z poprzednimi odcinkami.`
     : `Inny format. Miejsce/temat: ${i.place || "(nie podano)"}.`;
@@ -1124,55 +1118,40 @@ async function withThinking(body, run){
 }
 const FALLBACK_MODEL = "gemini-flash-lite-latest";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-function fallbackModels(main){
-  let cached = []; try{ cached = JSON.parse(localStorage.getItem("vg_models_cache") || "[]"); }catch(e){}
-  const ok = n => /flash/i.test(n) && !/(image|tts|audio|live|embed|vision|thinking-exp|learnlm)/i.test(n);
-  const alt = main === "gemini-flash-lite-latest" ? "gemini-flash-latest" : "gemini-flash-lite-latest";
-  const extra = cached.filter(ok).filter(n => n !== main && n !== alt)
-    .sort((a,b) => (/latest/.test(b) - /latest/.test(a)) || (/preview|exp/.test(a) - /preview|exp/.test(b)) || b.localeCompare(a));
-  return [...new Set([main, alt, ...extra.slice(0, 2)])];
-}
-async function withModels(run){
-  const main = $("model").value;
-  const chain = store.get("vg_fallback","1") === "1" ? fallbackModels(main) : [main];
-  let err, tried = 0;
-  for(let mi = 0; mi < chain.length; mi++){
-    const m = chain[mi];
-    const tries = mi === 0 ? 3 : 2;
-    for(let a = 0; a < tries; a++){
-      try{ return await run(m, a); }
-      catch(e){
-        err = e; tried++;
-        if(e.message === "Anulowano.") throw e;
-        const busy = e.status === 503 || e.status === 500 || /high demand|overloaded|unavailable/i.test(e.message || "");
-        if(busy && a < tries - 1){ toast(`Gemini przeciążony – ponawiam (${a + 2}/${tries})…`); await sleep([2500, 6000, 10000][a]); continue; }
-        if(busy || e.status === 429 || e.status === 404) break;
-        logError("gemini " + m, e); throw e;
+async function withModels(run, onUpdate){
+  const m = $("model").value;
+  let err;
+  for(let a = 0; a < 3; a++){
+    try{ return await run(m, a); }
+    catch(e){
+      err = e;
+      if(e.message === "Anulowano.") throw e;
+      const busy = e.status === 503 || e.status === 500 || /high demand|overloaded|unavailable/i.test(e.message || "");
+      if(busy && a < 2){
+        try{ onUpdate ? onUpdate({ attempt: a + 2 }) : toast(`Gemini przeciążony – ponawiam (${a + 2}/3)…`); }catch(x){}
+        await sleep([4000, 9000][a]); continue;
       }
+      break;
     }
-    if(mi < chain.length - 1) toast(`Model ${m} nie odpowiada – próbuję ${chain[mi + 1]}`);
   }
-  logError("gemini " + chain.join(" → "), err);
+  logError("gemini " + m, err);
   if(err && (err.status === 503 || err.status === 500 || /high demand|overloaded/i.test(err.message || ""))){
-    const e2 = new Error(`Serwery Gemini są teraz przeciążone dla darmowych kluczy (sprawdzone modele: ${chain.join(", ")}). Zwykle mija to w ciągu kilkunastu minut – spróbuj ponownie później.`); e2.status = err.status; throw e2;
+    const e2 = new Error(`Model ${m} jest teraz przeciążony dla darmowych kluczy (3 próby). Zwykle mija to w ciągu kilkunastu minut – spróbuj ponownie później.`); e2.status = err.status; throw e2;
   }
   throw err;
 }
-const geminiRequest = body => withModels(m => withThinking(body, b => geminiCall(b, m)));
-const geminiStreamReq = (body, onUpdate) => withModels((m, a) => withThinking(body, b => {
-  if(a > 0 || m !== $("model").value){ try{ onUpdate && onUpdate({ retry:true }); }catch(e){} return geminiCall(b, m); }
-  return geminiStream(b, onUpdate, m);
-}));
+const geminiRequest = (body, onUpdate) => withModels(m => withThinking(body, b => geminiCall(b, m)), onUpdate);
+const geminiStreamReq = (body, onUpdate) => geminiRequest(body, onUpdate);
 async function callGemini(parts, json, temp, onUpdate){
   const body = { contents:[{ role:"user", parts }], generationConfig:{ temperature: temp ?? 0.9 } };
   if(json) body.generationConfig.responseMimeType = "application/json";
-  const text = onUpdate ? await geminiStreamReq(body, onUpdate) : await geminiRequest(body);
+  const text = await geminiRequest(body, onUpdate);
   if(!json) return text;
   const parse = t => JSON.parse(t.replace(/```json|```/g,"").trim());
   try{ return parse(text); }
   catch(e){
     try{ onUpdate && onUpdate({ retry:true }); }catch(x){}
-    const t2 = await geminiRequest(body);
+    const t2 = await geminiRequest(body, onUpdate);
     try{ return parse(t2); }catch(e2){ logError("json", new Error("Zły format odpowiedzi: " + t2.slice(0, 200))); throw new Error("Odpowiedź miała zły format. Spróbuj jeszcze raz."); }
   }
 }
@@ -1197,39 +1176,43 @@ function previewTitles(b){
 function showProgress(target, rowsDef, hint){
   const start = Date.now(), timer = el("span", { class:"count" }, "0 s"), rows = {};
   const cancel = el("button", { class:"btn small danger", type:"button", onclick: () => cancelAll() }, "Anuluj");
-  const box = el("div", { class:"block prog" }, el("div", { class:"block-head" }, el("h3", null, "Pracuję nad tym…"), el("div", { class:"inline" }, timer, cancel)));
-  rowsDef.forEach(([key, label, expected]) => {
-    const st = el("div", { class:"prog-st" }, "Czytam Wasz styl, wzory i historię…"), bar = el("div", { class:"prog-bar" }, el("span")), think = el("div", { class:"prog-think" }), prev = el("ul", { class:"prog-prev" }), cnt = el("span", { class:"count" });
-    const row = el("div", { class:"prog-row" }, el("div", { class:"prog-head" }, el("strong", null, label), cnt), st, bar, think, prev);
-    rows[key] = { row, st, bar, think, prev, cnt, expected, shown: 0, start: Date.now() };
-    box.append(row);
-  });
+  const list = el("div");
+  const box = el("div", { class:"block prog" }, el("div", { class:"block-head" }, el("h3", null, "Pracuję nad tym…"), el("div", { class:"inline" }, timer, cancel)), list);
+  const addRow = (key, label, working) => {
+    if(rows[key]) return;
+    const st = el("div", { class:"prog-st" }, "Czeka na swoją kolej…"), bar = el("div", { class:"prog-bar" }, el("span")), t = el("span", { class:"count" });
+    const row = el("div", { class:"prog-row wait" }, el("div", { class:"prog-head" }, el("strong", null, label), t), st, bar);
+    rows[key] = { row, st, bar, t, working: working || "AI pisze…" };
+    list.append(row);
+  };
+  rowsDef.forEach(([key, label, working]) => addRow(key, label, typeof working === "string" ? working : null));
   if(hint) box.append(el("p", { class:"note" }, hint));
   target.innerHTML = ""; target.append(box);
   const iv = setInterval(() => {
     timer.textContent = Math.round((Date.now() - start) / 1000) + " s";
-    Object.values(rows).forEach(r => { if(!r.got && !r.fin && !r.waiting){ const w = Math.min(18, 3 + (Date.now() - r.start) / 1500); r.bar.firstChild.style.width = w + "%"; const el2 = Date.now() - r.start; if(r.retrying){ if(el2 > 70000) r.st.textContent = "Wciąż ponawiam – Gemini jest mocno obciążony. Możesz poczekać albo anulować."; } else if(el2 > 70000) r.st.textContent = "To trwa dłużej niż zwykle – Gemini może być teraz przeciążony. Możesz poczekać albo kliknąć „Anuluj” i spróbować ponownie."; else if(el2 > 6000 && !r.think.textContent) r.st.textContent = "AI analizuje Wasz styl i planuje odpowiedź…"; } });
+    Object.values(rows).forEach(r => {
+      if(!r.active) return;
+      const sec = Math.round((Date.now() - r.start) / 1000); r.t.textContent = sec + " s";
+      if(!r.note){ r.st.textContent = sec > 90 ? "To trwa długo – Gemini jest mocno obciążony. Możesz poczekać albo anulować." : sec > 40 ? "Gemini ma teraz sporo pracy – czekam dalej…" : r.working; }
+    });
   }, 500);
+  const get = k => rows[k];
   return {
-    wait(key, msg){ const r = rows[key]; if(!r) return; r.waiting = true; r.st.textContent = msg; },
-    begin(key){ const r = rows[key]; if(!r) return; r.waiting = false; r.start = Date.now(); r.st.textContent = "Czytam Wasz styl, wzory i historię…"; },
-    update(key, u){
-      const r = rows[key]; if(!r || r.fin) return;
-      if(u.retry){ r.got = false; r.start = Date.now(); r.prev.innerHTML = ""; r.shown = 0; r.cnt.textContent = ""; r.think.textContent = ""; r.st.textContent = "Google przerwał odpowiedź – ponawiam bez podglądu na żywo (to może chwilę potrwać)…"; r.retrying = true; return; }
-      if(u.thought && !u.text){ r.think.textContent = "💭 " + thoughtTitle(u.thought); r.st.textContent = "AI zastanawia się nad odpowiedzią…"; }
-      if(u.text){
-        r.got = true; r.think.textContent = "";
-        r.cnt.textContent = u.text.length + " zn.";
-        r.st.textContent = stageText(key, u.text);
-        r.bar.firstChild.style.width = Math.max(20, Math.min(96, 20 + u.text.length / r.expected * 76)) + "%";
-        const t = previewTitles(u.text).slice(0, 5);
-        if(t.length !== r.shown){ r.prev.innerHTML = ""; t.forEach(x => r.prev.append(el("li", null, x))); r.shown = t.length; }
-      }
-    },
-    done(key){ const r = rows[key]; if(!r) return; r.fin = true; r.row.classList.add("ok"); r.st.textContent = "Gotowe ✓"; r.think.textContent = ""; r.bar.firstChild.style.width = "100%"; },
-    fail(key, msg){ const r = rows[key]; if(!r) return; r.fin = true; r.st.textContent = "Nie udało się: " + msg; r.st.style.color = "var(--rec)"; },
+    addRow,
+    wait(k, msg){ const r = get(k); if(r){ r.st.textContent = msg; } },
+    begin(k){ const r = get(k); if(!r) return; r.active = true; r.note = null; r.start = Date.now(); r.row.className = "prog-row active"; r.st.textContent = r.working; },
+    update(k, u){ const r = get(k); if(!r || !u) return;
+      if(u.attempt){ r.note = true; r.st.textContent = `Gemini przeciążony – ponawiam (${u.attempt}/3)…`; setTimeout(() => { r.note = null; }, 9000); }
+      if(u.retry){ r.note = true; r.st.textContent = "Odpowiedź była niepełna – ponawiam…"; setTimeout(() => { r.note = null; }, 9000); } },
+    done(k){ const r = get(k); if(!r) return; r.active = false; r.row.className = "prog-row ok"; r.st.textContent = "Gotowe ✓"; r.st.style.color = ""; },
+    fail(k, msg){ const r = get(k); if(!r) return; r.active = false; r.row.className = "prog-row bad"; r.st.textContent = "Nie udało się: " + msg; r.st.style.color = "var(--rec)"; },
     stop(){ clearInterval(iv); cancel.remove(); }
   };
+}
+async function runStep(prog, key, fn, errs, label){
+  prog.begin(key);
+  try{ const v = await fn(u => prog.update(key, u)); prog.done(key); return v; }
+  catch(e){ prog.fail(key, e.message); if(errs) errs.push((label || key) + ": " + e.message); if(e.message === "Anulowano.") throw e; return null; }
 }
 
 // ---------- generate ----------
@@ -1253,27 +1236,63 @@ $("generate").onclick = async () => {
   const p = { id: Date.now(), at: Date.now(), input: i, gen: null, shorts: [], choice: {} };
   const btn = $("generate"); btn.disabled = true; btn.textContent = "Generuję…";
   const withSh = $("withShorts").checked;
-  const prog = showProgress($("output"), [["film", "Film: tytuły, opis, tagi i miniaturki", 2400], ...(withSh ? [["shorts", "Shortsy", 1600 * Math.max(1, scenes.length || 2)]] : [])],
-    "Zwykle trwa to 20–60 sekund. Tytuły pojawiają się tutaj na bieżąco, gdy AI je pisze.");
+  const prog = showProgress($("output"), [["ta", "Tytuły i miniaturki", "AI wymyśla tytuły i napisy na miniaturkę…"], ["dt", "Opis i tagi", "AI pisze opis i dobiera tagi…"]],
+    "Generuję po kawałku – krótkie zapytania rzadziej odrzuca przeciążony serwer. " + (withSh ? "Shortsy powstaną po kolei, każdy osobno." : ""));
   if(window.innerWidth < 860) $("output").scrollIntoView({ behavior:"smooth", block:"start" });
-  const settle = pr => pr.then(value => ({ status:"fulfilled", value }), reason => ({ status:"rejected", reason }));
-  const track = (key, fn) => { prog.begin(key); return settle(fn().then(v => { prog.done(key); return v; }, e => { prog.fail(key, e.message); throw e; })); };
-  if(withSh) prog.wait("shorts", "Czeka, aż skończy się film – po kolei jest pewniej przy obciążonych serwerach.");
-  const g = await track("film", () => callGemini([{ text: buildPrompt(i, p.id) }], true, undefined, u => prog.update("film", u)));
-  let sh = null;
-  if(withSh){
-    if(g.status === "fulfilled") await sleep(800);
-    sh = await track("shorts", () => callGemini([{ text: buildShortsPrompt(i, scenes, p.id) }], true, undefined, u => prog.update("shorts", u)));
-  }
+  const errs = [];
+  try{
+    p.gen = await runFilmSteps(i, p, prog, errs);
+    if(withSh){
+      const g0 = p.gen || {};
+      const longCtx = { title: g0.recommended?.title || (g0.titles||[])[0]?.text || "", thumb: g0.recommended?.thumb || "", desc: g0.description || "", existing: [] };
+      p.shorts = await runShortsSteps(i, p, scenes, longCtx, prog, errs);
+    }
+  }catch(e){ if(e.message !== "Anulowano.") errs.push(e.message); else errs.push("Anulowano."); }
   prog.stop();
   btn.disabled = false; btn.textContent = "Generuj";
-  const errs = [];
-  if(g.status === "fulfilled") p.gen = g.value; else errs.push("Film: " + g.reason.message);
-  if(sh){ if(sh.status === "fulfilled") p.shorts = (sh.value.shorts||[]).map(x => ({ ...x, scenes: x.scenes||[] })); else errs.push("Shortsy: " + sh.reason.message); }
-  if(errs.length) showErr(errs.join(" "));
+  if(errs.length) showErr(errs.join(" · "));
   if(!p.gen && !p.shorts.length) return;
   current = p; saveProject(p, true); render(p); clearDraft();
 };
+
+// ---------- step pipelines ----------
+const TASK_TA = `Przygotuj TYLKO: 5 naprawdę różnych tytułów (każdy maks. 100 znaków, przy każdym jedno krótkie zdanie, czemu działa) oraz 3 pomysły na miniaturkę (napis z zachowaniem wielkości liter + krótki opis kadru i układu).
+W "recommended" wskaż DOKŁADNY tekst najlepszego tytułu i najlepszego napisu – oceń je jak krytyczny redaktor według przewodnika, wcześniejszych wyborów autorów i danych z YouTube (jeśli są). Uzasadnienie: jedno krótkie zdanie.
+
+Zwróć WYŁĄCZNIE JSON: {"titles":[{"text":"","why":""}],"thumbnails":[{"text":"","scene":""}],"recommended":{"title":"","titleWhy":"","thumb":"","thumbWhy":""}}`;
+const TASK_DT = `Przygotuj TYLKO: jeden gotowy opis zgodny z przewodnikiem (z jednym zakończeniem, CTA i 3 hashtagami, bez stopki) oraz tagi łącznie 200–300 znaków według kolejności z przewodnika.
+
+Zwróć WYŁĄCZNIE JSON: {"description":"","tags":[""]}`;
+async function runFilmSteps(i, p, prog, errs){
+  const A = await runStep(prog, "ta", up => callGemini([{ text: buildPrompt(i, p.id, TASK_TA, "titlesThumbs") }], true, undefined, up), errs, "Tytuły i miniaturki");
+  await sleep(600);
+  const B = await runStep(prog, "dt", up => callGemini([{ text: buildPrompt(i, p.id, TASK_DT, "descTags") }], true, undefined, up), errs, "Opis i tagi");
+  if(!A && !B) return null;
+  return { titles: A?.titles || [], thumbnails: A?.thumbnails || [], recommended: A?.recommended || {}, description: B?.description || "", tags: B?.tags || [] };
+}
+async function runShortsSteps(i, p, scenesList, longCtx, prog, errs){
+  let lists = scenesList.slice();
+  if(!lists.length){
+    prog.addRow("ideas", "Pomysły na shortsy", "AI wybiera najciekawsze momenty…");
+    const ideas = await runStep(prog, "ideas", up => callGemini([{ text: `${$("shortsGuide").value.trim().split("\n\n").slice(0,2).join("\n\n")}
+
+Długi vlog: ${i.format === "weekend" ? "Weekend w " + i.place : i.format === "series" ? i.place + " Dzień " + i.episode : i.place}
+${longCtx.title ? "Tytuł: " + longCtx.title + "\n" : ""}Co się dzieje w filmie: ${i.details || "(brak szczegółów)"}
+${longCtx.existing?.length ? "Shortsy, które już są (zrób inne): " + longCtx.existing.join("; ") + "\n" : ""}
+Zaproponuj 2 różne shortsy z tego vloga (np. jeden z najmocniejszą ciekawostką, drugi z całego dnia w pigułce). Dla każdego podaj tylko kolejność 4–7 ujęć (krótkie nazwy ujęć, wybrane z opisu vloga – nie wymyślaj atrakcji).
+Zwróć WYŁĄCZNIE JSON: {"shorts":[{"idea":"","scenes":[""]}]}` }], true, 0.9, up), errs, "Pomysły na shortsy");
+    lists = (ideas?.shorts || []).map(x => (x.scenes || []).filter(Boolean)).filter(a => a.length);
+  }
+  lists.forEach((sc, n) => prog.addRow("s" + n, "Short " + (n + 1) + " (" + sc.length + " ujęć)", "AI pisze tytuły, napisy i opis…"));
+  const out = [];
+  for(let n = 0; n < lists.length; n++){
+    await sleep(600);
+    const ctx = { ...longCtx, existing: [...(longCtx.existing || []), ...out.map(x => x.recommendedTitle || (x.titles||[])[0]?.text).filter(Boolean)] };
+    const d = await runStep(prog, "s" + n, up => callGemini([{ text: buildShortsPrompt(i, [lists[n]], p.id, ctx) }], true, undefined, up), errs, "Short " + (n + 1));
+    const sh = d?.shorts?.[0]; if(sh) out.push({ ...sh, scenes: sh.scenes || [] });
+  }
+  return out;
+}
 
 // ---------- render helpers ----------
 function el(tag, attrs, ...kids){
@@ -1512,7 +1531,7 @@ function regenRow(label, runFn){
     go.disabled = true; st.style.color = ""; const t0 = Date.now(); let got = false;
     st.textContent = "Łączę się…";
     const iv = setInterval(() => { if(!got) st.textContent = "AI się zastanawia… " + Math.round((Date.now() - t0) / 1000) + " s"; }, 500);
-    try{ await runFn(hint.value.trim(), u => { if(u.text){ got = true; st.textContent = "Piszę… " + u.text.length + " zn."; } }); }
+    try{ await runFn(hint.value.trim(), u => { if(u.attempt){ got = true; st.textContent = `Gemini przeciążony – ponawiam (${u.attempt}/3)…`; setTimeout(() => { got = false; }, 8000); } }); }
     catch(e){ st.textContent = e.message; st.style.color = "var(--rec)"; }
     finally{ clearInterval(iv); go.disabled = false; }
   };
@@ -1572,12 +1591,13 @@ function renderAddShorts(p){
     const scenes = [...inputs.querySelectorAll("textarea")].map(t => t.value.split("\n").map(x => x.trim()).filter(Boolean)).filter(a => a.length);
     const longCtx = { title: p.finalTitle || p.choice?.title || "", thumb: p.finalThumb || p.choice?.thumb || "", desc: stripFooter(p.desc ?? p.gen?.description ?? ""), existing: p.shorts.map(x => x.chosenTitle || (x.titles||[])[0]?.text).filter(Boolean) };
     btn.disabled = true;
-    const prog = showProgress(progBox, [["shorts", "Shortsy", 1600 * Math.max(1, scenes.length || 2)]], "Shortsy powstają na podstawie wybranego tytułu i opisu tego filmu.");
+    const prog = showProgress(progBox, [], "Każdy short powstaje osobnym zapytaniem – na podstawie wybranego tytułu i opisu filmu.");
+    const errs2 = [];
     try{
-      const d = await callGemini([{ text: buildShortsPrompt(p.input || {}, scenes, p.id, longCtx) }], true, undefined, u => prog.update("shorts", u));
+      const added = await runShortsSteps(p.input || {}, p, scenes, longCtx, prog, errs2);
       prog.stop();
-      const added = (d.shorts||[]).map(x => ({ ...x, scenes: x.scenes||[] }));
-      if(!added.length) throw new Error("AI nie zwróciło żadnego shorta. Spróbuj jeszcze raz.");
+      if(!added.length) throw new Error(errs2[errs2.length - 1] || "AI nie zwróciło żadnego shorta. Spróbuj jeszcze raz.");
+      if(errs2.length) toast("Część shortsów się nie udała – możesz dorobić je jeszcze raz");
       const first = p.shorts.length;
       p.shorts.push(...added); saveProject(p, true); render(p);
       const cards = document.querySelectorAll("#output .short-card");
@@ -1779,8 +1799,8 @@ $("plGenerate").onclick = async () => {
   const i = { type:$("plType").value, place:$("plPlace").value.trim(), days:$("plDays").value, when:$("plWhen").value.trim(), details:$("plDetails").value.trim(), episodes:$("plEpisodes").value.trim() };
   if(!i.place){ $("plError").textContent = "Wpisz miejsce lub nazwę wyjazdu."; $("plError").hidden = false; return; }
   const btn = $("plGenerate"); btn.disabled = true; btn.textContent = "Generuję…";
-  const prog = showProgress($("plOut"), [["playlist", "Playlista: nazwy i opisy", 1200]]);
-  try{ const d = await callGemini([{ text: buildPlaylistPrompt(i) }], true, undefined, u => prog.update("playlist", u)); prog.stop(); renderPlaylist(d); }
+  const prog = showProgress($("plOut"), [["playlist", "Playlista: nazwy i opisy", "AI wymyśla nazwy i opisy…"]]);
+  try{ prog.begin("playlist"); const d = await callGemini([{ text: buildPlaylistPrompt(i) }], true, undefined, u => prog.update("playlist", u)); prog.stop(); renderPlaylist(d); }
   catch(e){ prog.stop(); prog.fail("playlist", e.message); $("plError").textContent = e.message; $("plError").hidden = false; }
   finally{ btn.disabled = false; btn.textContent = "Generuj playlistę"; }
 };
@@ -2096,34 +2116,48 @@ $("stAnalyze").onclick = async () => {
   if(st.length < 2){ out.innerHTML = ""; out.append(el("div", { class:"error" }, "Dodaj wyniki co najmniej 2–3 filmów, żeby było co porównywać.")); return; }
   const btn = $("stAnalyze"); btn.disabled = true;
   const q = $("stQuestion").value.trim();
-  const lines = [...st].sort((a,b) => (b.views||0) - (a.views||0)).slice(0, 60).map(statLine).join("\n");
+  const sorted = [...st].sort((a,b) => (b.views||0) - (a.views||0));
+  const lines = sorted.slice(0, 50).map(statLine).join("\n");
   const prev = getReports()[0];
-  const prompt = `Jesteś analitykiem YouTube i kreatywnym partnerem małego kanału podróżniczego. Przeanalizuj wyniki filmów i shortsów kanału.
+  const base = `Jesteś analitykiem YouTube i kreatywnym partnerem małego kanału podróżniczego.
 
-=== PRZEWODNIK STYLU KANAŁU ===
-${$("styleGuide").value.trim()}
+=== PRZEWODNIK STYLU KANAŁU (skrót) ===
+${$("styleGuide").value.trim().split("\n\n").slice(0,5).join("\n\n")}
 
 === WYNIKI Z YOUTUBE STUDIO ===
 ${lines}
-${prev ? `\n=== POPRZEDNIA ANALIZA (${new Date(prev.at).toLocaleDateString("pl-PL")}) – sprawdź, co się zmieniło ===\n${prev.data.summary || ""}\n` : ""}
-${q ? `\nPytanie autorów (odpowiedz na nie wprost): ${q}\n` : ""}
-Zasady analizy:
-- Porównuj filmy kanału między sobą (mediana kanału), nie z wielkimi kanałami. Typowy CTR to 2–10%, zależy od źródła ruchu.
-- Mały kanał = małe liczby. Gdy impresji jest mniej niż ok. 1000 albo filmów jest mało, zaznacz, że to słaby sygnał. Nie wyciągaj mocnych wniosków z jednego filmu.
-- CTR mówi o tytule i miniaturce, odsetek obejrzenia i średni czas – o samym filmie (wstęp, tempo, długość). Shortsy oceniaj osobno.
-- Szukaj wzorców w tytułach, tekstach miniatur i napisach shortsów: co mają wspólnego najlepsze, a co najsłabsze. Podawaj konkretne przykłady tytułów.
-- Szczerze i konkretnie, po polsku, bez lania wody i bez chwalenia na siłę.
-- styleRules to krótkie, konkretne zasady do dopisania do przewodnika stylu, wynikające z danych (np. „W tytułach serii podawaj nazwę konkretnej atrakcji zamiast ogólników – takie mają ok. 2x wyższy CTR”). Maks. 4, tylko jeśli dane je uzasadniają.
 
-Zwróć WYŁĄCZNIE JSON:
-{"summary":"2–4 zdania najważniejszych wniosków","answer":"odpowiedź na pytanie autorów albo pusty tekst","works":["co działa – konkretnie z przykładami"],"doesnt":["co nie działa – konkretnie z przykładami"],"titles":"wnioski o tytułach i miniaturkach","retention":"wnioski o utrzymaniu widza","shorts":"wnioski o shortsach albo pusty tekst","videos":[{"title":"","verdict":"krótka ocena","tip":"co zrobić inaczej przy podobnym filmie"}],"actions":["konkretne działania na najbliższe filmy"],"styleRules":["zasada do przewodnika"],"confidence":"jak pewne są wnioski i dlaczego (1–2 zdania)"}`;
-  const prog = showProgress(out, [["report", "Analiza wyników", 3500]], "AI porównuje Wasze filmy, tytuły i miniaturki. Zwykle trwa to do minuty.");
+Zasady: porównuj filmy kanału między sobą (mediana kanału), nie z wielkimi kanałami; typowy CTR to 2–10%. Mały kanał = małe liczby – przy mniej niż ok. 1000 impresji zaznacz, że to słaby sygnał. CTR mówi o tytule i miniaturce, odsetek obejrzenia i średni czas – o samym filmie. Shortsy oceniaj osobno. Szczerze, konkretnie, po polsku, z przykładami tytułów.`;
+  const prog = showProgress(out, [["a1", "Najważniejsze wnioski", "AI szuka wzorców w wynikach…"], ["a2", "Plan i zasady do przewodnika", "AI układa plan działania…"], ["a3", "Ocena poszczególnych filmów", "AI ocenia filmy…"]], "Analiza idzie w trzech krótszych krokach – pewniej przy obciążonych serwerach.");
+  const errs = [];
   try{
-    const d = await callGemini([{ text: prompt }], true, 0.6, u => prog.update("report", u));
+    const d1 = await runStep(prog, "a1", up => callGemini([{ text: `${base}
+${prev ? `\n=== POPRZEDNIA ANALIZA (${new Date(prev.at).toLocaleDateString("pl-PL")}) – sprawdź, co się zmieniło ===\n${prev.data.summary || ""}\n` : ""}${q ? `\nPytanie autorów (odpowiedz wprost): ${q}\n` : ""}
+Zwróć WYŁĄCZNIE JSON: {"summary":"2–4 zdania najważniejszych wniosków","answer":"odpowiedź na pytanie albo pusty tekst","works":["co działa – z przykładami"],"doesnt":["co nie działa – z przykładami"],"titles":"wnioski o tytułach i miniaturkach","retention":"wnioski o utrzymaniu widza","shorts":"wnioski o shortsach albo pusty tekst","confidence":"jak pewne są wnioski (1–2 zdania)"}` }], true, 0.6, up), errs, "Wnioski");
+    if(!d1) throw new Error(errs[0] || "Nie udało się przeanalizować wyników.");
+    await sleep(600);
+    const d2 = await runStep(prog, "a2", up => callGemini([{ text: `${base}
+
+=== WNIOSKI Z ANALIZY ===
+${d1.summary}
+Co działa: ${(d1.works||[]).join("; ")}
+Co nie działa: ${(d1.doesnt||[]).join("; ")}
+
+Na tej podstawie przygotuj: 3–5 konkretnych działań na najbliższe filmy oraz maks. 4 krótkie zasady do dopisania do przewodnika stylu (tylko jeśli dane je uzasadniają).
+Zwróć WYŁĄCZNIE JSON: {"actions":[""],"styleRules":[""]}` }], true, 0.6, up), errs, "Plan");
+    await sleep(600);
+    const pick = [...new Map([...sorted.slice(0, 6), ...sorted.slice(-4)].map(x => [x.id, x])).values()];
+    const d3 = await runStep(prog, "a3", up => callGemini([{ text: `${base}
+
+Oceń krótko te filmy (każdy: krótka ocena i co zrobić inaczej przy podobnym filmie):
+${pick.map(x => "- " + x.title).join("\n")}
+Zwróć WYŁĄCZNIE JSON: {"videos":[{"title":"","verdict":"","tip":""}]}` }], true, 0.6, up), errs, "Ocena filmów");
     prog.stop();
-    const rep = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), question: q, count: st.length, data: d, done: [] };
+    const data = { ...d1, actions: d2?.actions || [], styleRules: d2?.styleRules || [], videos: d3?.videos || [] };
+    const rep = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), question: q, count: st.length, data, done: [] };
     store._noUndo = true; store.setJ("vg_reports", [rep, ...getReports()].slice(0, 30)); store._noUndo = false;
     renderReport(rep); drawReports();
+    if(errs.length) toast("Część analizy się nie udała – reszta jest gotowa");
   }catch(e){ prog.stop(); out.innerHTML = ""; out.append(el("div", { class:"error" }, e.message)); }
   finally{ btn.disabled = false; }
 };
@@ -2201,162 +2235,194 @@ function drawReports(){
 drawStats(); drawReports();
 
 // ---------- trips (W trasie) ----------
-const getTrips = () => store.getJ("vg_trips", []);
 const CATS = { hook:"Hook", miniatura:"Miniatura", short:"Short", przebitka:"Przebitka", jedzenie:"Jedzenie", opowiesc:"Do kamery", zakonczenie:"Zakończenie", inne:"Inne" };
-const catKey = c => { const k = normT(c).replace(/ /g,""); return CATS[k] ? k : (k.startsWith("opow") || k.includes("kamer") ? "opowiesc" : k.startsWith("zako") ? "zakonczenie" : k.startsWith("minia") ? "miniatura" : k.startsWith("przeb") || k.includes("broll") ? "przebitka" : "inne"); };
-let tripId = store.get("vg_trip_active", null);
-let tripSaveT;
+const catKey = c => { const k = normT(c).replace(/ /g,""); return CATS[k] ? k : (k.startsWith("opow") || k.includes("kamer") ? "opowiesc" : k.startsWith("zako") ? "zakonczenie" : k.startsWith("minia") ? "miniatura" : k.startsWith("przeb") || k.includes("broll") ? "przebitka" : k.startsWith("jedz") ? "jedzenie" : "inne"); };
+function migrateTrip(t){
+  if(t.v === 2 && Array.isArray(t.dayList)) return t;
+  const n = Math.max(1, +t.days || 1), plans = {};
+  const parts = String(t.plan || "").split(/(?=Dzie[nń]\s*\d+\s*[:–-])/i);
+  parts.forEach(pt => { const m = pt.match(/^Dzie[nń]\s*(\d+)\s*[:–-]\s*([\s\S]*)/i); if(m) plans[+m[1]] = m[2].trim(); else if(pt.trim()) plans[1] = ((plans[1] || "") + " " + pt.trim()).trim(); });
+  t.dayList = Array.from({ length: n }, (_, i) => ({ id: (t.id || Date.now()) + i + 1, place: "", plan: plans[i+1] || "", shots: (t.shots||[]).filter(x => (x.day || 1) === i + 1).map(({ day, ...x }) => x), notes: (t.notes||[]).filter(x => (x.day || 1) === i + 1).map(({ day, ...x }) => x) }));
+  delete t.shots; delete t.notes; delete t.plan; delete t.days; t.v = 2;
+  return t;
+}
+const getTrips = () => store.getJ("vg_trips", []).map(migrateTrip);
+let openTripId = store.get("vg_trip_open", null), tripSaveT;
 function saveTrip(t, now){
   t.updatedAt = Date.now();
   const w = () => { const all = getTrips().filter(x => x.id !== t.id); all.unshift(t); all.sort((a,b) => b.updatedAt - a.updatedAt); store.setJ("vg_trips", all.slice(0, 60)); };
   clearTimeout(tripSaveT); if(now) w(); else tripSaveT = setTimeout(w, 400);
 }
-function currentTrip(){ const all = getTrips(); return all.find(t => String(t.id) === String(tripId)) || all[0] || null; }
-function newTrip(){
-  const t = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), name: "", format: "weekend", place: "", days: 2, plan: "", shots: [], notes: [] };
-  saveTrip(t, true); tripId = t.id; store.set("vg_trip_active", String(t.id)); drawTrip();
-  setTimeout(() => $("tName")?.focus(), 50);
-}
-$("tripNew").onclick = newTrip;
-$("tripSel").onchange = () => { tripId = $("tripSel").value; store.set("vg_trip_active", String(tripId)); drawTrip(); };
-function tripLabel(t){ return t.name || (t.format === "weekend" ? "Weekend w " + (t.place || "…") : t.place || "Nowy wyjazd"); }
+const tripLabel = t => t.name || (t.format === "weekend" ? "Weekend w " + (t.place || "…") : t.place || "Nowy wyjazd");
+const tripDone = t => !!t.transferredAt || (t.format === "series" && t.dayList.length > 0 && t.dayList.every(d => d.transferredAt));
+const tripShotsCount = t => { const all = t.dayList.flatMap(d => d.shots); return [all.filter(x => x.done).length, all.length]; };
+function openTrip(id){ openTripId = id; store.set("vg_trip_open", id === null ? "" : String(id)); drawTrip(); window.scrollTo({ top:0 }); }
 
 function drawTrip(){
-  const all = getTrips(), sel = $("tripSel"); sel.innerHTML = "";
-  if(!all.length){
-    sel.append(el("option", { value:"" }, "Brak wyjazdów"));
-    $("tripForm").innerHTML = ""; $("tripForm").append(el("div", { class:"empty", style:"margin-top:14px;padding:24px" }, el("strong", null, "Planujecie wyjazd?"), "Kliknij „+ Nowy wyjazd”, wpisz plan, a AI przygotuje listę ujęć do nagrania."));
-    $("tripShots").innerHTML = ""; $("tripNotes").innerHTML = ""; return;
+  const root = $("tripRoot"); if(!root) return; root.innerHTML = "";
+  const all = getTrips();
+  const t = openTripId ? all.find(x => String(x.id) === String(openTripId)) : null;
+  if(!t) return drawTripList(root, all);
+  drawTripDetail(root, t);
+}
+function tripTile(t){
+  const [d, n] = tripShotsCount(t);
+  return el("button", { class:"trip-tile" + (tripDone(t) ? " done" : ""), type:"button", onclick: () => openTrip(t.id) },
+    el("div", { class:"tt-name" }, tripLabel(t)),
+    el("div", { class:"tt-meta" }, (t.format === "series" ? "Seria" : t.format === "weekend" ? "Weekend" : "Wyjazd") + " · " + t.dayList.length + (t.dayList.length === 1 ? " dzień" : " dni")),
+    n ? el("div", { class:"progress-line" }, el("span", { style:`width:${d / n * 100}%` })) : null,
+    el("div", { class:"tt-meta" }, n ? `${d}/${n} ujęć nagranych` : "Brak ujęć"),
+    tripDone(t) ? el("span", { class:"pill ok", style:"margin-top:6px" }, "Przeniesiono do filmu") : null);
+}
+function drawTripList(root, all){
+  const active = all.filter(t => !tripDone(t)), done = all.filter(tripDone);
+  root.append(el("div", { class:"block-head", style:"margin-bottom:10px" }, el("h2", { style:"margin:0;font-size:24px;font-weight:800" }, "W trasie")));
+  root.append(el("p", { class:"note", style:"margin-top:0" }, "Planujcie wyjazdy dzień po dniu. Do każdego dnia AI przygotuje listę ujęć, na miejscu odhaczacie nagrane i dodajecie notatki, a po powrocie przenosicie wszystko do nowego filmu."));
+  const grid = el("div", { class:"trip-grid" });
+  grid.append(el("button", { class:"trip-tile add", type:"button", onclick: () => {
+    const t = { id: Date.now(), at: Date.now(), updatedAt: Date.now(), v: 2, name: "", format: "weekend", place: "", dayList: [{ id: Date.now() + 1, place: "", plan: "", shots: [], notes: [] }] };
+    saveTrip(t, true); openTrip(t.id); setTimeout(() => $("tName")?.focus(), 80);
+  } }, el("div", { class:"plus" }, "+"), el("div", { class:"tt-name" }, "Nowy wyjazd")));
+  active.forEach(t => grid.append(tripTile(t)));
+  root.append(grid);
+  if(done.length){
+    root.append(el("h3", { style:"font-size:16px;margin:24px 0 10px;color:var(--muted)" }, "Przeniesione do filmu"));
+    const g2 = el("div", { class:"trip-grid" }); done.forEach(t => g2.append(tripTile(t))); root.append(g2);
   }
-  all.forEach(t => sel.append(el("option", { value: String(t.id) }, tripLabel(t))));
-  const t = currentTrip(); sel.value = String(t.id); tripId = t.id;
+}
 
-  // form
-  const f = $("tripForm"); f.innerHTML = "";
-  const inp = (id, val, ph, on) => { const i = el("input", { type:"text", id, placeholder: ph }); i.value = val || ""; i.oninput = () => { on(i.value); saveTrip(t); }; return i; };
-  const fmt = el("select", { id:"tFormat" }, el("option", { value:"weekend" }, "Weekendowy wypad"), el("option", { value:"series" }, "Seria (kilka odcinków)"), el("option", { value:"other" }, "Inny"));
-  fmt.value = t.format || "weekend"; fmt.onchange = () => { t.format = fmt.value; saveTrip(t); };
-  const days = el("input", { type:"number", id:"tDays", min:"1", max:"14" }); days.value = t.days || 1; days.oninput = () => { t.days = Math.max(1, +days.value || 1); saveTrip(t); };
-  const plan = el("textarea", { id:"tPlan", placeholder:"Dzień 1: Brenna, wejście na Błatnią, burgery w Ustroniu, nocleg w aucie\nDzień 2: …" }); plan.value = t.plan || ""; plan.oninput = () => { t.plan = plan.value; saveTrip(t); };
-  const gen = el("button", { class:"btn primary", type:"button" }, t.shots.length ? "Dodaj więcej ujęć" : "Zrób listę ujęć");
-  const prog = el("div"), err = el("div", { class:"error", hidden:"" });
-  gen.onclick = async () => {
-    if(!t.plan.trim() && !t.place.trim()){ err.textContent = "Wpisz miejsce albo plan wyjazdu."; err.hidden = false; return; }
-    err.hidden = true; gen.disabled = true;
-    const pr = showProgress(prog, [["shots", "Lista ujęć", 3000]], "AI układa ujęcia pod hook, miniaturkę, shortsy i przebitki.");
-    try{
-      const existing = t.shots.map(x => "- " + x.text).join("\n");
-      const prompt = `Jesteś doświadczonym vlogerem podróżniczym i pomagasz zaplanować nagrania na wyjazd, tak żeby po powrocie był materiał na dobry film i shortsy.
+function shotPrompt(t, di){
+  const d = t.dayList[di];
+  const prev = t.dayList.slice(0, di).map((x, i) => `Dzień ${i+1}: ${x.place || "?"}${x.plan ? " – " + x.plan.replace(/\s+/g," ").slice(0,140) : ""}`).join("\n");
+  const existing = d.shots.map(x => "- " + x.text).join("\n");
+  return `Jesteś doświadczonym vlogerem podróżniczym i pomagasz zaplanować nagrania na JEDEN dzień wyjazdu, tak żeby po powrocie był materiał na dobry film i shortsy.
 
-=== STYL KANAŁU ===
+=== STYL KANAŁU (skrót) ===
 ${$("styleGuide").value.trim().split("\n\n").slice(0,3).join("\n\n")}
 
-=== ZASADY SHORTSÓW (skrót) ===
+=== SHORTSY (skrót) ===
 ${$("shortsGuide").value.trim().split("\n\n").slice(0,2).join("\n\n")}
 
 === WYJAZD ===
-Nazwa: ${tripLabel(t)}
-Format: ${t.format === "weekend" ? "weekendowy wypad (jeden film)" : t.format === "series" ? "seria – osobny odcinek na każdy dzień" : "inny"}
-Miejsce: ${t.place || "(nie podano)"}
-Liczba dni: ${t.days}
-Plan: ${t.plan || "(brak szczegółów)"}
-${existing ? "\nUjęcia, które już są na liście (nie powtarzaj ich, uzupełnij braki):\n" + existing + "\n" : ""}
-Przygotuj listę ujęć do nagrania, pogrupowaną po dniach (pole "day" = numer dnia). Kategorie (pole "cat"):
-- hook – mocne ujęcie na pierwsze 3 sekundy filmu albo shorta (efektowny widok, zaskoczenie, reakcja)
-- miniatura – kadr pod miniaturkę: jasne tło, charakterystyczne miejsce, twarze z emocją, wolne miejsce na napis
-- short – moment, który sam w sobie jest ciekawostką; nagraj też w pionie
-- przebitka – b-roll: detale, ruch, otoczenie, dojazd, ludzie
-- jedzenie – jedzenie i reakcja na nie
-- opowiesc – co powiedzieć do kamery (konkretna kwestia albo pytanie, na które odpowiedzieć)
-- zakonczenie – ujęcie lub kwestia na koniec dnia
-Na każdy dzień: 1 hook, 1–2 miniatura, 1–2 short, 3–5 przebitek, 1–2 opowiesc, 1 zakonczenie (plus jedzenie, jeśli jest w planie). Maks. 14 ujęć na dzień.
-Każde ujęcie: konkretne, do zrobienia telefonem lub kamerą, maks. 12 słów. Do tego krótka wskazówka "tip", jak je nagrać (kadr, ruch, światło, pora).
-Nie wymyślaj atrakcji spoza planu – możesz dodać ogólne ujęcia (dojazd, nocleg, pogoda, jedzenie).
+${tripLabel(t)} · ${t.format === "series" ? "seria – ten dzień to osobny odcinek" : t.format === "weekend" ? "weekendowy wypad – cały wyjazd to jeden film" : "wyjazd"}${t.place ? " · " + t.place : ""}
+${prev ? "Wcześniejsze dni:\n" + prev + "\n" : ""}
+=== DZIEŃ ${di + 1} ===
+Gdzie: ${d.place || "(nie podano)"}
+Plan: ${d.plan || "(brak szczegółów)"}
+${existing ? "\nUjęcia tego dnia, które już są (nie powtarzaj, uzupełnij braki):\n" + existing + "\n" : ""}
+Przygotuj listę ujęć TYLKO na ten dzień, ok. 8–12. Kategorie (pole "cat"):
+hook (mocne ujęcie na pierwsze sekundy), miniatura (kadr pod miniaturkę: charakterystyczne miejsce, twarze z emocją, wolne miejsce na napis), short (moment-ciekawostka; nagraj też w pionie), przebitka (detale, ruch, otoczenie, dojazd), jedzenie, opowiesc (konkretna kwestia do powiedzenia do kamery), zakonczenie.
+${t.format === "series" || di === 0 ? "Na ten dzień: 1 hook, 1–2 miniatura, 1–2 short, 3–4 przebitki, 1–2 opowiesc, 1 zakonczenie (plus jedzenie, jeśli jest w planie)." : "Na ten dzień: 1–2 short, 3–4 przebitki, 1–2 opowiesc, miniatura tylko jeśli ten dzień ma najmocniejsze miejsce wyjazdu, zakonczenie jeśli to ostatni dzień."}
+Każde ujęcie: konkretne, do zrobienia telefonem lub kamerą, maks. 12 słów, plus krótka wskazówka "tip" (kadr, ruch, światło, pora). Nie wymyślaj atrakcji spoza planu.
 
-Zwróć WYŁĄCZNIE JSON: {"shots":[{"day":1,"cat":"hook","text":"","tip":""}]}`;
-      const d = await callGemini([{ text: prompt }], true, 0.8, u => pr.update("shots", u));
-      pr.stop();
-      const add = (d.shots||[]).filter(x => x.text).map((x, i) => ({ id: Date.now() + i, day: Math.min(t.days, Math.max(1, +x.day || 1)), cat: catKey(x.cat || ""), text: x.text, tip: x.tip || "", done: false }));
-      if(!add.length) throw new Error("AI nie zwróciło ujęć. Spróbuj jeszcze raz.");
-      t.shots.push(...add); saveTrip(t, true); drawTrip(); toast("Dodano ujęcia: " + add.length);
-    }catch(e){ pr.stop(); prog.innerHTML = ""; err.textContent = e.message; err.hidden = false; }
-    finally{ gen.disabled = false; }
-  };
-  const del = el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć ten wyjazd razem z listą ujęć i notatkami?")){ store.setJ("vg_trips", getTrips().filter(x => x.id !== t.id)); tripId = null; drawTrip(); } } }, "Usuń wyjazd");
-  f.append(
-    el("label", { for:"tName" }, "Nazwa wyjazdu"), inp("tName", t.name, "np. Majówka w Berlinie", v => { t.name = v; }),
-    el("div", { class:"row" }, el("div", null, el("label", { for:"tFormat" }, "Format"), fmt), el("div", null, el("label", { for:"tDays" }, "Liczba dni"), days)),
-    el("label", { for:"tPlace" }, "Miejsce ", el("span", { class:"hint" }, "(jak w tytule: „Beskidach” albo „Berlin”)")), inp("tPlace", t.place, "np. Beskidach", v => { t.place = v; }),
-    el("label", { for:"tPlan" }, "Plan wyjazdu ", el("span", { class:"hint" }, "(co chcecie zobaczyć, po dniach)")), plan,
-    el("div", { style:"margin-top:14px" }, gen), err, prog,
-    el("div", { style:"margin-top:18px" }, del));
+Zwróć WYŁĄCZNIE JSON: {"shots":[{"cat":"hook","text":"","tip":""}]}`;
+}
+function transferToFilm(t, di){
+  const days = di === null ? t.dayList : [t.dayList[di]];
+  const notes = days.flatMap((d, i) => d.notes.map(n => (di === null && t.dayList.length > 1 ? `[Dzień ${t.dayList.indexOf(d) + 1}${d.place ? ", " + d.place : ""}] ` : "") + n.text));
+  const shots = days.flatMap(d => d.shots.filter(x => x.done && x.cat !== "przebitka").map(x => x.text));
+  const plans = days.map(d => [d.place, d.plan].filter(Boolean).join(": ")).filter(Boolean);
+  const details = [...(notes.length ? notes : plans), ...(shots.length ? ["", "Nagrane ujęcia: " + shots.join("; ")] : [])].join("\n").trim();
+  if(!details){ alert("Brak notatek, planu i odhaczonych ujęć do przeniesienia."); return; }
+  fillInput({ format: t.format, place: t.place || (days[0]?.place || ""), episode: di === null ? 1 : di + 1, details, chapters:"", keywords:"", shortScenes:[""] });
+  if(di === null) t.transferredAt = Date.now(); else t.dayList[di].transferredAt = Date.now();
+  saveTrip(t, true);
+  $("output").innerHTML = ""; $("output").append(el("div", { class:"empty" }, el("strong", null, "Przeniesiono z „" + tripLabel(t) + "”" + (di !== null ? " – dzień " + (di + 1) : "")), "Sprawdź opis po lewej, popraw, jeśli trzeba, i kliknij „Generuj”."));
+  showTab("gen"); window.scrollTo({ top:0 }); toast("Przeniesiono do nowego filmu");
+}
 
-  // shots
-  const sb = $("tripShots"); sb.innerHTML = "";
-  const done = t.shots.filter(x => x.done).length;
-  const card = el("div", { class:"block" });
-  card.append(el("div", { class:"block-head" }, el("h3", null, "Lista ujęć"), el("span", { class:"count" }, t.shots.length ? `${done}/${t.shots.length} nagrane` : "")));
-  if(t.shots.length) card.append(el("div", { class:"progress-line" }, el("span", { style:`width:${t.shots.length ? done / t.shots.length * 100 : 0}%` })));
-  if(!t.shots.length) card.append(el("p", { class:"note" }, "Wpisz plan po lewej i kliknij „Zrób listę ujęć”. Możesz też dodawać własne ujęcia poniżej."));
-  for(let day = 1; day <= Math.max(t.days, ...t.shots.map(x => x.day || 1)); day++){
-    const items = t.shots.filter(x => (x.day || 1) === day); if(!items.length) continue;
-    if(t.days > 1) card.append(el("div", { class:"day-h" }, "Dzień " + day));
-    const ul = el("div", { style:"display:grid;gap:8px" });
-    items.forEach(x => {
-      const cb = el("input", { type:"checkbox", "aria-label":"Nagrane" }); cb.checked = !!x.done;
-      const row = el("label", { class:"shot" + (x.done ? " done" : ""), style:"font-weight:400;margin:0" }, cb,
-        el("div", null, el("div", { class:"stx" }, el("span", { class:"cat cat-" + x.cat }, CATS[x.cat] || "Inne"), x.text), x.tip ? el("div", { class:"tip" }, x.tip) : null),
-        el("button", { class:"x", type:"button", "aria-label":"Usuń ujęcie", onclick: e => { e.preventDefault(); const before = rawGet("vg_trips"); t.shots = t.shots.filter(y => y.id !== x.id); saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } }, "×"));
-      cb.onchange = () => { x.done = cb.checked; row.classList.toggle("done", x.done); saveTrip(t); const d2 = t.shots.filter(y => y.done).length; card.querySelector(".count").textContent = `${d2}/${t.shots.length} nagrane`; const pl = card.querySelector(".progress-line span"); if(pl) pl.style.width = (d2 / t.shots.length * 100) + "%"; };
-      ul.append(row);
-    });
-    card.append(ul);
-  }
-  // add own shot
-  const own = el("input", { type:"text", placeholder:"Własne ujęcie, np. zachód słońca z parkingu", "aria-label":"Nowe ujęcie" });
-  const ownCat = el("select", { "aria-label":"Kategoria" }, Object.entries(CATS).map(([k, v]) => el("option", { value:k }, v)));
-  const ownDay = el("select", { "aria-label":"Dzień" }, Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
-  const addOwn = () => { const v = own.value.trim(); if(!v) return; t.shots.push({ id: Date.now(), day: +ownDay.value, cat: ownCat.value, text: v, tip: "", done: false }); saveTrip(t, true); drawTrip(); };
-  own.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); addOwn(); } });
-  card.append(el("div", { class:"inline", style:"margin-top:14px" }, own, ownCat, t.days > 1 ? ownDay : null, el("button", { class:"btn small", type:"button", onclick: addOwn }, "Dodaj")));
-  sb.append(card);
+function drawTripDetail(root, t){
+  root.append(el("button", { class:"btn small", type:"button", style:"margin-bottom:14px", onclick: () => openTrip(null) }, "← Wszystkie wyjazdy"));
+  // header
+  const inp = (id, val, ph, on) => { const i = el("input", { type:"text", id, placeholder: ph }); i.value = val || ""; i.oninput = () => { on(i.value); saveTrip(t); }; return i; };
+  const fmt = el("select", { id:"tFormat" }, el("option", { value:"weekend" }, "Weekendowy wypad (jeden film)"), el("option", { value:"series" }, "Seria (każdy dzień to odcinek)"), el("option", { value:"other" }, "Inny"));
+  fmt.value = t.format || "weekend"; fmt.onchange = () => { t.format = fmt.value; saveTrip(t, true); drawTrip(); };
+  root.append(el("section", { class:"panel" },
+    el("div", { class:"row" },
+      el("div", null, el("label", { for:"tName", style:"margin-top:0" }, "Nazwa wyjazdu"), inp("tName", t.name, "np. Majówka w Berlinie", v => { t.name = v; })),
+      el("div", null, el("label", { for:"tPlace", style:"margin-top:0" }, "Miejsce ", el("span", { class:"hint" }, "(jak w tytule)")), inp("tPlace", t.place, "np. Beskidach albo Berlin", v => { t.place = v; }))),
+    el("label", { for:"tFormat" }, "Format"), fmt));
 
-  // notes
-  const nb = $("tripNotes"); nb.innerHTML = "";
-  const nc = el("div", { class:"block" });
-  const ta = el("textarea", { placeholder:"Co się dzieje? Gdzie jesteście, co jecie, co was zaskoczyło…", "aria-label":"Notatka", style:"min-height:80px" });
-  const nDay = el("select", { "aria-label":"Dzień notatki" }, Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
-  nDay.value = String(Math.min(t.days, t.lastDay || 1));
-  const addNote = () => { const v = ta.value.trim(); if(!v) return; t.lastDay = +nDay.value; t.notes.push({ id: Date.now(), at: Date.now(), day: +nDay.value, text: v }); saveTrip(t, true); drawTrip(); toast("Notatka zapisana"); };
-  nc.append(el("div", { class:"block-head" }, el("h3", null, "Notatki z trasy")),
-    el("p", { class:"note", style:"margin-top:0" }, "Na telefonie stuknij ikonę mikrofonu na klawiaturze i po prostu mów – szybciej niż pisanie."),
-    ta, el("div", { class:"inline", style:"margin-top:8px" }, t.days > 1 ? nDay : null, el("button", { class:"btn", type:"button", onclick: addNote }, "Dodaj notatkę")));
-  const sorted = [...t.notes].sort((a,b) => (a.day - b.day) || (a.at - b.at));
-  if(sorted.length){
-    const list = el("div", { style:"display:grid;gap:8px;margin-top:14px" });
-    sorted.forEach(n => list.append(el("div", { class:"note-item" },
-      el("time", null, (t.days > 1 ? "Dzień " + n.day + " · " : "") + new Date(n.at).toLocaleString("pl-PL", { weekday:"short", hour:"2-digit", minute:"2-digit" })), n.text,
-      el("div", { style:"margin-top:6px" }, el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć notatkę?")){ const before = rawGet("vg_trips"); t.notes = t.notes.filter(x => x.id !== n.id); saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } } }, "Usuń")))));
-    nc.append(list);
-  }
-  // transfer
-  const which = el("select", { "aria-label":"Który dzień" }, el("option", { value:"all" }, "Cały wyjazd"), Array.from({ length: t.days }, (_, i) => el("option", { value: String(i+1) }, "Dzień " + (i+1))));
-  if(t.format === "series" && t.days > 1) which.value = "1";
-  const transfer = () => {
-    const d = which.value === "all" ? null : +which.value;
-    const notes = sorted.filter(n => !d || n.day === d).map(n => n.text);
-    const shots = t.shots.filter(x => x.done && (!d || x.day === d) && x.cat !== "przebitka").map(x => x.text);
-    const details = [...notes, ...(shots.length ? ["", "Nagrane ujęcia: " + shots.join("; ")] : [])].join("\n").trim();
-    if(!details){ alert("Brak notatek i odhaczonych ujęć dla tego wyboru."); return; }
-    fillInput({ format: t.format, place: t.place, episode: d || 1, details, chapters:"", keywords:"", shortScenes:[""] });
-    $("output").innerHTML = ""; $("output").append(el("div", { class:"empty" }, el("strong", null, "Przeniesiono z „" + tripLabel(t) + "”"), "Sprawdź opis po lewej, popraw, jeśli trzeba, i kliknij „Generuj”."));
-    showTab("gen"); window.scrollTo({ top:0 }); toast("Przeniesiono do nowego filmu");
-  };
-  nc.append(el("div", { class:"block save-block", style:"margin-top:16px" },
-    el("h3", { style:"margin-bottom:6px" }, "Po powrocie"),
-    el("p", { class:"note", style:"margin-top:0" }, "Przenosi notatki i odhaczone ujęcia do formularza „Nowy film”." + (t.format === "series" ? " Przy serii wybierz dzień – każdy to osobny odcinek." : "")),
-    el("div", { class:"inline" }, which, el("button", { class:"btn primary", type:"button", style:"width:auto", onclick: transfer }, "Przenieś do nowego filmu"))));
-  nb.append(nc);
+  // days
+  t.dayList.forEach((d, di) => {
+    const done = d.shots.filter(x => x.done).length;
+    const det = el("details", { class:"block day-card", open: (di === t.dayList.length - 1 || d._open) ? "" : null });
+    if(!(di === t.dayList.length - 1 || d._open)) det.removeAttribute("open");
+    det.addEventListener("toggle", () => { d._open = det.open; });
+    det.append(el("summary", null, el("span", { class:"day-h", style:"margin:0" }, "Dzień " + (di + 1)), el("span", { class:"hint" }, (d.place ? d.place + " · " : "") + (d.shots.length ? `${done}/${d.shots.length} nagrane` : "brak ujęć")), d.transferredAt ? el("span", { class:"pill ok" }, "w filmie") : null));
+    const body = el("div", { style:"margin-top:12px" });
+    const place = el("input", { type:"text", placeholder:"Gdzie będziecie? np. Brenna, Błatnia, Ustroń", "aria-label":"Miejsce dnia" }); place.value = d.place || ""; place.oninput = () => { d.place = place.value; saveTrip(t); };
+    const plan = el("textarea", { placeholder:"Co planujecie? Szlak, atrakcje, jedzenie, nocleg, godziny…", "aria-label":"Plan dnia", style:"min-height:80px" }); plan.value = d.plan || ""; plan.oninput = () => { d.plan = plan.value; saveTrip(t); };
+    const gen = el("button", { class:"btn primary", type:"button", style:"width:auto" }, d.shots.length ? "Dodaj więcej ujęć" : "Zrób ujęcia na ten dzień");
+    const prog = el("div"), err = el("div", { class:"error", hidden:"" });
+    gen.onclick = async () => {
+      if(!d.plan.trim() && !d.place.trim()){ err.textContent = "Wpisz, gdzie będziecie albo co planujecie tego dnia."; err.hidden = false; return; }
+      err.hidden = true; gen.disabled = true;
+      const pr = showProgress(prog, [["shots", "Ujęcia na dzień " + (di + 1), "AI układa ujęcia pod hook, miniaturkę, shortsy i przebitki…"]]);
+      try{
+        const r = await runStep(pr, "shots", up => callGemini([{ text: shotPrompt(t, di) }], true, 0.8, up));
+        pr.stop();
+        const add = (r?.shots || []).filter(x => x.text).map((x, i) => ({ id: Date.now() + i, cat: catKey(x.cat || ""), text: x.text, tip: x.tip || "", done: false }));
+        if(!add.length) throw new Error("Nie udało się przygotować ujęć. Spróbuj ponownie za chwilę.");
+        d.shots.push(...add); d._open = true; saveTrip(t, true); drawTrip(); toast("Dodano ujęcia: " + add.length);
+      }catch(e){ pr.stop(); prog.innerHTML = ""; err.textContent = e.message; err.hidden = false; }
+      finally{ gen.disabled = false; }
+    };
+    body.append(el("label", { style:"margin-top:0" }, "Gdzie"), place, el("label", null, "Plan dnia"), plan, el("div", { style:"margin-top:12px" }, gen), err, prog);
+
+    // shots
+    if(d.shots.length){
+      const list = el("div", { style:"display:grid;gap:8px;margin-top:16px" });
+      d.shots.forEach(x => {
+        const cb = el("input", { type:"checkbox", "aria-label":"Nagrane" }); cb.checked = !!x.done;
+        const row = el("label", { class:"shot" + (x.done ? " done" : ""), style:"font-weight:400;margin:0" }, cb,
+          el("div", null, el("div", { class:"stx" }, el("span", { class:"cat cat-" + x.cat }, CATS[x.cat] || "Inne"), x.text), x.tip ? el("div", { class:"tip" }, x.tip) : null),
+          el("button", { class:"x", type:"button", "aria-label":"Usuń ujęcie", onclick: e => { e.preventDefault(); const before = rawGet("vg_trips"); d.shots = d.shots.filter(y => y.id !== x.id); d._open = true; saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } }, "×"));
+        cb.onchange = () => { x.done = cb.checked; row.classList.toggle("done", x.done); saveTrip(t); det.querySelector("summary .hint").textContent = (d.place ? d.place + " · " : "") + `${d.shots.filter(y => y.done).length}/${d.shots.length} nagrane`; };
+        list.append(row);
+      });
+      body.append(list);
+    }
+    const own = el("input", { type:"text", placeholder:"Własne ujęcie, np. zachód słońca z parkingu", "aria-label":"Nowe ujęcie" });
+    const ownCat = el("select", { "aria-label":"Kategoria" }, Object.entries(CATS).map(([k, v]) => el("option", { value:k }, v)));
+    const addOwn = () => { const v = own.value.trim(); if(!v) return; d.shots.push({ id: Date.now(), cat: ownCat.value, text: v, tip: "", done: false }); d._open = true; saveTrip(t, true); drawTrip(); };
+    own.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); addOwn(); } });
+    body.append(el("div", { class:"inline", style:"margin-top:10px" }, own, ownCat, el("button", { class:"btn small", type:"button", onclick: addOwn }, "Dodaj")));
+
+    // notes
+    const nta = el("textarea", { placeholder:"Notatka z tego dnia… (na telefonie możesz dyktować mikrofonem na klawiaturze)", "aria-label":"Notatka", style:"min-height:64px" });
+    const nKey = "vg_note_draft_" + d.id; try{ nta.value = localStorage.getItem(nKey) || ""; }catch(e){}
+    nta.oninput = () => { try{ localStorage.setItem(nKey, nta.value); }catch(e){} };
+    const addNote = () => { const v = nta.value.trim(); if(!v) return; d.notes.push({ id: Date.now(), at: Date.now(), text: v }); try{ localStorage.removeItem(nKey); }catch(e){} d._open = true; saveTrip(t, true); drawTrip(); toast("Notatka zapisana"); };
+    body.append(el("h4", { style:"margin:18px 0 8px;font-family:'Bricolage Grotesque',sans-serif" }, "Notatki z dnia"), nta, el("div", { style:"margin-top:6px" }, el("button", { class:"btn small", type:"button", onclick: addNote }, "Dodaj notatkę")));
+    if(d.notes.length){
+      const nl = el("div", { style:"display:grid;gap:8px;margin-top:10px" });
+      d.notes.forEach(n => nl.append(el("div", { class:"note-item" }, el("time", null, new Date(n.at).toLocaleString("pl-PL", { weekday:"short", hour:"2-digit", minute:"2-digit" })), n.text,
+        el("div", { style:"margin-top:6px" }, el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć notatkę?")){ const before = rawGet("vg_trips"); d.notes = d.notes.filter(x => x.id !== n.id); d._open = true; saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []); } } }, "Usuń")))));
+      body.append(nl);
+    }
+    // day actions
+    const acts = el("div", { class:"inline", style:"margin-top:16px;justify-content:space-between" });
+    if(t.format === "series") acts.append(el("button", { class:"btn", type:"button", onclick: () => transferToFilm(t, di) }, d.transferredAt ? "Przenieś ponownie do filmu" : "Przenieś ten dzień do nowego filmu"));
+    else acts.append(el("span"));
+    acts.append(el("button", { class:"btn small danger", type:"button", onclick: () => {
+      if(!confirm(`Usunąć dzień ${di + 1} razem z jego ujęciami i notatkami?`)) return;
+      const before = rawGet("vg_trips"); t.dayList.splice(di, 1); if(!t.dayList.length) t.dayList.push({ id: Date.now(), place:"", plan:"", shots:[], notes:[] });
+      saveTrip(t, true); drawTrip(); offerUndo("vg_trips", before, []);
+    } }, "Usuń dzień"));
+    body.append(acts);
+    det.append(body);
+    root.append(det);
+  });
+
+  root.append(el("button", { class:"trip-tile add", type:"button", style:"width:100%;min-height:70px;margin-top:6px", onclick: () => { t.dayList.forEach(x => x._open = false); t.dayList.push({ id: Date.now(), place:"", plan:"", shots:[], notes:[] }); saveTrip(t, true); drawTrip(); setTimeout(() => { const cards = document.querySelectorAll(".day-card"); cards[cards.length - 1]?.scrollIntoView({ behavior:"smooth", block:"start" }); }, 60); } },
+    el("div", { class:"tt-name" }, "+ Dodaj dzień " + (t.dayList.length + 1))));
+
+  const foot = el("section", { class:"block save-block", style:"margin-top:18px" });
+  if(t.format !== "series") foot.append(el("h3", { style:"margin-bottom:6px" }, "Po powrocie"), el("p", { class:"note", style:"margin-top:0" }, "Przenosi notatki (albo plan, jeśli nie ma notatek) i odhaczone ujęcia ze wszystkich dni do formularza „Nowy film”."), el("button", { class:"btn primary", type:"button", style:"width:auto", onclick: () => transferToFilm(t, null) }, t.transferredAt ? "Przenieś ponownie do filmu" : "Przenieś cały wyjazd do nowego filmu"));
+  else foot.append(el("p", { class:"note", style:"margin:0" }, "To seria – każdy dzień przenosisz osobno przyciskiem w jego karcie, bo każdy dzień to osobny odcinek."));
+  foot.append(el("div", { style:"margin-top:14px" }, el("button", { class:"btn small danger", type:"button", onclick: () => { if(confirm("Usunąć cały wyjazd razem z ujęciami i notatkami?")){ store.setJ("vg_trips", getTrips().filter(x => x.id !== t.id)); openTrip(null); } } }, "Usuń wyjazd")));
+  root.append(foot);
 }
 drawTrip();
 
@@ -2472,7 +2538,7 @@ ${wantShorts ? $("shortsGuide").value.trim() : $("shortsGuide").value.trim().spl
     if(wantStats) s += `\n=== WYNIKI FILMÓW Z YOUTUBE STUDIO ===\n${[...stt].sort((a,b) => (b.views||0) - (a.views||0)).slice(0,30).map(statLine).join("\n")}\n`;
     else { const srt = [...stt].sort((a,b) => (b.views||0) - (a.views||0)); s += `\n=== WYNIKI (skrót – pełne dane są w aplikacji, zapytaj, jeśli potrzebujesz) ===\n${stt.length} filmów z danymi. Mediana wyświetleń: ${fmtInt(median(stt.map(x => x.views)))}, średni CTR: ${fmtPct(avg(stt.map(x => x.ctr)))}.\nNajlepsze: ${srt.slice(0,3).map(x => x.title + " (" + fmtInt(x.views) + ")").join("; ")}\n`; }
   }
-  if(wantTrips){ const tr = getTrips().slice(0,3); if(tr.length) s += `\n=== WYJAZDY (tryb w trasie) ===\n${tr.map(t => `- ${tripLabel(t)}: ${t.days} dni, ujęcia ${t.shots.filter(x => x.done).length}/${t.shots.length} nagrane${t.plan ? "\n  Plan: " + t.plan.replace(/\n+/g," ").slice(0,300) : ""}${t.notes.length ? "\n  Notatki: " + t.notes.map(n => n.text).join(" / ").slice(0,400) : ""}`).join("\n")}\n`; }
+  if(wantTrips){ const tr = getTrips().slice(0,3); if(tr.length) s += `\n=== WYJAZDY (tryb w trasie) ===\n${tr.map(t => { const [dn, nn] = tripShotsCount(t); return `- ${tripLabel(t)}: ${t.dayList.length} dni, ujęcia ${dn}/${nn} nagrane\n${t.dayList.map((d, i) => `  Dzień ${i+1}: ${d.place || "?"}${d.plan ? " – " + d.plan.replace(/\n+/g," ").slice(0,150) : ""}${d.notes.length ? " | notatki: " + d.notes.map(n => n.text).join(" / ").slice(0,200) : ""}`).join("\n")}`; }).join("\n")}\n`; }
   const lr = getReports()[0]; if(lr){ s += `\n=== OSTATNIA ANALIZA WYNIKÓW (${new Date(lr.at).toLocaleDateString("pl-PL")}) ===\n${lr.data?.summary || ""}\nPlan: ${(lr.data?.actions||[]).join("; ")}\n`; }
   if(pr.length){ s += `\n=== OSTATNIE PROJEKTY W APLIKACJI ===\n`; pr.forEach(p => s += `- ${projectLabel(p)} (${new Date(p.at).toLocaleDateString("pl-PL")})${(p.finalTitle||p.choice?.title) ? " – tytuł: " + (p.finalTitle||p.choice.title) : ""}${(p.shorts||[]).filter(x => x.chosenTitle).length ? " – shortsy: " + p.shorts.filter(x => x.chosenTitle).map(x => x.chosenTitle).join("; ") : ""}${p.input?.details ? "\n  Treść: " + p.input.details.replace(/\n+/g," ").slice(0,120) : ""}\n`); }
   return s;
@@ -2545,12 +2611,14 @@ async function sendChat(text){
   try{
     const contents = activeChat.messages.slice(-20).map(m => ({ role: m.role === "user" ? "user" : "model", parts:[{ text: m.text }] }));
     const pend = $("chatMsgs").querySelector(".pending");
-    const reply = await geminiStreamReq({ system_instruction:{ parts:[{ text: chatContext(activeChat.messages.filter(m => m.role === "user").slice(-2).map(m => m.text).join(" ")) }] }, contents, generationConfig:{ temperature: 0.8 } }, u => {
-      if(!pend) return;
-      if(u.text){ pend.classList.remove("pending"); pend.innerHTML = md(u.text); }
-      else if(u.thought){ pend.textContent = "💭 " + thoughtTitle(u.thought); }
-      const box = $("chatMsgs"); box.scrollTop = box.scrollHeight;
-    });
+    const t0 = Date.now();
+    const civ = setInterval(() => { if(pend && pend.classList.contains("pending") && !pend.dataset.note) pend.textContent = "Piszę odpowiedź… " + Math.round((Date.now() - t0) / 1000) + " s"; }, 500);
+    let reply;
+    try{
+      reply = await geminiRequest({ system_instruction:{ parts:[{ text: chatContext(activeChat.messages.filter(m => m.role === "user").slice(-2).map(m => m.text).join(" ")) }] }, contents, generationConfig:{ temperature: 0.8 } }, u => {
+        if(pend && u.attempt){ pend.dataset.note = "1"; pend.textContent = `Gemini przeciążony – ponawiam (${u.attempt}/3)…`; setTimeout(() => { delete pend.dataset.note; }, 8000); }
+      });
+    } finally { clearInterval(civ); }
     activeChat.messages.push({ role:"model", text: reply }); activeChat.updatedAt = Date.now(); persistChat(); drawMessages();
   }catch(e){ drawMessages(false, e.message); }
   finally{ chatBusy = false; $("chatSend").disabled = false; }
